@@ -88,3 +88,10 @@ export type UpdateConversationRequest = {
 export type MessageRequest = {
   message: string
 }
+
+/**
+ * DTO for logging in via a Google id.
+ */
+export type GoogleLoginRequest = {
+  id_token: string
+}

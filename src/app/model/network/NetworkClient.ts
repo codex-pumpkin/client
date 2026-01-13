@@ -9,7 +9,7 @@ import {
 } from './dtos/response';
 import {
   ConversationRequest,
-  EmailVerificationSubmitRequest,
+  EmailVerificationSubmitRequest, GoogleLoginRequest,
   LLMConfigurationRequest,
   LoginRequest,
   MessageRequest,
@@ -34,7 +34,7 @@ export interface NetworkClient {
   /**
    * Request to GET /auth/google/login
    */
-  loginGoogle$(token: string): Observable<TokenResponse>
+  loginGoogle$(body: GoogleLoginRequest, token: string): Observable<TokenResponse>
 
   /**
    * Request to POST /auth/login
@@ -233,7 +233,7 @@ export interface NetworkClient {
    */
   addMessage$(
     body: MessageRequest,
-    id: number,
+    id: string,
     token: string
   ): Observable<MessageResponse>
 
@@ -242,7 +242,7 @@ export interface NetworkClient {
    */
   updateMessage$(
     body: MessageRequest,
-    id: number,
+    id: string,
     token: string
   ): Observable<MessageResponse>
 }

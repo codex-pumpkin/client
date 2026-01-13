@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {EnvironmentLoader_T} from '../../../environment/EnvironmentLoader';
 import {
   ConversationRequest,
-  EmailVerificationSubmitRequest,
+  EmailVerificationSubmitRequest, GoogleLoginRequest,
   LLMConfigurationRequest,
   LoginRequest, MessageRequest,
   PasswordResetRequestRequest, PasswordResetSubmitRequest,
@@ -142,9 +142,10 @@ export class HttpClientNetworkClient implements NetworkClient {
   }
 
 
-  loginGoogle$(token: string): Observable<TokenResponse> {
-    return this.client.get<TokenResponse>(
+  loginGoogle$(body: GoogleLoginRequest, token: string): Observable<TokenResponse> {
+    return this.client.post<TokenResponse>(
       this.url('/auth/google/login'),
+      body,
       { headers: this.headers(token) }
     )
   }
@@ -260,7 +261,7 @@ export class HttpClientNetworkClient implements NetworkClient {
 
   addMessage$(
     body: MessageRequest,
-    id: number,
+    id: string,
     token: string
   ): Observable<MessageResponse> {
     return this.client.post<MessageResponse>(
@@ -272,7 +273,7 @@ export class HttpClientNetworkClient implements NetworkClient {
 
   updateMessage$(
     body: MessageRequest,
-    id: number,
+    id: string,
     token: string
   ): Observable<MessageResponse> {
     return this.client.put<MessageResponse>(
