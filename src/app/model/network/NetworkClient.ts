@@ -21,6 +21,8 @@ import {
   UpdateConversationRequest
 } from './dtos/request';
 import {QuotaConfig} from './dtos/dtos';
+import {inject, InjectionToken} from '@angular/core';
+import {HttpClientNetworkClient} from './internal/HttpClientNetworkClient';
 
 /**
  * Network client interface mapping all REST endpoints.
@@ -246,3 +248,14 @@ export interface NetworkClient {
     token: string
   ): Observable<MessageResponse>
 }
+
+/**
+ * Injection token for the NetworkClient
+ */
+export const NetworkClient_T = new InjectionToken<NetworkClient>(
+  'NetworkClient',
+  {
+    providedIn: 'root',
+    factory: () => inject(HttpClientNetworkClient)
+  }
+)
