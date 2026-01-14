@@ -40,7 +40,7 @@ export type LLMConfigurationResponse = {
   id: string
   name: string
   api_url: string
-  api_key_set?: boolean
+  api_key_set: boolean
 }
 
 /**
@@ -51,7 +51,7 @@ export type AccountResponse = {
   email: string
   username: string
   is_admin: boolean
-  is_verified?: boolean
+  is_verified: boolean
   auth_via_google: boolean
   created_at: string
   llm_configurations: LLMConfigurationResponse[]
