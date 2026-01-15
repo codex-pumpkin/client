@@ -1,59 +1,46 @@
-# CodexClient
+<p align="center">
+  <img src="Logo.svg" alt="Project Logo" width="500"/>
+</p>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+# CodeX Client Component
+This repository contains the code for the CodeX client component.
 
-## Development server
-
-To start a local development server, run:
-
+## Project Structure
+- `public/`: Public assets
+- `src/`: Source files. Main indexand script file
+  - `app/environment`: Infrastructure to get environment configuration
+  - `app/model/network`: Connection to the REST-API of the backend
+  - `app/model/domain`: Domain models for the entities
+  - `app/model/authentication`: Abstraction over the authentication. Keeps the currently authenticated account
+ 
+## Containerization
+The project can be built into an image using
 ```bash
-ng serve
+docker build . -t codex/client
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+The building process is configured by the `Dockerfile` that contains two stages:
+**Building with NPM**
+The project is built into a web-distribution with `npm`, that will be located in `/app/dist/codex-client/browser`
+**Configuring NGINX**
+The built distribution is copied into the path `/usr/share/nginx/html` that by default is served by nginx.
 
-## Code scaffolding
+Additionally, the `env.template.json` and `entrypoint.sh` files are also moved to the container.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Container startup
+On startup, the `entrypoint.sh` file is executed.
+This file, before running nginx, uses `envsubst` to insert the environment variables provided by docker into the `env.template.json` file.
+After that, a `env.json` file is available to the project.
 
+To start the server, `entrypoint.sh` also starts nginx.
+
+## Unit tests
+Major components are tested using `vitest`.
+For a given file `file.ts`, the test file is named `file.spec.ts` and contains exactly one `describe` clause.
+
+To run all unit tests, use
 ```bash
-ng generate component component-name
+npm test
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This will also create a coverage report in `coverage/`.
