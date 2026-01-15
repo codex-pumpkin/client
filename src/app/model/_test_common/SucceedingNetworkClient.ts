@@ -10,13 +10,15 @@ import {
   PasswordResetSubmitRequest,
   RefreshRequest,
   SignupRequest,
-  UpdateAccountRequest, UpdateConversationRequest
+  UpdateAccountRequest,
+  UpdateConversationRequest
 } from '../network/dtos/request';
-import {EMPTY, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {
   AccountResponse,
   AnalyticsResponse,
-  ConversationResponse, LLMConfigurationResponse,
+  ConversationResponse,
+  LLMConfigurationResponse,
   MessageResponse,
   TokenResponse
 } from '../network/dtos/response';
@@ -35,25 +37,61 @@ export class SucceedingNetworkClient implements NetworkClient {
     llm_configurations: []
   }
 
+  static readonly llmConfig: LLMConfigurationResponse = {
+    id: "llm-id",
+    name: "llm-name",
+    api_url: "llm-url",
+    api_key_set: true
+  }
+
   static readonly tokens: TokenResponse = {
     access_token: "access",
     refresh_token: "refresh"
   }
 
+  static readonly message: MessageResponse = {
+    id: "message-id",
+    message: "message-message",
+    generation_millis: 1234,
+    response: "message-response",
+    response_secondary: undefined,
+    created_at: "message-timestamp"
+  }
+
+  static readonly analytics: AnalyticsResponse = {
+    requests_today: 67,
+    requests_this_month: 6767
+  }
+
+  static readonly conversation: ConversationResponse = {
+    id: "convo-id",
+    name: "convo-name",
+    pinned: false,
+    llm_model_config_id: "llm-id",
+    target_language: "java",
+    created_at: "convo-timestamp",
+    messages: []
+  }
+
+  static readonly quota: QuotaConfig = {
+    member: 67,
+    admin: 6767
+  }
+
   addLLMConfiguration$(body: LLMConfigurationRequest, token: string): Observable<void> {
-    return EMPTY
+    return of(undefined)
   }
 
   addMessage$(body: MessageRequest, id: string, token: string): Observable<MessageResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.message)
   }
 
   deleteConversation$(id: string, token: string): Observable<void> {
-    return EMPTY
+    return of(undefined)
   }
 
   deleteLLMConfiguration$(id: string, token: string): Observable<void> {
-    return EMPTY
+    return of(undefined)
   }
 
   getAccount$(token: string): Observable<AccountResponse> {
@@ -61,19 +99,19 @@ export class SucceedingNetworkClient implements NetworkClient {
   }
 
   getAnalytics$(token: string): Observable<AnalyticsResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.analytics)
   }
 
   getConversations$(token: string): Observable<ConversationResponse[]> {
-    return EMPTY
+    return of([SucceedingNetworkClient.conversation])
   }
 
   getProfilePicture$(token: string): Observable<Blob> {
-    return EMPTY
+    return of(new Blob(["profile-picture-blob"]))
   }
 
   getQuota$(token: string): Observable<QuotaConfig> {
-    return EMPTY
+    return of(SucceedingNetworkClient.quota)
   }
 
   login$(body: LoginRequest, token: string): Observable<TokenResponse> {
@@ -89,7 +127,7 @@ export class SucceedingNetworkClient implements NetworkClient {
   }
 
   postConversation$(body: ConversationRequest, token: string): Observable<ConversationResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.conversation)
   }
 
   refresh$(body: RefreshRequest, token: string): Observable<TokenResponse> {
@@ -121,23 +159,23 @@ export class SucceedingNetworkClient implements NetworkClient {
   }
 
   updateConversation$(body: UpdateConversationRequest, id: string, token: string): Observable<ConversationResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.conversation)
   }
 
   updateLLMConfiguration$(body: LLMConfigurationRequest, id: string, token: string): Observable<LLMConfigurationResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.llmConfig)
   }
 
   updateMessage$(body: MessageRequest, id: string, token: string): Observable<MessageResponse> {
-    return EMPTY
+    return of(SucceedingNetworkClient.message)
   }
 
   updateProfilePicture$(body: FormData, token: string): Observable<void> {
-    return EMPTY
+    return of(undefined)
   }
 
   updateQuota$(body: QuotaConfig, token: string): Observable<QuotaConfig> {
-    return EMPTY
+    return of(SucceedingNetworkClient.quota)
   }
 
 }
