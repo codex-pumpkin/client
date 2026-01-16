@@ -1,7 +1,14 @@
 services:
   client:
     image: codex/client
+    depends_on:
+      - mock-server
     ports:
       - "8080:80"
     environment:
       SERVER_BASE_URL: "http://localhost:8081"
+
+  mock-server:
+    image: codex/mock-server
+    ports:
+      - "8082:8082"
