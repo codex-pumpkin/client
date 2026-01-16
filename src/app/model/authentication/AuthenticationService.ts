@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Account, CodexError, LoginError, LoginGoogleError, Maybe, SignupError} from '../domain/domain_models';
 import {inject, InjectionToken} from '@angular/core';
 import {NetworkAuthenticationService} from './internal/NetworkAuthenticationService';
@@ -9,7 +9,7 @@ export interface AuthenticationService {
    * Contains the currently authenticated account.
    * Null if the user is not authenticated to an account.
    */
-  account$: Observable<Account | null>
+  account$: BehaviorSubject<Account | null>
 
   /**
    * Logs in using credentials.
