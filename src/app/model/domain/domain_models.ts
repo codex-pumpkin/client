@@ -335,3 +335,15 @@ export type Conversation = {
    */
   messages: Message[]
 }
+
+/**
+ * Settings bundled
+ */
+export type Settings = {
+
+  /**
+   * Whether the application is set to dark mode.
+   */
+  isDarkMode: boolean
+
+}
