@@ -1,0 +1,11 @@
+<div id="root">
+  <div id="sidebar">
+    <h1>/home</h1>
+    <button matButton="filled" (click)="openConversation()">Open conversations</button>
+    <button matButton="filled" (click)="openSettings()">Open settings</button>
+    <button matButton="filled" (click)="openAdmin()">Open Admin</button>
+  </div>
+  <div id="nested-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
