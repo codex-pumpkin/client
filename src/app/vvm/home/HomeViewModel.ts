@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {MatButton} from '@angular/material/button';
-import {addModuleImportToModule} from '@angular/cdk/schematics';
 
 /**
  * ViewModel for the COnversations component.
@@ -30,6 +29,4 @@ export class HomeViewModel {
     const id = "5eef3bec-9c15-4384-b8d1-f42a188684d0"
     this.router.navigate([`home/conversations/${id}`])
   }
-
-  protected readonly addModuleImportToModule = addModuleImportToModule;
 }
