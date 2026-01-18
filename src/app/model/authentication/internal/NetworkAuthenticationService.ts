@@ -115,10 +115,8 @@ export class NetworkAuthenticationService implements AuthenticationService {
     const accountRefreshSuccess$ = this.api
       .getAccount$(this.tokens.getAccessOrEmpty())
       .pipe(
-        tap(acc => console.log(`Got emission ${JSON.stringify(acc)} from getAccount$ inside refreshAccountInternal`)),
         map(createAccount), // When success, map to domain model
         catchError(_ => { // When error, set current account to null and emit error
-          console.log(`Caught error from getAccount$ inside refreshAccountInternal`)
           return of(null)
         }),
         tap(account => { // Update cached account

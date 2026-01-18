@@ -19,8 +19,11 @@ export class AppInitializer {
   private readonly env = inject(EnvironmentLoader_T)
 
   async init(): Promise<void> {
+    console.info(`Will start app initialization`)
     await firstValueFrom(this.env.load())
+    console.info(`Finished environment loading and now got: ${JSON.stringify(this.env.get())}`)
     await this.auth.refreshAccount()
+    console.info(`Finished account refreshing and now got: ${this.auth.account$.getValue()}`)
   }
 
 }
