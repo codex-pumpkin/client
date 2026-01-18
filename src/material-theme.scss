@@ -1,0 +1,27 @@
+@use '@angular/material' as mat;
+
+/*
+ * Sets up the theming.
+ * Light or dark mode is determined by the client.
+ */
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  border: none;
+}
+
+/*
+ * We default to use border-box and no margin.
+ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
