@@ -19,7 +19,16 @@
 }
 
 mat-card {
-  max-width: 400px;
+  min-width: min(400px, 100%);
+  max-width: 450px;
+
+  background-color: var(--mat-sys-surface-container);
+
+  border-radius: 32px;
+}
+
+mat-card-title {
+  margin-top: 8px;
 }
 
 .title {
