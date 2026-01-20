@@ -46,6 +46,25 @@
   "google-button": {
     "label": "Continue with Google"
   },
+  "request_password_reset": {
+    "title": {
+      "initial": "Reset Password",
+      "sent": "Email sent"
+    },
+    "description": {
+      "initial": "If you forgot the password to your account, enter the email address of your account below. A message with a link to reset the password fo your account will b sent to that email address.",
+      "sent": "A link that allows you to reset your password was sent to your email address."
+    },
+    "email": {
+      "label": "Email"
+    },
+    "send_mail": {
+      "label": "Reset Password"
+    },
+    "continue": {
+      "label": "Continue"
+    }
+  },
   "errors": {
     "generic": {
       "connection": "Could not reach the server",
