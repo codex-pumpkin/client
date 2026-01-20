@@ -9,3 +9,17 @@
   justify-content: center;
   gap: 32px;
 }
+
+#content {
+  margin-top: 16px;
+
+  display: grid;
+  place-items: center;
+}
+
+#generic-error {
+  margin-bottom: 8px;
+
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-error)
+}

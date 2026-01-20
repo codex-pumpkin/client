@@ -84,6 +84,21 @@
       "label": "Reset"
     }
   },
+  "not_verified": {
+    "title": {
+      "sent": "Email verification sent",
+      "initial": "Email not verified"
+    },
+    "description": {
+      "sent": "A verification message was sent to your email address <b>{{email}}</b>. Please confirm it by clicking the link in the email.",
+      "initial": "You need to verify your email address <b>{{email}}</b> to access this system. Please request a verification email below and click the link provided in the message."
+    },
+    "label": {
+      "waiting": "Resend ({{timer}})",
+      "initial": "Send email",
+      "resend": "Resend"
+    }
+  },
   "errors": {
     "generic": {
       "connection": "Could not reach the server",
