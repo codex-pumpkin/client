@@ -1,0 +1,24 @@
+button {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  background: var(--mat-sys-surface-variant);
+
+  padding: 12px;
+
+  border-radius: 16px;
+
+  width: 100%;
+  flex: 1 1 auto;
+
+  border: none;
+}
+
+p {
+  flex: 100%;
+  text-align: center;
+
+  font: var(--mat-sys-label-large);
+}
