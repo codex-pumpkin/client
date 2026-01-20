@@ -57,11 +57,11 @@ export class SucceedingAuthenticationService implements AuthenticationService {
     return of(Maybe.createYes<Account, SignupError>(SucceedingAuthenticationService.account));
   }
 
-  submitEmailVerification$(verificationToken: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>> {
     return of(Maybe.createYes<true, CodexError>(true));
   }
 
-  submitPasswordReset(passwordToken: string, newPassword: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitPasswordReset(passwordToken: string, newPassword: string): Observable<Maybe<true, CodexError>> {
     return of(Maybe.createYes<true, CodexError>(true));
   }
 

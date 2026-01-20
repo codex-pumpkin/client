@@ -53,7 +53,7 @@ export interface AuthenticationService {
    * Submits email verification.
    * @param verificationToken The token that was sent via email.
    */
-  submitEmailVerification$(verificationToken: string, token: string): Observable<Maybe<true, CodexError>>
+  submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>>
 
   /**
    * Requests password reset message.
@@ -66,7 +66,7 @@ export interface AuthenticationService {
    * @param token The token that was sent via email.
    * @param newPassword The new password.
    */
-  submitPasswordReset(passwordToken: string, newPassword: string, token: string): Observable<Maybe<true, CodexError>>
+  submitPasswordReset(passwordToken: string, newPassword: string): Observable<Maybe<true, CodexError>>
 
   /**
    * Logs out of the current account.

@@ -209,13 +209,13 @@ export class NetworkAuthenticationService implements AuthenticationService {
     return signup$
   }
 
-  submitEmailVerification$(verificationToken: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>> {
     const request$ = this.api
       .submitEmailVerification$(
         {
           verification_token: verificationToken
         },
-        token
+        this.tokens.getAccessOrEmpty()
       )
       .pipe(
         tap(_ => this.refreshAccountInternal()), // When success, refresh cached account
@@ -226,14 +226,14 @@ export class NetworkAuthenticationService implements AuthenticationService {
     return request$
   }
 
-  submitPasswordReset(passwordToken: string, newPassword: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitPasswordReset(passwordToken: string, newPassword: string): Observable<Maybe<true, CodexError>> {
     const request$ = this.api
       .submitPasswordReset$(
         {
           reset_token: passwordToken,
           new_password: newPassword
         },
-        token
+        this.tokens.getAccessOrEmpty()
       )
       .pipe(
         map(() => Maybe.createYes<true, CodexError>(true)), // When success, map to 'yes'-maybe

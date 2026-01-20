@@ -47,11 +47,11 @@ export class FailingAuthenticationService implements AuthenticationService {
     return of(Maybe.createNo<Account, SignupError>(Errors.Authentication));
   }
 
-  submitEmailVerification$(verificationToken: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>> {
     return of(Maybe.createNo<true, CodexError>(Errors.Authentication));
   }
 
-  submitPasswordReset(passwordToken: string, newPassword: string, token: string): Observable<Maybe<true, CodexError>> {
+  submitPasswordReset(passwordToken: string, newPassword: string): Observable<Maybe<true, CodexError>> {
     return of(Maybe.createNo<true, CodexError>(Errors.Authentication));
   }
 

@@ -174,21 +174,21 @@ describe("NetworkAuthenticationService", () => {
     }, Errors.Unknown))
 
   it("submitEmailVerification$ returns true when success",
-    returnsWhenYes(() => subject.submitEmailVerification$("", ""), true))
+    returnsWhenYes(() => subject.submitEmailVerification$(""), true))
 
   it("submitEmailVerification$ returns error when failure",
     returnsWhenNo(() => {
       (subject as any).api = new FailingNetworkClient()
-      return subject.submitEmailVerification$("", "")
+      return subject.submitEmailVerification$("")
     }, Errors.Unknown))
 
   it("submitPasswordReset returns true when success",
-    returnsWhenYes(() => subject.submitPasswordReset("", "", ""), true))
+    returnsWhenYes(() => subject.submitPasswordReset("", ""), true))
 
   it("submitPasswordReset returns error when failure",
     returnsWhenNo(() => {
       (subject as any).api = new FailingNetworkClient()
-      return subject.submitPasswordReset("", "", "")
+      return subject.submitPasswordReset("", "")
     }, Errors.Unknown))
 
   //
