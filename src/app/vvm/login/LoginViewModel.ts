@@ -7,12 +7,12 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatInput, MatLabel} from '@angular/material/input';
+import {MatInput, MatLabel, MatPrefix, MatSuffix} from '@angular/material/input';
 import {MatError, MatFormField} from '@angular/material/form-field';
 import {MatDivider} from '@angular/material/divider';
 import {GoogleButton} from '../_common/google-button/GoogleButton';
 import {GoogleAuthViewModel} from '../_common/GoogleAuthViewModel';
-import {Account, Errors, LoginError} from '../../model/domain/domain_models';
+import {Errors, LoginError} from '../../model/domain/domain_models';
 import {genericErrorTranslation} from '../_common/error_translation';
 
 /**
@@ -29,6 +29,8 @@ import {genericErrorTranslation} from '../_common/error_translation';
     MatIconButton,
     MatButton,
     RouterLink,
+    MatPrefix,
+    MatSuffix,
     MatInput,
     MatError,
     MatLabel,

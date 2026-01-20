@@ -5,9 +5,9 @@ import {CodexFormControl} from '../_common/CodexFormControl';
 import {CardLayout} from '../_common/card-layout/CardLayout';
 import {ReactiveFormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
-import {MatIcon} from '@angular/material/icon';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatInput, MatLabel} from '@angular/material/input';
+import {MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import {MatError, MatFormField} from '@angular/material/form-field';
 import {MatDivider} from '@angular/material/divider';
 import {GoogleButton} from '../_common/google-button/GoogleButton';
@@ -28,13 +28,15 @@ import {CodexValidators} from '../_common/CodexValidators';
     TranslatePipe,
     MatIcon,
     MatIconButton,
+    MatIconModule,
     MatButton,
     RouterLink,
     MatInput,
     MatError,
     MatLabel,
     MatDivider,
-    GoogleButton
+    GoogleButton,
+    MatSuffix
   ],
   styleUrl: "Signup.css"
 })

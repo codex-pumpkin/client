@@ -9,5 +9,5 @@ body, html {
 }
 
 mat-form-field {
-  max-width: 275px;
+  width: min(100%, 220px);
 }
