@@ -1,0 +1,23 @@
+{
+  "login": {
+    "title": "Login",
+    "description": "Enter your email or username and password to authenticate with an existing account. Authenticating is required to perform actions on this service.",
+    "identifier": {
+      "label": "Username or email"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "confirm": {
+      "label": "Log in"
+    },
+    "signup_link": {
+      "pre": "Need to create an account first? ",
+      "mid": "Sign up",
+      "post": "."
+    }
+  },
+  "google-button": {
+    "label": "Continue with Google"
+  }
+}

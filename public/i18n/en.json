@@ -1,0 +1,41 @@
+{
+  "login": {
+    "title": "Login",
+    "description": "Enter your email or username and password to authenticate with an existing account. Authenticating is required to perform actions on this service.",
+    "identifier": {
+      "label": "Username or email"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "confirm": {
+      "label": "Log in"
+    },
+    "signup_link": {
+      "pre": "Don't have an account? ",
+      "mid": "Sign up",
+      "post": " instead."
+    },
+    "reset_link": {
+      "pre": "Forgot your password? ",
+      "mid": "Reset it",
+      "post": "."
+    }
+  },
+  "google-button": {
+    "label": "Continue with Google"
+  },
+  "errors": {
+    "generic": {
+      "connection": "Could not reach the server",
+      "timeout": "Times out while trying to reach the server",
+      "permission": "You don't have permission to perform that action",
+      "authentication": "Your identity could not be authenticated",
+      "unknown": "An unknown error occured"
+    },
+    "login": {
+      "invalid": "Invalid credentials",
+      "invalid_google": "Authentication via Google failed"
+    }
+  }
+}
