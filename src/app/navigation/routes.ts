@@ -35,7 +35,7 @@ export const routes: Routes = [
     component: EmailVerificationViewModel
   },
   {
-    path: "password-reset",
+    path: "reset-password/:token",
     component: PasswordResetViewModel
   },
   {

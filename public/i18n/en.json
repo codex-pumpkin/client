@@ -65,6 +65,25 @@
       "label": "Continue"
     }
   },
+  "password_reset": {
+    "title": {
+      "reset": "Password Reset",
+      "initial": "Reset Password"
+    },
+    "description": {
+      "reset": "Your password was reset. You can now log in to your account using the new password.",
+      "initial": "Enter your new password below."
+    },
+    "password": {
+      "label": "New password"
+    },
+    "continue": {
+      "label": "Log in"
+    },
+    "perform_reset": {
+      "label": "Reset"
+    }
+  },
   "errors": {
     "generic": {
       "connection": "Could not reach the server",
