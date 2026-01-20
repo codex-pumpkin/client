@@ -1,0 +1,20 @@
+<div id="root">
+  <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
+  <div id="card-container">
+    @if (isMobile()) {
+      <div id="pseudo-card">
+        <p class="title">{{title()}}</p>
+        <p class="content">{{description()}}</p>
+        <ng-content></ng-content>
+      </div>
+    } @else {
+      <mat-card appearance="raised">
+        <mat-card-title class="title">{{ title() }}</mat-card-title>
+        <mat-card-content class="content">
+          <p>{{ description() }}</p>
+          <ng-content></ng-content>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>
