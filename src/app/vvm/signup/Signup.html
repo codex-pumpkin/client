@@ -1,7 +1,54 @@
-<div id="root">
-  <h1>/signup</h1>
-  <button matButton="filled" (click)="login()">Login</button>
-  <button matButton="filled" (click)="signup()">Signup</button>
-  <button matButton="filled" (click)="googleAuth()">Google Auth</button>
-  <button matButton="filled" (click)="resetPassword()">Reset Password</button>
-</div>
+<card-layout [title]="'signup.title' | translate"
+             [description]="'signup.description' | translate">
+
+  <div id="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'signup.email.label' | translate }}</mat-label>
+      <input [formControl]="email.control" matInput>
+
+      @if (email.control.invalid) {
+        <mat-error>{{ email.errorKey() | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'signup.username.label' | translate }}</mat-label>
+      <input [formControl]="username.control" matInput>
+
+      @if (username.control.invalid) {
+        <mat-error>{{ username.errorKey() | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'signup.password.label' | translate }}</mat-label>
+      <input [formControl]="password.control" matInput [type]="passwordVisible() ? 'text' : 'password'">
+
+      @if (password.control.invalid) {
+        <mat-error>{{ password.errorKey() | translate }}</mat-error>
+      }
+
+      <button matIconButton matSuffix (click)="togglePassword()">
+        <mat-icon>{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  @if (genericError() != null) {
+    <p id="generic-error">{{ genericError() | translate }}</p>
+  }
+
+  <mat-divider/>
+
+  <div id="footer">
+    <google-button (clickHandler)="openGoogleAuth()"></google-button>
+
+    <div id="actions">
+      <p>{{ 'signup.login_link.pre'|translate }}<a
+        routerLink="/signup">{{ 'signup.login_link.mid'|translate }}</a>{{ 'signup.login_link.post'|translate }}</p>
+
+      <button id="login-button" matButton="filled" (click)="signup()">Login</button>
+    </div>
+  </div>
+
+</card-layout>

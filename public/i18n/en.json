@@ -22,6 +22,27 @@
       "post": "."
     }
   },
+  "signup": {
+    "title": "Create Account",
+    "description": "Create an account by providing an email, a username and a password. You will need these credentials to log in to your account later.",
+    "email": {
+      "label": "Email"
+    },
+    "username": {
+      "label": "Username"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "confirm": {
+      "label": "Sign up"
+    },
+    "login_link": {
+      "pre": "Already have an account? ",
+      "mid": "Login",
+      "post": " instead."
+    }
+  },
   "google-button": {
     "label": "Continue with Google"
   },
@@ -31,11 +52,23 @@
       "timeout": "Times out while trying to reach the server",
       "permission": "You don't have permission to perform that action",
       "authentication": "Your identity could not be authenticated",
-      "unknown": "An unknown error occured"
+      "unknown": "An unknown error occurred"
+    },
+    "validation": {
+      "format": {
+        "password": "Min. 4 characters required",
+        "email": "Valid email address required",
+        "username": "Required 4-32 characters"
+      }
     },
     "login": {
       "invalid": "Invalid credentials",
       "invalid_google": "Authentication via Google failed"
+    },
+    "signup": {
+      "invalid_google": "Authentication via Google failed",
+      "email_used": "Email already in use",
+      "username_used": "Username already in use"
     }
   }
 }
