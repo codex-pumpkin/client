@@ -1,7 +1,52 @@
-<div id="root">
-  <h1>/login</h1>
-  <button matButton="filled" (click)="login()">Login</button>
-  <button matButton="filled" (click)="signup()">Signup</button>
-  <button matButton="filled" (click)="googleAuth()">Google Auth</button>
-  <button matButton="filled" (click)="resetPassword()">Reset Password</button>
-</div>
+<card-layout [title]="'login.title' | translate"
+             [description]="'login.description' | translate">
+
+  <div id="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'login.identifier.label' | translate }}</mat-label>
+      <input [formControl]="identifier.control" matInput>
+
+      @if (identifier.control.invalid) {
+        <mat-error>{{ identifier.errorKey() | translate }}</mat-error>
+      }
+
+      <mat-icon matPrefix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'login.password.label' | translate }}</mat-label>
+      <input [formControl]="password.control" matInput [type]="passwordVisible() ? 'text' : 'password'">
+
+      @if (password.control.invalid) {
+        <mat-error>{{ password.errorKey() | translate }}</mat-error>
+      }
+
+      <button matIconButton matSuffix (click)="togglePassword()">
+        <mat-icon>{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  @if (genericError() != null) {
+    <p id="generic-error">{{genericError() | translate}}</p>
+  }
+
+  <mat-divider/>
+
+  <div id="footer">
+    <google-button (clickHandler)="openGoogleAuth()"></google-button>
+
+    <div id="actions">
+      <div id="links">
+
+        <p>{{ 'login.signup_link.pre'|translate }}<a
+          routerLink="/signup">{{ 'login.signup_link.mid'|translate }}</a>{{ 'login.signup_link.post'|translate }}</p>
+
+        <p>{{ 'login.reset_link.pre'|translate }}<a
+          routerLink="/request-password-reset">{{ 'login.reset_link.mid'|translate }}</a>{{ 'login.reset_link.post'|translate }}</p>
+      </div>
+      <button id="login-button" matButton="filled" (click)="login()">Login</button>
+    </div>
+  </div>
+
+</card-layout>
