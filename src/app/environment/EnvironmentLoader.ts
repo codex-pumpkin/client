@@ -28,7 +28,12 @@ export type EnvironmentConfig = {
   /**
    * The serer base url.
    */
-  SERVER_BASE_URL: string
+  SERVER_BASE_URL: string,
+
+  /**
+   * The google client id.
+   */
+  GOOGLE_CLIENT_ID: string
 
 }
 
