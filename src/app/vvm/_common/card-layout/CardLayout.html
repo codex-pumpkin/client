@@ -1,7 +1,6 @@
 <div id="root">
   <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
 
-
   <div id="card-container">
 
     <ng-template #child>
@@ -10,7 +9,7 @@
 
     <div id="pseudo-card" *ngIf="isMobile(); else nonmobile">
       <p class="title">{{title()}}</p>
-      <p class="content">{{description()}}</p>
+      <p class="content" [innerHTML]="description()"></p>
       <ng-container *ngTemplateOutlet="child"></ng-container>
     </div>
 
@@ -18,7 +17,7 @@
       <mat-card appearance="filled">
         <mat-card-title class="title">{{ title() }}</mat-card-title>
         <mat-card-content class="content">
-          <p>{{ description() }}</p>
+          <p [innerHTML]="description()"></p>
           <ng-container *ngTemplateOutlet="child"></ng-container>
         </mat-card-content>
       </mat-card>

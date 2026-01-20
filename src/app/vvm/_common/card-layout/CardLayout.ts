@@ -2,7 +2,7 @@ import {Component, inject, input} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {map} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {NgComponentOutlet, NgIf, NgOptimizedImage, NgTemplateOutlet} from '@angular/common';
+import {NgIf, NgOptimizedImage, NgTemplateOutlet} from '@angular/common';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 
 @Component({
@@ -14,7 +14,6 @@ import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
     MatCardTitle,
     MatCardContent,
     NgTemplateOutlet,
-    NgComponentOutlet,
     NgIf
   ],
   selector: "card-layout"
