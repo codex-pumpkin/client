@@ -26,7 +26,7 @@ export class LocalStorageSettingsManager implements SettingsManager {
 
   private reloadSettings(): Settings {
     const localContent = localStorage.getItem(KEY_SETTINGS)
-    const localSettings = JSON.parse(localContent ?? "")
+    const localSettings = JSON.parse(localContent ?? "{}")
 
     let toUseSettings: Settings
 
@@ -44,7 +44,7 @@ export class LocalStorageSettingsManager implements SettingsManager {
     const current = this.settings$.getValue()
     current.isDarkMode = isDarkMode
     this.saveSettings(current)
-    this.reloadSettings()
+    this.settings$.next(this.reloadSettings())
   }
 
 }
