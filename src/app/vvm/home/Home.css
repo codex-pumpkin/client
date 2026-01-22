@@ -1,28 +1,139 @@
-#root {
+#mobile-root {
+  display: flex;
+  flex-direction: column;
+}
+
+#fake-button {
+  visibility: hidden;
+}
+
+mat-drawer-container {
+  height: 100%;
+  width: 100%;
+}
+
+.root {
   width: 100%;
   height: 100%;
+}
+
+mat-drawer {
+  background: var(--mat-sys-surface-container-low);
+
+  padding-top: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+nav {
+  width: 100%;
 
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
 }
 
-#sidebar {
-  height: 100%;
+#desktop-drawer {
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
+  border-radius: 8px;
+}
+
+#desktop-root {
+  padding-left: 10px;
+}
+
+.profile-picture {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 100%;
+}
+
+.piid {
   display: flex;
   flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-
-  padding-left: 64px;
-  padding-right: 64px;
-
-  border-right: 1px solid gray;
 }
 
-#nested-content {
+.piid-email {
+  font: var(--mat-sys-label-small)
+}
+
+.piid-username {
+  font: var(--mat-sys-label-large)
+}
+
+.account-header {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+
+  gap: 12px;
+
+  padding-left: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+
   width: 100%;
-  height: 100%;
+
+  border-radius: 8px;
+}
+
+.nav-item-label {
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.nav-item-icon {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.conversation-header {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+.conversations-title {
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface-variant)
+}
+
+.search {
+  background: none;
+  border: none;
+  outline: none;
+  flex: 1;
+
+  font: var(--mat-sys-body-large);
+  color: var(--mat-sys-outline);
+}
+
+.search:focus {
+  border-bottom: 2px solid var(--mat-sys-outline-variant);
 }

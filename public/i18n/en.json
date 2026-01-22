@@ -99,6 +99,24 @@
       "resend": "Resend"
     }
   },
+  "email_verification": {
+    "title": {
+      "success": "Email address verified",
+      "failure": "Email not verified"
+    },
+    "description": {
+      "success": "Your email address was verified. You can now use your account.",
+      "failure": "The link you used may have been expired or ill-formed. Please try again."
+    },
+    "continue": "Continue"
+  },
+  "home": {
+    "nav": {
+      "llm": "Language Models",
+      "admin": "Admin Panel",
+      "conversations": "Conversations"
+    }
+  },
   "errors": {
     "generic": {
       "connection": "Could not reach the server",

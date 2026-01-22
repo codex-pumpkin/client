@@ -1,11 +1,121 @@
-<div id="root">
-  <div id="sidebar">
-    <h1>/home</h1>
-    <button matButton="filled" (click)="openConversation()">Open conversations</button>
-    <button matButton="filled" (click)="openSettings()">Open settings</button>
-    <button matButton="filled" (click)="openAdmin()">Open Admin</button>
-  </div>
-  <div id="nested-content">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+  @if (isMobile()) {
+    <mat-drawer-container hasBackdrop>
+      <mat-drawer #mobile_drawer mode="over">
+        <nav>
+          <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
+
+          <button matIconButton (click)="toggleDarkMode()">
+            <mat-icon>{{ isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          </button>
+        </nav>
+
+        <div class="separator"></div>
+
+        <div class="account-header">
+          <img class="profile-picture" [src]="profilePicture()" alt="PP">
+          <div class="piid">
+            <p class="piid-username">{{account().username}}</p>
+            <p class="piid-email">{{account().email}}</p>
+          </div>
+          <div class="spacer"></div>
+          <button matIconButton (click)="openSettings()">
+            <mat-icon>settings</mat-icon>
+          </button>
+        </div>
+
+        <div matRipple class="nav-item">
+          <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+          <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
+        </div>
+
+        @if (account().isAdmin) {
+          <div matRipple class="nav-item">
+            <mat-icon class="nav-item-icon">star</mat-icon>
+            <p class="nav-item-label">{{ 'home.nav.admin' | translate }}</p>
+          </div>
+        }
+
+        <div class="conversation-header">
+
+          @if (searchActive()) {
+            <input class="search" type="text" (blur)="toggleSearch()" autofocus>
+          } @else {
+            <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
+          }
+
+          <button matIconButton (click)="toggleSearch()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+      </mat-drawer>
+      <mat-drawer-content id="mobile-root">
+        <nav>
+          <button matIconButton (click)="mobile_drawer.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+
+          <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
+
+          <button id="fake-button" matIconButton (click)="toggleDrawer()">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </nav>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  } @else {
+    <mat-drawer-container>
+      <mat-drawer id="desktop-drawer" mode="side" opened>
+        <nav>
+          <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
+
+          <button matIconButton (click)="toggleDarkMode()">
+            <mat-icon>{{ isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          </button>
+        </nav>
+
+        <div class="separator"></div>
+
+        <div class="account-header">
+          <img class="profile-picture" [src]="profilePicture()" alt="PP">
+          <div class="piid">
+            <p class="piid-username">{{account().username}}</p>
+            <p class="piid-email">{{account().email}}</p>
+          </div>
+          <div class="spacer"></div>
+          <button matIconButton (click)="openSettings()">
+            <mat-icon>settings</mat-icon>
+          </button>
+        </div>
+
+        <div matRipple class="nav-item">
+          <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+          <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
+        </div>
+
+        @if (account().isAdmin) {
+          <div matRipple class="nav-item">
+            <mat-icon class="nav-item-icon">star</mat-icon>
+            <p class="nav-item-label">{{ 'home.nav.admin' | translate }}</p>
+          </div>
+        }
+
+        <div class="conversation-header">
+
+          @if (searchActive()) {
+            <input class="search" type="text" (blur)="toggleSearch()" autofocus>
+          } @else {
+            <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
+          }
+
+          <button matIconButton (click)="toggleSearch()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+
+      </mat-drawer>
+
+      <mat-drawer-content id="desktop-root">
+
+      </mat-drawer-content>
+    </mat-drawer-container>
+  }
