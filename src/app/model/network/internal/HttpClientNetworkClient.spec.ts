@@ -157,7 +157,7 @@ const server = setupServer(
 //
 class MockEnvironmentLoader implements EnvironmentLoader {
   get(): EnvironmentConfig {
-    return { SERVER_BASE_URL: "http://test.example.com" };
+    return { SERVER_BASE_URL: "http://test.example.com", GOOGLE_CLIENT_ID: "" };
   }
 
   load(): Observable<boolean> {
@@ -358,7 +358,7 @@ describe('HttpClientNetworkClient', () => {
   it("addMessage$ should return correct type", () => {
     const ret = subject.addMessage$({message: ""}, "id", "<token>")
     ret.subscribe(bod => {
-      expectTypeOf(bod).toEqualTypeOf<MessageResponse>()
+      expectTypeOf(bod).toEqualTypeOf<string>()
     })
   })
 

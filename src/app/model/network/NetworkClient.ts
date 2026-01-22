@@ -237,7 +237,7 @@ export interface NetworkClient {
     body: MessageRequest,
     id: string,
     token: string
-  ): Observable<MessageResponse>
+  ): Observable<string>
 
   /**
    * Request to PUT /conversations/{id}/messages

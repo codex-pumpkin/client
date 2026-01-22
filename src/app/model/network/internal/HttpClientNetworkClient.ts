@@ -30,9 +30,9 @@ export class HttpClientNetworkClient implements NetworkClient {
 
   private readonly environment = inject(EnvironmentLoader_T)
 
-  private url = (relative: string) => `${this.environment.get().SERVER_BASE_URL}${relative}`
+  private readonly url = (relative: string) => `${this.environment.get().SERVER_BASE_URL}${relative}`
 
-  private headers = (token: string) => ({
+  private readonly headers = (token: string) => ({
     "Authorization": `Bearer ${token}`,
     "Content-Type": "application/json"
   })
@@ -263,8 +263,8 @@ export class HttpClientNetworkClient implements NetworkClient {
     body: MessageRequest,
     id: string,
     token: string
-  ): Observable<MessageResponse> {
-    return this.client.post<MessageResponse>(
+  ): Observable<string> {
+    return this.client.post<string>( // TODO: The return type needs to be figured out. Speak with Kyrylo
       this.url(`/conversations/${id}/messages`),
       body,
       { headers: this.headers(token) }
