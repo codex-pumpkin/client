@@ -1,4 +1,6 @@
 import {Observable} from 'rxjs';
+import {inject, InjectionToken} from '@angular/core';
+import {NetworkAccountService} from './internal/NetworkAccountService';
 
 /**
  * Interface that exposes functionality related to account data.
@@ -42,3 +44,14 @@ export interface AccountService {
   refreshProfilePicture(): Promise<boolean>
 
 }
+
+/**
+ * Injection token for the AccountService.
+ */
+export const AccountService_T = new InjectionToken<AccountService>(
+  'AccountService',
+  {
+    providedIn: 'root',
+    factory: () => inject(NetworkAccountService)
+  }
+)
