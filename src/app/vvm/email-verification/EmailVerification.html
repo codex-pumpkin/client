@@ -1,3 +1,14 @@
-<div id="root">
-  <h1>/email-verification</h1>
-</div>
+@if (isSuccess() != null) {
+  <card-layout
+    [title]="('email_verification.title' + (isSuccess() ? '.success' : '.failure')) | translate"
+    [description]="('email_verification.description' + (isSuccess() ? '.success' : '.failure')) | translate">
+
+    <div id="container">
+      <button matButton="filled" [disabled]="!isSuccess()"
+              (click)="continue()">{{ 'email_verification.continue' | translate }}
+      </button>
+    </div>
+
+  </card-layout>
+}
+

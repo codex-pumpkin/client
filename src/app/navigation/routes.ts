@@ -31,7 +31,7 @@ export const routes: Routes = [
     canActivate: [AccountAuthGuard]
   },
   {
-    path: "email-verification",
+    path: "email-verification/:token",
     component: EmailVerificationViewModel
   },
   {
