@@ -138,8 +138,10 @@ export class NetworkAuthenticationService implements AuthenticationService {
   }
 
   requestEmailVerification$(): Observable<Maybe<true, CodexError>> {
-    const request$ = this.api
-      .requestEmailVerification$(this.tokens.getRefreshOrEmpty())
+    const call = (token: string) => this.api
+      .requestEmailVerification$(token)
+
+    const request$ = this.safe(call)
       .pipe(
         map(() => Maybe.createYes<true, CodexError>(true)),
         catchError(convertError<true>)
@@ -149,11 +151,10 @@ export class NetworkAuthenticationService implements AuthenticationService {
   }
 
   requestPasswordReset$(email: string): Observable<Maybe<true, CodexError>> {
-    const request$ = this.api
-      .requestPasswordReset$(
-        {email: email},
-        this.tokens.getRefreshOrEmpty()
-      )
+    const call = (token: string) => this.api
+      .requestPasswordReset$({email: email}, token)
+
+    const request$ = this.safe(call)
       .pipe(
         map(() => Maybe.createYes<true, CodexError>(true)),
         catchError(convertError<true>)
@@ -163,7 +164,7 @@ export class NetworkAuthenticationService implements AuthenticationService {
   }
 
   safe<T>(call: (token: string) => Observable<T>): Observable<T> {
-    const response$ = call(this.tokens.getRefreshOrEmpty()) // We make the call the first time
+    const response$ = call(this.tokens.getAccessOrEmpty()) // We make the call the first time
       .pipe(
         catchError(_err => { // When an error occurs on the first call, we catch it
           const err = _err as HttpErrorResponse
