@@ -1,5 +1,11 @@
-import {AccountResponse, LLMConfigurationResponse} from '../../network/dtos/response';
-import {Account, LLMConfig} from '../../domain/domain_models';
+import {
+  AccountResponse,
+  ConversationResponse,
+  LLMConfigurationResponse,
+  MessageResponse
+} from '../../network/dtos/response';
+import {TargetLanguage as TargetLanguageResponse} from '../../network/dtos/dtos'
+import {Account, Conversation, LLMConfig, Message, TargetLanguage} from '../../domain/domain_models';
 
 /**
  * Convert an account response and other data to an account domain model.
@@ -25,4 +31,58 @@ export const createLlmConfig = (response: LLMConfigurationResponse): LLMConfig =
   name: response.name,
   hasApiKey: response.api_key_set,
   url: response.api_url
+})
+
+/**
+ * Maps a target language string to the enum type.
+ */
+export const createTargetLanguage = (response: TargetLanguageResponse): TargetLanguage => {
+  switch (response) {
+    case "java":
+      return TargetLanguage.JAVA
+    case "python":
+      return TargetLanguage.PYTHON
+    case "spice_netlist":
+      return TargetLanguage.SPICE
+  }
+}
+
+/**
+ * Maps a llm-config response to a domain model.
+ * @param response The response.
+ */
+export const createLlmResponse = (response: LLMConfigurationResponse): LLMConfig => ({
+  id: response.id,
+  hasApiKey: response.api_key_set,
+  url: response.api_url,
+  name: response.name
+})
+
+/**
+ * Maps a message response to a domain model.
+ * @param response The response.
+ */
+export const createMessage = (response: MessageResponse): Message => ({
+  id: response.id,
+  createdAt: response.created_at,
+  prompt: response.message,
+  response: response.response,
+  secondaryResponse: response.response_secondary ?? null,
+  generationMillis: response.generation_millis
+})
+
+/**
+ * Maps a conversation response to a domain model.
+ * @param response The response
+ * @param llmConfigs All llm configs available to the user
+ */
+// TODO: The model requires a llm config model, but the response only has a reference.
+export const createConversation = (response: ConversationResponse, llmConfigs: LLMConfig[]): Conversation => ({
+  id: response.id,
+  name: response.name,
+  targetLanguage: createTargetLanguage(response.target_language),
+  pinned: !!response.pinned,
+  createdAt: response.created_at,
+  llmConfig: llmConfigs.find(config => config.id == response.llm_model_config_id)!,
+  messages: response.messages.map(createMessage)
 })
