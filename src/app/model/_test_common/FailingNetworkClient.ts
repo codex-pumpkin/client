@@ -32,7 +32,7 @@ export class FailingNetworkClient implements NetworkClient {
     return internalServerError
   }
 
-  addMessage$(body: MessageRequest, id: string, token: string): Observable<MessageResponse> {
+  addMessage$(body: MessageRequest, id: string, token: string): Observable<string> {
     return internalServerError;
   }
 

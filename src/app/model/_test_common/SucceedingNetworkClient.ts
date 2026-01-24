@@ -82,8 +82,8 @@ export class SucceedingNetworkClient implements NetworkClient {
     return of(undefined)
   }
 
-  addMessage$(body: MessageRequest, id: string, token: string): Observable<MessageResponse> {
-    return of(SucceedingNetworkClient.message)
+  addMessage$(body: MessageRequest, id: string, token: string): Observable<string> {
+    return of(SucceedingNetworkClient.message.id)
   }
 
   deleteConversation$(id: string, token: string): Observable<void> {
