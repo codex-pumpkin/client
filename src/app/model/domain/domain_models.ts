@@ -287,7 +287,7 @@ export type Message = {
   /**
    * The time the message took to create
    */
-  generationMillis: string,
+  generationMillis: number,
 
   /**
    * The timestamp of creation of the message
