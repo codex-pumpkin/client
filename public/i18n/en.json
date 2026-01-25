@@ -115,6 +115,23 @@
       "llm": "Language Models",
       "admin": "Admin Panel",
       "conversations": "Conversations"
+    },
+    "menu": {
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "delete": "Delete"
+    }
+  },
+  "dialog": {
+    "change_conversation_name": {
+      "title": "Edit name",
+      "description": "To change the name of the conversation, enter the new name below.",
+      "name": {
+        "label": "New name"
+      },
+      "negative": "Cancel",
+      "positive": "Confirm"
     }
   },
   "errors": {
