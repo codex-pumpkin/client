@@ -1,11 +1,19 @@
 import {
-  AccountResponse,
+  AccountResponse, AnalyticsResponse,
   ConversationResponse,
   LLMConfigurationResponse,
   MessageResponse
 } from '../../network/dtos/response';
-import {TargetLanguage as TargetLanguageResponse} from '../../network/dtos/dtos'
-import {Account, Conversation, LLMConfig, Message, TargetLanguage} from '../../domain/domain_models';
+import {QuotaConfig as QuotaConfigResponse, TargetLanguage as TargetLanguageResponse} from '../../network/dtos/dtos'
+import {
+  Account,
+  Analytics,
+  Conversation,
+  LLMConfig,
+  Message,
+  QuotaConfig,
+  TargetLanguage
+} from '../../domain/domain_models';
 
 /**
  * Convert an account response and other data to an account domain model.
@@ -76,7 +84,6 @@ export const createMessage = (response: MessageResponse): Message => ({
  * @param response The response
  * @param llmConfigs All llm configs available to the user
  */
-// TODO: The model requires a llm config model, but the response only has a reference.
 export const createConversation = (response: ConversationResponse, llmConfigs: LLMConfig[]): Conversation => ({
   id: response.id,
   name: response.name,
@@ -85,4 +92,17 @@ export const createConversation = (response: ConversationResponse, llmConfigs: L
   createdAt: response.created_at,
   llmConfig: llmConfigs.find(config => config.id == response.llm_model_config_id)!,
   messages: response.messages.map(createMessage)
+})
+
+/**
+ * Maps a quota-config response to a domain model.
+ */
+export const createQuotaConfig = (response: QuotaConfigResponse): QuotaConfig => response
+
+/**
+ * Maps an analytics response to a domain model.
+ */
+export const createAnalytics = (response: AnalyticsResponse): Analytics => ({
+  today: response.requests_today,
+  thisMonth: response.requests_this_month
 })
