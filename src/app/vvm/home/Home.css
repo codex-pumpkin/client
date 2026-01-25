@@ -92,17 +92,31 @@ nav {
   gap: 12px;
 
   padding-left: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 
   width: 100%;
 
   border-radius: 8px;
 }
 
+.nav-item-menu {
+  opacity: 0;
+}
+
+.nav-item:hover .nav-item-menu {
+  opacity: 1;
+}
+
+.nav-item:hover:not(:has(.nav-item-menu:hover)) {
+  cursor: pointer;
+}
+
 .nav-item-label {
   font: var(--mat-sys-label-large);
   color: var(--mat-sys-on-surface-variant);
+  cursor: inherit;
+  flex: 1;
 }
 
 .nav-item-icon {
@@ -136,4 +150,16 @@ nav {
 
 .search:focus {
   border-bottom: 2px solid var(--mat-sys-outline-variant);
+}
+
+mat-divider {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.convos-container {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
 }

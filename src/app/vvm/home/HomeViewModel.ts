@@ -1,17 +1,28 @@
-import {Component, ElementRef, inject, signal, ViewChild} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatIconButton} from '@angular/material/button';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {MatIcon} from '@angular/material/icon';
 import {NgOptimizedImage} from '@angular/common';
-import {filter, map, tap} from 'rxjs';
+import {combineLatest, filter, map, startWith, tap} from 'rxjs';
 import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material/sidenav';
 import {SettingsManager_T} from '../../model/settings/SettingsManager';
 import {AuthenticationService_T} from '../../model/authentication/AuthenticationService';
 import {AccountService_T} from '../../model/service/AccountService';
 import {MatRipple} from '@angular/material/core';
 import {TranslatePipe} from '@ngx-translate/core';
+import {ConversationService_T} from '../../model/service/ConversationService';
+import {CodexFormControl} from '../_common/CodexFormControl';
+import {MatDivider} from '@angular/material/divider';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatSuffix} from '@angular/material/input';
+import {Conversation} from '../../model/domain/domain_models';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  ChangeConversationNameDialogViewModel
+} from '../change-conversation-name-dialog/ChangeConversationNameDialogViewModel';
 
 /**
  * ViewModel for the COnversations component.
@@ -26,7 +37,13 @@ import {TranslatePipe} from '@ngx-translate/core';
     MatDrawer,
     MatDrawerContent,
     MatRipple,
-    TranslatePipe
+    TranslatePipe,
+    MatDivider,
+    ReactiveFormsModule,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatSuffix
   ],
   styleUrl: "Home.css"
 })
@@ -48,11 +65,24 @@ export class HomeViewModel {
   private readonly auth = inject(AuthenticationService_T)
 
   /**
+   * The convo service.
+   */
+  private readonly conversationService = inject(ConversationService_T)
+
+  /**
    * The account service.
    */
   private readonly accountService = inject(AccountService_T)
 
+  /**
+   * The router.
+   */
   private readonly router = inject(Router)
+
+  /**
+   * The dialog handler.
+   */
+  private readonly dialog: MatDialog = inject(MatDialog);
 
   private readonly isMobile$ = this.breakpointObserver
     .observe(Breakpoints.HandsetPortrait)
@@ -109,10 +139,32 @@ export class HomeViewModel {
    */
   protected readonly searchActive = signal(false)
 
+  protected readonly searchForm = new CodexFormControl("", [])
+
+  private readonly conversations$ = combineLatest([this.conversationService.conversations$,
+    this.searchForm.control.valueChanges.pipe(startWith("")),
+    toObservable(this.searchActive).pipe(startWith(false))])
+    .pipe(
+      map(([convos, value, search]) => convos.filter(convo => (search && convo.name.includes(value ?? "")) ||
+        (!search && !convo.pinned))
+      )
+    )
+
   /**
-   * The search input.
+   * The displayed conversations
    */
-  @ViewChild('search', { static: false }) searchElement!: ElementRef;
+  protected readonly conversations = toSignal(this.conversations$)
+
+  private readonly pinnedConversations$ = this.conversationService.conversations$
+    .pipe(
+      map(convos => convos.filter(convo => convo.pinned)
+      )
+    )
+
+  /**
+   * The displayed pinned conversations.
+   */
+  protected readonly pinnedConversations = toSignal(this.pinnedConversations$)
 
   protected toggleSearch() {
     this.searchActive.set(!this.searchActive())
@@ -121,8 +173,58 @@ export class HomeViewModel {
     }
   }
 
+  protected readonly menuConversation = signal<Conversation | null>(null)
+
   protected toggleDrawer() {
 
+  }
+
+  protected openMenuFor(conversation: Conversation) {
+    this.menuConversation.set(conversation)
+    console.log(`Set menu convo ${JSON.stringify(this.menuConversation())}`)
+  }
+
+  protected openEditNameDialog() {
+    const convo = this.menuConversation()
+
+    if(!convo) {
+      return
+    }
+
+    this.dialog
+      .open(ChangeConversationNameDialogViewModel, {data: convo})
+      .afterClosed()
+      .subscribe((result: string | null) => {
+        if(result) {
+          this.conversationService.updateName(convo.id, result)
+            .subscribe(() => {
+              console.log("Will refresh convos")
+              this.conversationService.refreshConversations().subscribe()
+            })
+        }
+      });
+  }
+
+  protected deleteMenuConvo() {
+    const convo = this.menuConversation()
+
+    if(!convo) {
+      return
+    }
+
+    this.conversationService.delete(convo.id)
+      .subscribe(() => this.conversationService.refreshConversations().subscribe())
+  }
+
+  protected pinConvo() {
+    const convo = this.menuConversation()
+
+    if(!convo) {
+      return
+    }
+
+    this.conversationService.setPinned(convo.id, !convo.pinned)
+      .subscribe(() => this.conversationService.refreshConversations().subscribe())
   }
 
   protected toggleDarkMode() {

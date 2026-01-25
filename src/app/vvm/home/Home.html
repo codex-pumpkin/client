@@ -24,7 +24,7 @@
         </div>
 
         <div matRipple class="nav-item">
-          <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+          <mat-icon class="nav-item-icon">hub</mat-icon>
           <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
         </div>
 
@@ -38,7 +38,7 @@
         <div class="conversation-header">
 
           @if (searchActive()) {
-            <input class="search" type="text" (blur)="toggleSearch()" autofocus>
+            <input class="search" type="text" (blur)="toggleSearch()" autofocus [formControl]="searchForm.control">
           } @else {
             <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
           }
@@ -47,6 +47,49 @@
             <mat-icon>search</mat-icon>
           </button>
         </div>
+
+        @if (!searchActive()) {
+          <div class="convos-container">
+            @for (convo of pinnedConversations(); track convo.id) {
+              <div matRipple class="nav-item">
+                <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+                <p class="nav-item-label">{{ convo.name }}</p>
+                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+
+
+          @if (pinnedConversations()?.length != 0 && conversations()?.length != 0) {
+            <mat-divider/>
+          }
+        }
+
+        <div class="convos-container">
+          @for (convo of conversations(); track convo.id) {
+            <div matRipple class="nav-item">
+              <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+              <p class="nav-item-label">{{ convo.name }}</p>
+              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <mat-menu #menu>
+          <button mat-menu-item (click)="pinConvo()">{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</button>
+          <button mat-menu-item (click)="openEditNameDialog()">
+            <span>{{ 'home.menu.rename' | translate }}</span>
+            <mat-icon matSuffix>edit</mat-icon>
+          </button>
+          <button mat-menu-item (click)="deleteMenuConvo()">
+            <span>{{ 'home.menu.delete' | translate }}</span>
+            <mat-icon matSuffix>delete</mat-icon>
+          </button>
+        </mat-menu>
       </mat-drawer>
       <mat-drawer-content id="mobile-root">
         <nav>
@@ -64,7 +107,7 @@
     </mat-drawer-container>
   } @else {
     <mat-drawer-container>
-      <mat-drawer id="desktop-drawer" mode="side" opened>
+      <mat-drawer id="desktop-drawer" mode="side" opened disableClose>
         <nav>
           <img ngSrc="/assets/logo.svg" alt="Logo" height="46" width="120">
 
@@ -88,7 +131,7 @@
         </div>
 
         <div matRipple class="nav-item">
-          <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+          <mat-icon class="nav-item-icon">hub</mat-icon>
           <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
         </div>
 
@@ -102,7 +145,7 @@
         <div class="conversation-header">
 
           @if (searchActive()) {
-            <input class="search" type="text" (blur)="toggleSearch()" autofocus>
+            <input class="search" type="text" (blur)="toggleSearch()" autofocus [formControl]="searchForm.control">
           } @else {
             <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
           }
@@ -111,6 +154,49 @@
             <mat-icon>search</mat-icon>
           </button>
         </div>
+
+        @if (!searchActive()) {
+          <div class="convos-container">
+            @for (convo of pinnedConversations(); track convo.id) {
+              <div matRipple class="nav-item">
+                <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+                <p class="nav-item-label">{{ convo.name }}</p>
+                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+
+
+          @if (pinnedConversations()?.length != 0 && conversations()?.length != 0) {
+            <mat-divider/>
+          }
+        }
+
+        <div class="convos-container">
+          @for (convo of conversations(); track convo.id) {
+            <div matRipple class="nav-item">
+              <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
+              <p class="nav-item-label">{{ convo.name }}</p>
+              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <mat-menu #menu>
+          <button mat-menu-item (click)="pinConvo()">{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</button>
+          <button mat-menu-item (click)="openEditNameDialog()">
+            <span>{{ 'home.menu.rename' | translate }}</span>
+            <mat-icon matSuffix>edit</mat-icon>
+          </button>
+          <button mat-menu-item (click)="deleteMenuConvo()">
+            <span>{{ 'home.menu.delete' | translate }}</span>
+            <mat-icon matSuffix>delete</mat-icon>
+          </button>
+        </mat-menu>
 
       </mat-drawer>
 
