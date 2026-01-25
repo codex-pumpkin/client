@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import {NetworkClient} from '../network/NetworkClient';
 import {
   ConversationRequest,
@@ -179,3 +180,4 @@ export class SucceedingNetworkClient implements NetworkClient {
   }
 
 }
+/* v8 ignore end */

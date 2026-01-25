@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import {AuthenticationService} from '../authentication/AuthenticationService';
 import {BehaviorSubject, Observable, of, throwError} from 'rxjs';
 import {Account, CodexError, Errors, LoginError, LoginGoogleError, Maybe, SignupError} from '../domain/domain_models';
@@ -56,3 +57,4 @@ export class FailingAuthenticationService implements AuthenticationService {
   }
 
 }
+/* v8 ignore end */

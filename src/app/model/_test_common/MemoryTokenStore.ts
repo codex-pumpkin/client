@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import {TokenStore} from '../authentication/internal/TokenStore';
 
 export class MemoryTokenStore implements TokenStore {
@@ -37,3 +38,4 @@ export class MemoryTokenStore implements TokenStore {
   }
 
 }
+/* v8 ignore end */

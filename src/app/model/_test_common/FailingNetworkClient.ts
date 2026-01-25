@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import {NetworkClient} from '../network/NetworkClient';
 import {
   ConversationRequest,
@@ -128,3 +129,4 @@ export class FailingNetworkClient implements NetworkClient {
     return internalServerError;
   }
 }
+/* v8 ignore end */
