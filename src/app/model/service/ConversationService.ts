@@ -1,5 +1,8 @@
 import {Observable} from 'rxjs';
 import {Conversation, LLMConfig, TargetLanguage} from '../domain/domain_models';
+import {inject, InjectionToken} from '@angular/core';
+import {NetworkAccountService} from './internal/NetworkAccountService';
+import {NetworkConversationService} from './internal/NetworkConversationService';
 
 /**
  * Interface that exposes functionality about conversations.
@@ -66,3 +69,14 @@ export interface ConversationService {
   refreshConversations(): Observable<boolean>
 
 }
+
+/**
+ * Injection token for the ConversationService.
+ */
+export const ConversationService_T = new InjectionToken<ConversationService>(
+  'ConversationService',
+  {
+    providedIn: 'root',
+    factory: () => inject(NetworkConversationService)
+  }
+)
