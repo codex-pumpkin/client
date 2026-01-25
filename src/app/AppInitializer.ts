@@ -5,6 +5,7 @@ import {firstValueFrom} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import translationEN from '../../public/i18n/en.json';
 import translationDE from '../../public/i18n/de.json';
+import {ConversationService_T} from './model/service/ConversationService';
 
 @Injectable({
   providedIn: "root"
@@ -15,6 +16,11 @@ export class AppInitializer {
    * The auth service.
    */
   private readonly auth = inject(AuthenticationService_T)
+
+  /**
+   * The conversation service.
+   */
+  private readonly conversationService = inject(ConversationService_T)
 
   /**
    * The environment loader
@@ -32,6 +38,8 @@ export class AppInitializer {
     console.info(`Finished environment loading.`)
     await this.auth.refreshAccount()
     console.info(`Finished account refreshing.`)
+    await firstValueFrom(this.conversationService.refreshConversations())
+    console.info("Finished conversation reloading.")
     this.loadTranslations()
     console.info(`Finished translation loading.`)
   }
