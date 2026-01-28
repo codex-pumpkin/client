@@ -124,8 +124,16 @@
     }
   },
   "settings": {
+    "title": "Language Models",
+    "description": "Use the following list to add new language-models to your account. For each new chat, you will be able to select which language model will be used. You need to provide a URL to the OpenAI-API, and optionally an authorization token if required.",
     "name": {
       "label": "Name"
+    },
+    "add": {
+      "label": "Add Model"
+    },
+    "safe": {
+      "label": "Safe Changes"
     },
     "token": {
       "label": {

@@ -1,3 +1,54 @@
 <div id="root">
-  <h1>/home/settings</h1>
+  <div>
+    <p class="title">{{ 'settings.title' | translate }}</p>
+    <p class="description">{{ 'settings.description' | translate }}</p>
+  </div>
+  @for (draft of drafts(); track draft.draftId) {
+    <div class="draft-item">
+      <p class="draft-item-index">{{ $index + 1 }}.</p>
+
+      <div class="form-container">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'settings.name.label' | translate }}</mat-label>
+          <input [formControl]="draft.name.control" matInput>
+
+          @if (draft.name.control.invalid) {
+            <mat-error>{{ draft.name.errorKey() | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <!-- Show the 'hidden' addition only for remote drafts that have one set and were not changed yet -->
+          <mat-label>{{ 'settings.url.label' | translate }}</mat-label>
+          <input [formControl]="draft.url.control" matInput>
+
+          @if (draft.url.control.invalid) {
+            <mat-error>{{ draft.url.errorKey() | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ ((draft.config?.hasApiKey) ? 'settings.token.label.update' : 'settings.token.label.new') | translate }}</mat-label>
+          <input [formControl]="draft.token.control" matInput [type]="draft.tokenVisible ? 'text' : 'password'">
+
+          <mat-hint>{{ ((draft.config?.hasApiKey) ? 'settings.token.hint.update' : 'settings.token.hint.new') | translate }}</mat-hint>
+
+          <button matIconButton matSuffix (click)="toggleVisibility(draft.draftId)">
+            <mat-icon>{{ draft.tokenVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <button matIconButton (click)="removeDraft(draft)" class="delete-button">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+  }
+
+  <div id="buttons-container">
+    <button matButton="filled" (click)="addDraft()" id="add-button">{{ 'settings.add.label' | translate }}</button>
+    <button matButton="filled" (click)="safe()" id="safe-button">{{ 'settings.safe.label' | translate }}</button>
+  </div>
+
 </div>

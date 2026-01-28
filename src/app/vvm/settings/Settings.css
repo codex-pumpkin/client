@@ -5,7 +5,65 @@
   display: flex;
   flex-direction: column;
 
-  align-items: center;
-  justify-content: center;
   gap: 32px;
+
+  padding: 16px;
+}
+
+.draft-item {
+  display: flex;
+  flex-direction: row;
+
+  gap: 16px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: row;
+
+  gap: 16px;
+}
+
+@media (max-width: 830px) {
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+
+.draft-item-index {
+  font: var(--mat-sys-title-medium)
+}
+
+.title {
+  font: var(--mat-sys-headline-large);
+  font-weight: 500;
+}
+
+.description {
+  font: var(--mat-sys-body-large);
+  max-width: 800px;
+}
+
+.draft-item p {
+  margin-top: 18px;
+}
+
+.draft-item button {
+  margin-top: 8px;
+}
+
+.delete-button mat-icon {
+  color: var(--mat-sys-error);
+}
+
+#add-button, #safe-button {
+  display: inline-block;
+}
+
+#buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }
