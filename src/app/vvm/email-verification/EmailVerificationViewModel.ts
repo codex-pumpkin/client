@@ -4,6 +4,7 @@ import {CardLayout} from '../_common/card-layout/CardLayout';
 import {TranslatePipe} from '@ngx-translate/core';
 import {AuthenticationService_T} from '../../model/authentication/AuthenticationService';
 import {MatButton} from '@angular/material/button';
+import {from} from 'rxjs';
 
 /**
  * ViewModel for the Login component.
@@ -40,7 +41,9 @@ export class EmailVerificationViewModel implements OnInit {
     const token = this.route.snapshot.params["token"] as string
     this.auth.submitEmailVerification$(token)
       .subscribe(res => {
-        this.isSuccess.set(res.isYes)
+        from(this.auth.refreshAccount()).subscribe(() => {
+          this.isSuccess.set(res.isYes)
+        })
       })
   }
 
