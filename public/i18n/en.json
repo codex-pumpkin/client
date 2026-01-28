@@ -123,6 +123,24 @@
       "delete": "Delete"
     }
   },
+  "settings": {
+    "name": {
+      "label": "Name"
+    },
+    "token": {
+      "label": {
+        "update": "Updated token",
+        "new": "New token"
+      },
+      "hint": {
+        "update": "Replace the current token (not displayed for security)",
+        "new": "Set an initial token"
+      }
+    },
+    "url": {
+      "label": "OpenAI API URL"
+    }
+  },
   "dialog": {
     "change_conversation_name": {
       "title": "Edit name",
@@ -146,7 +164,9 @@
       "format": {
         "password": "Min. 4 characters required",
         "email": "Valid email address required",
-        "username": "Required 4-32 characters"
+        "username": "Required 4-32 characters",
+        "url": "Valid URL required",
+        "nonempty": "Field can't be empty"
       }
     },
     "login": {
