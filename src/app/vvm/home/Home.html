@@ -18,12 +18,12 @@
             <p class="piid-email">{{account().email}}</p>
           </div>
           <div class="spacer"></div>
-          <button matIconButton (click)="openSettings()">
+          <button matIconButton>
             <mat-icon>settings</mat-icon>
           </button>
         </div>
 
-        <div matRipple class="nav-item">
+        <div matRipple class="nav-item" (click)="openSettings()">
           <mat-icon class="nav-item-icon">hub</mat-icon>
           <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
         </div>
@@ -125,12 +125,12 @@
             <p class="piid-email">{{account().email}}</p>
           </div>
           <div class="spacer"></div>
-          <button matIconButton (click)="openSettings()">
+          <button matIconButton>
             <mat-icon>settings</mat-icon>
           </button>
         </div>
 
-        <div matRipple class="nav-item">
+        <div matRipple class="nav-item" (click)="openSettings()">
           <mat-icon class="nav-item-icon">hub</mat-icon>
           <p class="nav-item-label">{{ 'home.nav.llm' | translate }}</p>
         </div>
@@ -201,7 +201,7 @@
       </mat-drawer>
 
       <mat-drawer-content id="desktop-root">
-
+        <router-outlet></router-outlet>
       </mat-drawer-content>
     </mat-drawer-container>
   }

@@ -1,5 +1,5 @@
 import {Component, inject, signal} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import {MatIconButton} from '@angular/material/button';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
@@ -43,7 +43,8 @@ import {
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
-    MatSuffix
+    MatSuffix,
+    RouterOutlet
   ],
   styleUrl: "Home.css"
 })
