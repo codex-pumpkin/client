@@ -11,6 +11,8 @@ export class CodexValidators {
   // TODO: Make this more secure
   private static readonly PASSWORD_REGEX = String.raw`^[^\s]{4,64}$`
 
+  private static readonly NONEMPTY_REGEX = String.raw`^.{1,256}$`
+
   /**
    * Validator for an email input.
    */
@@ -25,6 +27,20 @@ export class CodexValidators {
    * Validator for a username input.
    */
   public static readonly username = CodexValidators.pattern(CodexValidators.USERNAME_REGEX, 'errors.validation.format.username')
+
+  public static readonly nonempty = CodexValidators.pattern(CodexValidators.NONEMPTY_REGEX, 'errors.validation.format.nonempty')
+
+  /**
+   * Creates a validator for checking the format of a url.
+   */
+  public static url: ValidatorFn = (elem) => {
+    try {
+      new URL(elem.value as string);
+      return null;
+    } catch (_) {
+      return this.errorRes("errors.validation.format.url");
+    }
+  };
 
   /**
    * Helper function to create pattern validators.
