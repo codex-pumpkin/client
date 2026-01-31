@@ -6,6 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 import translationEN from '../../public/i18n/en.json';
 import translationDE from '../../public/i18n/de.json';
 import {ConversationService_T} from './model/service/ConversationService';
+import {InformationService_T} from './model/service/InformationService';
 
 @Injectable({
   providedIn: "root"
@@ -23,6 +24,11 @@ export class AppInitializer {
   private readonly conversationService = inject(ConversationService_T)
 
   /**
+   * The info service.
+   */
+  private readonly infoService = inject(InformationService_T)
+
+  /**
    * The environment loader
    */
   private readonly env = inject(EnvironmentLoader_T)
@@ -34,14 +40,21 @@ export class AppInitializer {
 
   async init(): Promise<void> {
     console.info(`Will start app initialization`)
+    // Environment config
     await firstValueFrom(this.env.load())
-    console.info(`Finished environment loading.`)
+
+    // Account
     await this.auth.refreshAccount()
-    console.info(`Finished account refreshing.`)
+
+    // LLM configs, analytics & quota
+    await firstValueFrom(this.infoService.refreshLLmConfigs())
+    await firstValueFrom(this.infoService.refreshQuota())
+    await firstValueFrom(this.infoService.refreshAnalytics())
+
+    // Conversations
     await firstValueFrom(this.conversationService.refreshConversations())
-    console.info("Finished conversation reloading.")
+
     this.loadTranslations()
-    console.info(`Finished translation loading.`)
   }
 
   private loadTranslations() {
