@@ -251,12 +251,7 @@ export type Account = {
   /**
    * The timestamp on which the account was created
    */
-  createdAt: string,
-
-  /**
-   * The llm configurations of the account
-   */
-  llmConfigurations: LLMConfig[]
+  createdAt: string
 }
 
 /**

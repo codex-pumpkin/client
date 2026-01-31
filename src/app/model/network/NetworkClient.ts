@@ -142,7 +142,7 @@ export interface NetworkClient {
   // ===========================
 
   /**
-   * Request to POST /account/llm-configurations
+   * Request to POST /llm-configurations
    */
   addLLMConfiguration$(
     body: LLMConfigurationRequest,
@@ -150,7 +150,7 @@ export interface NetworkClient {
   ): Observable<void>
 
   /**
-   * Request to PUT /account/llm-configurations/{id}
+   * Request to PUT /llm-configurations/{id}
    */
   updateLLMConfiguration$(
     body: LLMConfigurationRequest,
@@ -159,7 +159,7 @@ export interface NetworkClient {
   ): Observable<LLMConfigurationResponse>
 
   /**
-   * Request to DELETE /account/llm-configurations/{id}
+   * Request to DELETE /llm-configurations/{id}
    */
   deleteLLMConfiguration$(
     id: string,
@@ -191,6 +191,11 @@ export interface NetworkClient {
    * Request to GET /analytics
    */
   getAnalytics$(token: string): Observable<AnalyticsResponse>
+
+  /**
+   * Request to GET /llm-configurations
+   */
+  getLLMConfigurations(token: string): Observable<LLMConfigurationResponse[]>
 
   // =======================
   // Conversations Endpoints

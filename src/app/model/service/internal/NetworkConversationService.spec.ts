@@ -104,18 +104,7 @@ describe("NetworkConversationService", () => {
       isAdmin: true,
       isVerified: true,
       authenticatedViaGoogle: true,
-      createdAt: "timestamp",
-      llmConfigurations: [{
-        id: "llm-1",
-        name: "name-1",
-        hasApiKey: true,
-        url: "url"
-      }, {
-        id: "llm-2",
-        name: "name-2",
-        hasApiKey: true,
-        url: "url"
-      },]
+      createdAt: "timestamp"
     })
     subject.auth = auth
 

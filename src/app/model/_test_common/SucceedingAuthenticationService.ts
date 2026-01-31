@@ -12,8 +12,7 @@ export class SucceedingAuthenticationService implements AuthenticationService {
     isAdmin: true,
     isVerified: true,
     authenticatedViaGoogle: true,
-    createdAt: "acc-timestamp",
-    llmConfigurations: []
+    createdAt: "acc-timestamp"
   }
 
   account$: BehaviorSubject<Account | null> = new BehaviorSubject<Account | null>(SucceedingAuthenticationService.account)

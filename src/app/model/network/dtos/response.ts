@@ -54,7 +54,6 @@ export type AccountResponse = {
   is_verified: boolean
   auth_via_google: boolean
   created_at: string
-  llm_configurations: LLMConfigurationResponse[]
 }
 
 /**

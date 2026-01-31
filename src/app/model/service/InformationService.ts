@@ -1,5 +1,5 @@
-import {Observable} from 'rxjs';
-import {Analytics, QuotaConfig} from '../domain/domain_models';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {Analytics, LLMConfig, QuotaConfig} from '../domain/domain_models';
 import {inject, InjectionToken} from '@angular/core';
 import {NetworkInformationService} from './internal/NetworkInformationService';
 
@@ -16,6 +16,12 @@ export interface InformationService {
   analytics$: Observable<Analytics | null>
 
   /**
+   * The currently existing llm-configs.
+   * Only present when the authentication is an admin.
+   */
+  llmConfigurations$: BehaviorSubject<LLMConfig[] | null>
+
+  /**
    * Sets the quota config.
    */
   setQuota(quota: QuotaConfig): Observable<boolean>
@@ -29,6 +35,26 @@ export interface InformationService {
    * Refreshes the current analytics.
    */
   refreshAnalytics(): Observable<boolean>
+
+  /**
+   * Adds an llm-configuration to the current account.
+   */
+  addLLMConfig(name: string, url: string, token: string | null): Observable<boolean>
+
+  /**
+   * Updates a specific llm-configuration.
+   */
+  updateLLMConfig(id: string, name: string, url: string, token: string | null): Observable<boolean>
+
+  /**
+   * Deletes an llm-configuration.
+   */
+  deleteLLMConfig$(id: string): Observable<boolean>
+
+  /**
+   * Refreshes the current llm configs.
+   */
+  refreshLLmConfigs(): Observable<boolean>
 
 }
 

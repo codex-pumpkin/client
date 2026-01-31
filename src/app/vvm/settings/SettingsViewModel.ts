@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {AccountService_T} from '../../model/service/AccountService';
 import {LLMConfig} from '../../model/domain/domain_models';
-import {BehaviorSubject, firstValueFrom, from, map} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, from} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {AuthenticationService_T} from '../../model/authentication/AuthenticationService';
 import {CodexFormControl} from '../_common/CodexFormControl';
@@ -11,6 +11,7 @@ import {MatError, MatFormField, MatHint, MatSuffix, MatInput, MatLabel} from '@a
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {InformationService_T} from '../../model/service/InformationService';
 
 /**
  * Models an llm configuration in the ui-state.
@@ -79,6 +80,11 @@ export class SettingsViewModel implements OnInit {
   accountService = inject(AccountService_T)
 
   /**
+   * The information service.
+   */
+  infoService = inject(InformationService_T)
+
+  /**
    * The auth service.
    */
   auth = inject(AuthenticationService_T)
@@ -89,7 +95,7 @@ export class SettingsViewModel implements OnInit {
 
   ngOnInit() {
     // When the component loads, we initialize the drafts with all existing configs.
-    const configs = this.auth.account$.value?.llmConfigurations ?? []
+    const configs = this.infoService.llmConfigurations$.value ?? []
     const drafts = configs.map(this.createDraftFromConfig)
 
     console.log("Got drafts")
@@ -111,7 +117,7 @@ export class SettingsViewModel implements OnInit {
 
     // If the draft is an actual one, we also delete it
     if (draft.config != null) {
-      this.accountService.deleteLLMConfig$(draft.config.id)
+      this.infoService.deleteLLMConfig$(draft.config.id)
         .subscribe()
     }
   }
@@ -123,12 +129,12 @@ export class SettingsViewModel implements OnInit {
     const promises = drafts.map(draft => {
       if(draft.config == null) { // Add remote one
         console.log("It was non-remote")
-        const res$ = this.accountService.addLLMConfig(draft.name.getOrBlank(), draft.url.getOrBlank(), draft.token.control.value)
+        const res$ = this.infoService.addLLMConfig(draft.name.getOrBlank(), draft.url.getOrBlank(), draft.token.control.value)
         return firstValueFrom(res$)
       } else { // Update remote one
         console.log("It was remote")
         const token: string | null = draft.token.control.value
-        const res$ = this.accountService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.url.getOrBlank(), token)
+        const res$ = this.infoService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.url.getOrBlank(), token)
         return firstValueFrom(res$)
       }
     })
@@ -139,7 +145,7 @@ export class SettingsViewModel implements OnInit {
       console.log("Finished combined")
       from(this.auth.refreshAccount()).subscribe(() => { // Account and its LL M's have been refreshed
         // We use all the configs from remote to repopulate the list of
-        const newConfigs = this.auth.account$.value?.llmConfigurations ?? []
+        const newConfigs = this.infoService.llmConfigurations$.value ?? []
         const newDrafts = newConfigs.map(this.createDraftFromConfig)
         this.drafts$.next(newDrafts)
       })

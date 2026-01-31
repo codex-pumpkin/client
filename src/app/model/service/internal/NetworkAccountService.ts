@@ -22,42 +22,12 @@ export class NetworkAccountService implements AccountService {
     this.auth.account$.subscribe(() => this.refreshProfilePicture())
   }
 
-  addLLMConfig(name: string, url: string, token: string | null): Observable<boolean> {
-    const call = (t: string) => this.api.addLLMConfiguration$({name: name, api_url: url, api_key: token ?? undefined}, t)
-
-    return this.auth.safe(call)
-      .pipe(
-        map(() => true),
-        catchError(() => of(false))
-      )
-  }
-
-  deleteLLMConfig$(id: string): Observable<boolean> {
-    const call = (t: string) => this.api.deleteLLMConfiguration$(id, t)
-
-    return this.auth.safe(call)
-      .pipe(
-        map(() => true),
-        catchError(() => of(false))
-      )
-  }
-
   async refreshProfilePicture(): Promise<boolean> {
     const request$ = this.auth.safe(token => this.api.getProfilePicture$(token))
     const profilePicture = await firstValueFrom(request$)
     this.profilePicture$.next(profilePicture)
 
     return !!profilePicture
-  }
-
-  updateLLMConfig(id: string, name: string, url: string, token: string | null): Observable<boolean> {
-    const call = (t: string) => this.api.updateLLMConfiguration$({name: name, api_url: url, api_key: token ?? undefined}, id, t)
-
-    return this.auth.safe(call)
-      .pipe(
-        map(() => true),
-        catchError(() => of(false))
-      )
   }
 
   updateProfilePicture(file: File): Observable<boolean> {

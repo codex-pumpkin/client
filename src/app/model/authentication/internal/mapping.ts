@@ -26,8 +26,7 @@ export const createAccount = (response: AccountResponse): Account => ({
   isAdmin: response.is_admin,
   isVerified: response.is_verified,
   authenticatedViaGoogle: response.auth_via_google,
-  createdAt: response.created_at,
-  llmConfigurations: response.llm_configurations.map(createLlmConfig)
+  createdAt: response.created_at
 })
 
 /**

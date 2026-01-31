@@ -34,8 +34,7 @@ export class SucceedingNetworkClient implements NetworkClient {
     is_admin: true,
     is_verified: true,
     auth_via_google: true,
-    created_at: "timestamp",
-    llm_configurations: []
+    created_at: "timestamp"
   }
 
   static readonly llmConfig: LLMConfigurationResponse = {
@@ -177,6 +176,10 @@ export class SucceedingNetworkClient implements NetworkClient {
 
   updateQuota$(body: QuotaConfig, token: string): Observable<QuotaConfig> {
     return of(SucceedingNetworkClient.quota)
+  }
+
+  getLLMConfigurations(token: string): Observable<LLMConfigurationResponse[]> {
+    return of([])
   }
 
 }

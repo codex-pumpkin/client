@@ -24,21 +24,6 @@ export interface AccountService {
   updateProfilePicture(file: File): Observable<boolean>
 
   /**
-   * Adds an llm-configuration to the current account.
-   */
-  addLLMConfig(name: string, url: string, token: string | null): Observable<boolean>
-
-  /**
-   * Updates a specific llm-configuration.
-   */
-  updateLLMConfig(id: string, name: string, url: string, token: string | null): Observable<boolean>
-
-  /**
-   * Deletes an llm-configuration.
-   */
-  deleteLLMConfig$(id: string): Observable<boolean>
-
-  /**
    * Refreshes the current profile picture.
    */
   refreshProfilePicture(): Promise<boolean>

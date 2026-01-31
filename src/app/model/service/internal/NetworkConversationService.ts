@@ -6,6 +6,7 @@ import {AuthenticationService_T} from '../../authentication/AuthenticationServic
 import {NetworkClient_T} from '../../network/NetworkClient';
 import {createConversation} from '../../authentication/internal/mapping';
 import {TargetLanguage as TargetLanguageDto} from '../../network/dtos/dtos'
+import {InformationService_T} from '../InformationService';
 
 @Injectable({
   providedIn: "root"
@@ -13,6 +14,8 @@ import {TargetLanguage as TargetLanguageDto} from '../../network/dtos/dtos'
 export class NetworkConversationService implements ConversationService {
 
   auth = inject(AuthenticationService_T)
+
+  infoService = inject(InformationService_T)
 
   api = inject(NetworkClient_T)
 
@@ -45,7 +48,7 @@ export class NetworkConversationService implements ConversationService {
 
     return this.auth.safe(call)
       .pipe(
-        map(convos => convos.map(convo => createConversation(convo, this.auth.account$.value!.llmConfigurations))),
+        map(convos => convos.map(convo => createConversation(convo, this.infoService.llmConfigurations$.value ?? []))),
         tap(convos => this.conversations$.next(convos)),
         map(() => true),
         catchError(() => of(false))

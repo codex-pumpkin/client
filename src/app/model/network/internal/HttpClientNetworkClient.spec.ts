@@ -50,8 +50,7 @@ const account: AccountResponse = {
   is_admin: true,
   is_verified: true,
   auth_via_google: false,
-  created_at: "timestamp",
-  llm_configurations: []
+  created_at: "timestamp"
 }
 
 const analytics: AnalyticsResponse = {
@@ -134,13 +133,13 @@ const server = setupServer(
   http.post("http://test.example.com/auth/submit-password-reset", () => {
     return HttpResponse.json({})
   }),
-  http.post("http://test.example.com/account/llm-configurations", () => {
+  http.post("http://test.example.com/llm-configurations", () => {
     return HttpResponse.json({})
   }),
-  http.put("http://test.example.com/account/llm-configurations/:id", () => {
+  http.put("http://test.example.com/llm-configurations/:id", () => {
     return HttpResponse.json(llm_configs[0])
   }),
-  http.delete("http://test.example.com/account/llm-configurations/:id", () => {
+  http.delete("http://test.example.com/llm-configurations/:id", () => {
     return HttpResponse.json({})
   }),
   http.post("http://test.example.com/conversations/:id/messages", () => {

@@ -20,6 +20,7 @@ import {
   TokenResponse
 } from '../dtos/response';
 import {QuotaConfig} from '../dtos/dtos';
+import {relative} from '@angular/compiler-cli';
 
 @Injectable({
   providedIn: 'root'
@@ -231,7 +232,7 @@ export class HttpClientNetworkClient implements NetworkClient {
     token: string
   ): Observable<void> {
     return this.client.post<void>(
-      this.url('/account/llm-configurations'),
+      this.url('/llm-configurations'),
       body,
       { headers: this.headers(token) }
     )
@@ -243,7 +244,7 @@ export class HttpClientNetworkClient implements NetworkClient {
     token: string
   ): Observable<LLMConfigurationResponse> {
     return this.client.put<LLMConfigurationResponse>(
-      this.url(`/account/llm-configurations/${id}`),
+      this.url(`/llm-configurations/${id}`),
       body,
       { headers: this.headers(token) }
     )
@@ -254,7 +255,7 @@ export class HttpClientNetworkClient implements NetworkClient {
     token: string
   ): Observable<void> {
     return this.client.delete<void>(
-      this.url(`/account/llm-configurations/${id}`),
+      this.url(`/llm-configurations/${id}`),
       { headers: this.headers(token) }
     )
   }
@@ -279,6 +280,13 @@ export class HttpClientNetworkClient implements NetworkClient {
     return this.client.put<MessageResponse>(
       this.url(`/conversations/${id}/messages`),
       body,
+      { headers: this.headers(token) }
+    )
+  }
+
+  getLLMConfigurations(token: string): Observable<LLMConfigurationResponse[]> {
+    return this.client.get<LLMConfigurationResponse[]>(
+      this.url(`/llm-configurations`),
       { headers: this.headers(token) }
     )
   }

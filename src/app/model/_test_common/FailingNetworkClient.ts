@@ -128,5 +128,9 @@ export class FailingNetworkClient implements NetworkClient {
   updateQuota$(body: QuotaConfig, token: string): Observable<QuotaConfig> {
     return internalServerError;
   }
+
+  getLLMConfigurations(token: string): Observable<LLMConfigurationResponse[]> {
+    return internalServerError;
+  }
 }
 /* v8 ignore end */
