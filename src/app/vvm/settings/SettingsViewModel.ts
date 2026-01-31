@@ -133,7 +133,7 @@ export class SettingsViewModel implements OnInit {
         return firstValueFrom(res$)
       } else { // Update remote one
         console.log("It was remote")
-        const token: string | null = draft.token.control.value
+        const token: string | null = !!draft.token.control.value ? draft.token.control.value : null
         const res$ = this.infoService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.url.getOrBlank(), token)
         return firstValueFrom(res$)
       }
@@ -143,7 +143,7 @@ export class SettingsViewModel implements OnInit {
 
     from(combined).subscribe(() => { // All hve been added
       console.log("Finished combined")
-      from(this.auth.refreshAccount()).subscribe(() => { // Account and its LL M's have been refreshed
+      from(this.infoService.refreshLLmConfigs()).subscribe(() => { // Account and its LL M's have been refreshed
         // We use all the configs from remote to repopulate the list of
         const newConfigs = this.infoService.llmConfigurations$.value ?? []
         const newDrafts = newConfigs.map(this.createDraftFromConfig)
