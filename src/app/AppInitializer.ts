@@ -7,6 +7,9 @@ import translationEN from '../../public/i18n/en.json';
 import translationDE from '../../public/i18n/de.json';
 import {ConversationService_T} from './model/service/ConversationService';
 import {InformationService_T} from './model/service/InformationService';
+import {registerLocaleData} from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+import localeEn from '@angular/common/locales/en';
 
 @Injectable({
   providedIn: "root"
@@ -59,9 +62,13 @@ export class AppInitializer {
 
   private loadTranslations() {
     this.translation.addLangs(['en', 'de']);
-    this.translation.setFallbackLang('en');
+    this.translation.setFallbackLang(this.translation.getBrowserLang() ?? 'en');
     this.translation.setTranslation('en', translationEN);
     this.translation.setTranslation('de', translationDE);
+    this.translation.use(this.translation.getBrowserLang() ?? 'en')
+
+    registerLocaleData(localeDe)
+    registerLocaleData(localeEn)
   }
 
 }
