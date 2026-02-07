@@ -31,6 +31,17 @@ export class CodexValidators {
   public static readonly nonempty = CodexValidators.pattern(CodexValidators.NONEMPTY_REGEX, 'errors.validation.format.nonempty')
 
   /**
+   * Validator for a non-null element.
+   */
+  public static readonly nonnull: ValidatorFn = (elem) => {
+    if(elem == null) {
+      return this.errorRes("errors.validation.format.nonnull")
+    }  else {
+      return null
+    }
+  }
+
+  /**
    * Creates a validator for checking the format of a url.
    */
   public static url: ValidatorFn = (elem) => {
