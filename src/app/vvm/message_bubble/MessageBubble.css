@@ -1,0 +1,59 @@
+code {
+  font-size: 15px;
+
+  margin-top: 12px;
+}
+
+.message-bubble {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.generation-label {
+  font: var(--mat-sys-label-large);
+  font-weight: 500;
+}
+
+.content-container {
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 16px;
+
+  padding: 12px;
+}
+
+.prompt-container {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.prompt-label {
+  font: var(--mat-sys-title-small);
+  font-weight: 500;
+}
+
+.prompt {
+  font: var(--mat-sys-body-medium);
+  font-weight: 300;
+
+  word-break: break-all;
+  white-space: normal;
+}
+
+.code-container {
+  display: flex;
+  flex-direction: row;
+
+  align-items: start;
+  justify-content: space-between;
+}

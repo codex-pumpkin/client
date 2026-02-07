@@ -1,0 +1,31 @@
+<div class="message-bubble">
+  <div class="header">
+    <p class="generation-label">{{ 'message_bubble.time_label' | translate : { time: generationMillis() } }}</p>
+    @if (canBeVisualized()) {
+      <mat-slide-toggle [formControl]="isVisualized">{{ 'message_bubble.visualization_label' | translate }}</mat-slide-toggle>
+    } @else {
+      <div></div>
+    }
+  </div>
+
+  <div class="content-container">
+    @if (canBeVisualized() && isVisualized.value) {
+      <!-- TODO: Visualization here! -->
+    } @else {
+      <div class="code-container">
+        <code>
+          {{ message().response }}
+        </code>
+
+        <button matIconButton (click)="downloadCode()">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="prompt-container">
+    <p class="prompt-label">{{ 'message_bubble.prompt.label' | translate }}</p>
+    <p class="prompt">{{ message().prompt }}</p>
+  </div>
+</div>
