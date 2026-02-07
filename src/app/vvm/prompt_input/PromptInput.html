@@ -1,0 +1,10 @@
+<div id="content">
+  <input
+    id="search-input"
+    [formControl]="formControl()!"
+    [placeholder]="'prompt_input.placeholder' | translate"
+  >
+  <button matIconButton (click)="onSend.emit()" [disabled]="disabled()">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>

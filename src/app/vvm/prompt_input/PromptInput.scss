@@ -1,0 +1,23 @@
+#search-input {
+  border: none;
+  background: none;
+  outline: none;
+  padding: 0;
+
+  min-width: 400px;
+
+  font: var(--mat-sys-body-large)
+}
+
+#content {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  height: 56px;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  border-radius: 56px;
+  background: var(--mat-sys-surface-container-high);
+}
