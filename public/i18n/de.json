@@ -1,23 +1,226 @@
 {
+  "conversation": {
+    "name": "Unterhaltung vom {{date}}"
+  },
   "login": {
-    "title": "Login",
-    "description": "Enter your email or username and password to authenticate with an existing account. Authenticating is required to perform actions on this service.",
+    "title": "Anmeldung",
+    "description": "Gib deine E-Mail-Adresse oder deinen Benutzernamen und dein Passwort ein, um dich mit einem bestehenden Konto anzumelden. Die Anmeldung ist erforderlich, um Aktionen in diesem Dienst auszuführen.",
     "identifier": {
-      "label": "Username or email"
+      "label": "Benutzername oder E-Mail"
     },
     "password": {
-      "label": "Password"
+      "label": "Passwort"
     },
     "confirm": {
-      "label": "Log in"
+      "label": "Anmelden"
     },
     "signup_link": {
-      "pre": "Need to create an account first? ",
-      "mid": "Sign up",
+      "pre": "Noch kein Konto? ",
+      "mid": "Registrieren",
+      "post": " statt­dessen."
+    },
+    "reset_link": {
+      "pre": "Passwort vergessen? ",
+      "mid": "Zurücksetzen",
       "post": "."
     }
   },
+  "signup": {
+    "title": "Konto erstellen",
+    "description": "Erstelle ein Konto, indem du eine E-Mail-Adresse, einen Benutzernamen und ein Passwort angibst. Diese Zugangsdaten benötigst du später zur Anmeldung.",
+    "email": {
+      "label": "E-Mail"
+    },
+    "username": {
+      "label": "Benutzername"
+    },
+    "password": {
+      "label": "Passwort"
+    },
+    "confirm": {
+      "label": "Registrieren"
+    },
+    "login_link": {
+      "pre": "Du hast bereits ein Konto? ",
+      "mid": "Anmelden",
+      "post": " statt­dessen."
+    }
+  },
   "google-button": {
-    "label": "Continue with Google"
+    "label": "Mit Google fortfahren"
+  },
+  "request_password_reset": {
+    "title": {
+      "initial": "Passwort zurücksetzen",
+      "sent": "E-Mail gesendet"
+    },
+    "description": {
+      "initial": "Wenn du dein Passwort vergessen hast, gib unten die E-Mail-Adresse deines Kontos ein. Eine Nachricht mit einem Link zum Zurücksetzen deines Passworts wird an diese Adresse gesendet.",
+      "sent": "Ein Link zum Zurücksetzen deines Passworts wurde an deine E-Mail-Adresse gesendet."
+    },
+    "email": {
+      "label": "E-Mail"
+    },
+    "send_mail": {
+      "label": "Passwort zurücksetzen"
+    },
+    "continue": {
+      "label": "Weiter"
+    }
+  },
+  "password_reset": {
+    "title": {
+      "reset": "Passwort zurückgesetzt",
+      "initial": "Passwort zurücksetzen"
+    },
+    "description": {
+      "reset": "Dein Passwort wurde zurückgesetzt. Du kannst dich jetzt mit dem neuen Passwort anmelden.",
+      "initial": "Gib unten dein neues Passwort ein."
+    },
+    "password": {
+      "label": "Neues Passwort"
+    },
+    "continue": {
+      "label": "Anmelden"
+    },
+    "perform_reset": {
+      "label": "Zurücksetzen"
+    }
+  },
+  "not_verified": {
+    "title": {
+      "sent": "E-Mail-Bestätigung gesendet",
+      "initial": "E-Mail nicht verifiziert"
+    },
+    "description": {
+      "sent": "Eine Bestätigungsnachricht wurde an deine E-Mail-Adresse <b>{{email}}</b> gesendet. Bitte bestätige sie, indem du auf den Link in der E-Mail klickst.",
+      "initial": "Du musst deine E-Mail-Adresse <b>{{email}}</b> verifizieren, um auf dieses System zugreifen zu können. Bitte fordere unten eine Bestätigungs-E-Mail an und klicke auf den darin enthaltenen Link."
+    },
+    "label": {
+      "waiting": "Erneut senden ({{timer}})",
+      "initial": "E-Mail senden",
+      "resend": "Erneut senden"
+    }
+  },
+  "email_verification": {
+    "title": {
+      "success": "E-Mail-Adresse verifiziert",
+      "failure": "E-Mail nicht verifiziert"
+    },
+    "description": {
+      "success": "Deine E-Mail-Adresse wurde verifiziert. Du kannst dein Konto jetzt verwenden.",
+      "failure": "Der verwendete Link ist möglicherweise abgelaufen oder ungültig. Bitte versuche es erneut."
+    },
+    "continue": "Weiter"
+  },
+  "home": {
+    "nav": {
+      "llm": "Sprachmodelle",
+      "admin": "Admin-Bereich",
+      "conversations": "Unterhaltungen"
+    },
+    "menu": {
+      "pin": "Anheften",
+      "unpin": "Lösen",
+      "rename": "Umbenennen",
+      "delete": "Löschen"
+    }
+  },
+  "settings": {
+    "title": "Sprachmodelle",
+    "description": "Verwende die folgende Liste, um neue Sprachmodelle zu deinem Konto hinzuzufügen. Für jeden neuen Chat kannst du auswählen, welches Sprachmodell verwendet werden soll. Du musst eine URL zur OpenAI-API angeben und optional ein Autorisierungstoken, falls erforderlich.",
+    "name": {
+      "label": "Name"
+    },
+    "add": {
+      "label": "Modell hinzufügen"
+    },
+    "safe": {
+      "label": "Änderungen speichern"
+    },
+    "token": {
+      "label": {
+        "update": "Aktualisiertes Token",
+        "new": "Neues Token"
+      },
+      "hint": {
+        "update": "Ersetze das aktuelle Token (aus Sicherheitsgründen nicht angezeigt)",
+        "new": "Ein initiales Token festlegen"
+      }
+    },
+    "url": {
+      "label": "OpenAI-API-URL"
+    }
+  },
+  "conversations": {
+    "language": {
+      "label": "Zielsprache"
+    },
+    "llm": {
+      "label": "Sprachmodell"
+    },
+    "title": {
+      "initial": "Ideen in Code verwandeln",
+      "processing": "Deine Eingabe wird verarbeitet…"
+    }
+  },
+  "dialog": {
+    "change_conversation_name": {
+      "title": "Name bearbeiten",
+      "description": "Um den Namen der Unterhaltung zu ändern, gib unten den neuen Namen ein.",
+      "name": {
+        "label": "Neuer Name"
+      },
+      "negative": "Abbrechen",
+      "positive": "Bestätigen"
+    }
+  },
+  "errors": {
+    "generic": {
+      "connection": "Server konnte nicht erreicht werden",
+      "timeout": "Zeitüberschreitung beim Versuch, den Server zu erreichen",
+      "permission": "Du hast keine Berechtigung, diese Aktion auszuführen",
+      "authentication": "Deine Identität konnte nicht authentifiziert werden",
+      "unknown": "Ein unbekannter Fehler ist aufgetreten"
+    },
+    "validation": {
+      "format": {
+        "password": "Mindestens 4 Zeichen erforderlich",
+        "email": "Gültige E-Mail-Adresse erforderlich",
+        "username": "4–32 Zeichen erforderlich",
+        "url": "Gültige URL erforderlich",
+        "nonempty": "Feld darf nicht leer sein"
+      }
+    },
+    "login": {
+      "invalid": "Ungültige Anmeldedaten",
+      "invalid_google": "Authentifizierung über Google fehlgeschlagen"
+    },
+    "signup": {
+      "invalid_google": "Authentifizierung über Google fehlgeschlagen",
+      "email_used": "E-Mail-Adresse wird bereits verwendet",
+      "username_used": "Benutzername wird bereits verwendet"
+    }
+  },
+  "message_bubble": {
+    "time_label": "Antwort innerhalb von {{time}} s",
+    "visualization_label": "Visualisieren",
+    "prompt": {
+      "label": "Prompt"
+    }
+  },
+  "languages": {
+    "java": {
+      "label": "Java"
+    },
+    "python": {
+      "label": "Python"
+    },
+    "spice": {
+      "label": "SPICE-Netzliste"
+    }
+  },
+  "prompt_input": {
+    "placeholder": "Prompt eingeben"
   }
 }

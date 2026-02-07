@@ -1,4 +1,7 @@
 {
+  "conversation": {
+    "name": "Conversation from {{date}}"
+  },
   "login": {
     "title": "Login",
     "description": "Enter your email or username and password to authenticate with an existing account. Authenticating is required to perform actions on this service.",
@@ -149,6 +152,18 @@
       "label": "OpenAI API URL"
     }
   },
+  "conversations": {
+    "language": {
+      "label": "Target Language"
+    },
+    "llm": {
+      "label": "Language Model"
+    },
+    "title": {
+      "initial": "Turn ideas into code",
+      "processing": "Processing your prompt…"
+    }
+  },
   "dialog": {
     "change_conversation_name": {
       "title": "Edit name",
@@ -186,5 +201,26 @@
       "email_used": "Email already in use",
       "username_used": "Username already in use"
     }
+  },
+  "message_bubble": {
+    "time_label": "Responded within {{time}}s",
+    "visualization_label": "Visualize",
+    "prompt": {
+      "label": "Prompt"
+    }
+  },
+  "languages": {
+    "java": {
+      "label": "Java"
+    },
+    "python": {
+      "label": "Python"
+    },
+    "spice": {
+      "label": "SPICE Netlist"
+    }
+  },
+  "prompt_input": {
+    "placeholder": "Enter prompt"
   }
 }
