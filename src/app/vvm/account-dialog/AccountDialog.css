@@ -1,0 +1,57 @@
+#description, #email-label {
+  font: var(--mat-sys-body-large);
+  color: var(--mat-sys-on-surface-variant)
+}
+
+#email {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 8px;
+}
+
+#email-value {
+  font: var(--mat-sys-body-large);
+  font-weight: 500;
+}
+
+#header {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 16px;
+}
+
+#username-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+button {
+  display: inline-block;
+}
+
+#logout-button {
+  color: var(--mat-sys-error)
+}
+
+#username {
+  font: var(--mat-sys-headline-medium)
+}
+
+.profile-picture {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 100%;
+}
+
+mat-dialog-content {
+  overflow: hidden;
+}

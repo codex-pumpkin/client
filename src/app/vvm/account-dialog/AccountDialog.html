@@ -1,0 +1,37 @@
+<div mat-dialog-title id="header">
+  <img class="profile-picture" [src]="profilePicture()" alt="PP">
+
+  <div id="username-container">
+    <p id="username">{{ account().username }}</p>
+
+    <button matIconButton (click)="changeUsername()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <mat-chip>{{ (account().isAdmin ? 'dialog.account.admin' : 'dialog.account.member') | translate }}</mat-chip>
+
+</div>
+
+<mat-dialog-content>
+  <p id="description">{{ 'dialog.account.description' | translate }}</p>
+
+  <div id="email">
+    <p id="email-label">{{ 'dialog.account.email.label' | translate }}</p>
+    <p id="email-value">{{ account().email }}</p>
+
+    <button matIconButton (click)="changeEmail()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <button matButton="outlined" (click)="resetPassword()">{{ 'dialog.account.password_change.label' | translate }}
+  </button>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button (click)="logout()" matButton id="logout-button">
+    {{ 'dialog.account.negative' | translate }}
+  </button>
+  <button (click)="close(false)" matButton>{{ 'dialog.account.positive' | translate }}</button>
+</mat-dialog-actions>
