@@ -165,6 +165,10 @@
     }
   },
   "dialog": {
+    "account": {
+      "admin": "Admin",
+      "member": "Member"
+    },
     "change_conversation_name": {
       "title": "Edit name",
       "description": "To change the name of the conversation, enter the new name below.",

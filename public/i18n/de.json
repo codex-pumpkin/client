@@ -165,6 +165,43 @@
     }
   },
   "dialog": {
+    "account": {
+      "admin": "Administrator",
+      "member": "Mitglied",
+      "description": "Willkommen in der Accountansicht. Alle deine Unterhaltungen sind an diesen Account gebunden und nur für dich sichtbar.",
+      "email": {
+        "label": "Email:"
+      },
+      "password_change": {
+        "label": "Reset password"
+      },
+      "positive": "OK",
+      "negative": "Ausloggen"
+    },
+    "change_email": {
+      "title": "Email ändern",
+      "description": "Ändere deine E-mail Addresse. Eine Mail mit einem Verifikationslink wird an deine neue E-mail Addresse gschickt, die du bestätigen musst. Danach kannst du dich wieder anmelden.",
+      "name": {
+        "label": "Neue E-mail Addresse"
+      },
+      "negative": "Abbrechen",
+      "positive": "Bestätigen"
+    },
+    "change_username": {
+      "title": "Benutzernamen ändern",
+      "description": "Ändere deinen Benutzernamen.",
+      "name": {
+        "label": "Neuer Benutzername"
+      },
+      "negative": "Abbrechen",
+      "positive": "Bestätigen"
+    },
+    "reset_password": {
+      "title": "Passwort zurücksetzen",
+      "description": "Dir wird eine E-mail addresse geschickt, mit der du dein Passwort ändern kannst.",
+      "negative": "Abbrechen",
+      "positive": "Bestätigen"
+    },
     "change_conversation_name": {
       "title": "Name bearbeiten",
       "description": "Um den Namen der Unterhaltung zu ändern, gib unten den neuen Namen ein.",
