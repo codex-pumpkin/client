@@ -34,6 +34,19 @@ After that, a `env.json` file is available to the project.
 
 To start the server, `entrypoint.sh` also starts nginx.
 
+## Deployment
+
+After the project has been built into an image, it can be used via docker.
+
+An example docker-compose configuration [is provided](/docker-compose.yaml).
+
+### Environment parameters
+
+| Parameter Name   | Description                                                |
+|------------------|------------------------------------------------------------|
+| SERVER_BASE_URL  | The base URL of the backend server. No trailing slash.     |
+| GOOGLE_CLIENT_ID | The google client ID provided by the google cloud console. |
+
 ## Unit tests
 Major components are tested using `vitest`.
 For a given file `file.ts`, the test file is named `file.spec.ts` and contains exactly one `describe` clause.
