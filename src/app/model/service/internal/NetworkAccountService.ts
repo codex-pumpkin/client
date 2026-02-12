@@ -59,4 +59,20 @@ export class NetworkAccountService implements AccountService {
       )
   }
 
+  updateEmail$(email: string): Observable<boolean> {
+    // Need to get current username to also sent it with the update request
+    const currentUsername = this.auth.account$.getValue()?.username
+    if(!currentUsername) { // If username is null, i.e. if not authenticated, we return unsuccessful.
+      return of(false)
+    }
+
+    const call = (t: string) => this.api.updateAccount$({email: email, username: currentUsername}, t)
+
+    return this.auth.safe(call)
+      .pipe(
+        map(() => true),
+        catchError(() => of(false))
+      )
+  }
+
 }

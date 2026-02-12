@@ -19,6 +19,11 @@ export interface AccountService {
   updateUsername$(username: string): Observable<boolean>
 
   /**
+   * Updates the email of the current account.
+   */
+  updateEmail$(email: string): Observable<boolean>
+
+  /**
    * Updates the profile picture of the current account.
    */
   updateProfilePicture(file: File): Observable<boolean>
