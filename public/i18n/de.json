@@ -102,6 +102,20 @@
       "resend": "Erneut senden"
     }
   },
+  "admin": {
+    "title": "Bereich für Administratoren",
+    "quota": {
+      "title": "Nutzungskontingent",
+      "admin": "Administratoren",
+      "normal": "Nutzer",
+      "label": "Anfragen pro Monat"
+    },
+    "analytics": {
+      "title": "Statistiken",
+      "today": "Anfragen heute:",
+      "month": "Anfragen diesen Monat:"
+    }
+  },
   "email_verification": {
     "title": {
       "success": "E-Mail-Adresse verifiziert",
@@ -226,7 +240,9 @@
         "email": "Gültige E-Mail-Adresse erforderlich",
         "username": "4–32 Zeichen erforderlich",
         "url": "Gültige URL erforderlich",
-        "nonempty": "Feld darf nicht leer sein"
+        "nonempty": "Feld darf nicht leer sein",
+        "positive": "Der Wert muss strikt positiv sein",
+        "integer": "Wert muss eine Ganzzahl sein"
       }
     },
     "login": {

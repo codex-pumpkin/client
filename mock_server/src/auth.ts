@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { v4 as uuid } from "uuid";
-import {db, fakeToken, now} from './db.js';
+import {Router} from "express";
+import {v4 as uuid} from "uuid";
+import {type Conversation, db, fakeToken, now} from './db.js';
 import {auth} from './middleware.js';
 
 export const authRouter = Router();
@@ -16,16 +16,17 @@ authRouter.post("/signup", (req, res) => {
     return res.status(409).end();
   }
 
+  const id = uuid()
+
   const user = {
-    id: uuid(),
+    id: id,
     email,
     username,
     password,
-    is_admin: false,
+    is_admin: true,
     is_verified: false,
     auth_via_google: false,
-    created_at: now(),
-    llm_configurations: [],
+    created_at: now()
   };
 
   db.users.push(user);

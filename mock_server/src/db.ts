@@ -9,7 +9,6 @@ export interface User {
   is_verified: boolean;
   auth_via_google: boolean;
   created_at: string;
-  llm_configurations: LLMConfig[];
 }
 
 export interface LLMConfig {
@@ -39,10 +38,30 @@ export interface Conversation {
   messages: Message[];
 }
 
-export const db = {
+export interface Database {
+  users: User[]
+  conversations: Conversation[]
+  refreshTokens: Map<string, string>,
+  llmConfigs: LLMConfig[]
+
+  passwordResetTokens: Map<string, string>,
+  emailVerificationTokens: Map<string, string>,
+
+  quota: {
+    member: number,
+    admin: number,
+  },
+  analytics: {
+    requests_today: number,
+    requests_this_month: number,
+  },
+}
+
+export let db: Database = {
   users: [] as User[],
   conversations: [] as Conversation[],
   refreshTokens: new Map<string, string>(), // refreshToken -> userId,
+  llmConfigs: [] as LLMConfig[],
 
   passwordResetTokens: new Map<string, string>(), // token -> userId
   emailVerificationTokens: new Map<string, string>(), // token -> userId
@@ -57,10 +76,70 @@ export const db = {
   },
 };
 
+export function setDb(newDb: Database) {
+  db = newDb
+}
+
 export function now() {
   return new Date().toISOString();
 }
 
 export function fakeToken() {
   return `fake-${uuid()}`;
+}
+
+
+
+export interface DatabaseJSON {
+  users: User[]
+  conversations: Conversation[]
+  llmConfigs: LLMConfig[]
+
+  refreshTokens: Record<string, string>
+  passwordResetTokens: Record<string, string>
+  emailVerificationTokens: Record<string, string>
+
+  quota: {
+    member: number
+    admin: number
+  }
+
+  analytics: {
+    requests_today: number
+    requests_this_month: number
+  }
+}
+
+export function serializeDatabase(db: Database): string {
+  const json: DatabaseJSON = {
+    users: db.users,
+    conversations: db.conversations,
+    llmConfigs: db.llmConfigs,
+
+    refreshTokens: Object.fromEntries(db.refreshTokens),
+    passwordResetTokens: Object.fromEntries(db.passwordResetTokens),
+    emailVerificationTokens: Object.fromEntries(db.emailVerificationTokens),
+
+    quota: db.quota,
+    analytics: db.analytics,
+  }
+
+  return JSON.stringify(json, null, 2)
+}
+
+export function deserializeDatabase(jsonString: string): Database {
+  const data: DatabaseJSON = JSON.parse(jsonString)
+
+  return {
+    users: data.users,
+    conversations: data.conversations,
+    llmConfigs: data.llmConfigs,
+
+    refreshTokens: new Map(Object.entries(data.refreshTokens)),
+    passwordResetTokens: new Map(Object.entries(data.passwordResetTokens)),
+    emailVerificationTokens: new Map(Object.entries(data.emailVerificationTokens)),
+
+    quota: data.quota,
+    analytics: data.analytics,
+  }
 }
