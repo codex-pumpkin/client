@@ -8,12 +8,12 @@ export interface InformationService {
   /**
    * The current quota config.
    */
-  quotaInfo$: Observable<QuotaConfig>
+  quotaInfo$: BehaviorSubject<QuotaConfig>
 
   /**
    * The current analytics. Only present when the authentication is an admin.
    */
-  analytics$: Observable<Analytics | null>
+  analytics$: BehaviorSubject<Analytics | null>
 
   /**
    * The currently existing llm-configs.
