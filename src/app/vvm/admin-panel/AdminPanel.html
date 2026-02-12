@@ -1,3 +1,51 @@
 <div id="root">
-  <h1>/home/admin-panel</h1>
+  <p id="title">{{ 'admin.title' | translate }}</p>
+
+  <p class="subheader">{{ 'admin.quota.title' | translate }}</p>
+
+  <div id="quotas-container">
+    <div class="quota-container">
+      <mat-checkbox [formControl]="adminQuotaActive.control">
+        {{ 'admin.quota.admin' | translate }}
+      </mat-checkbox>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.quota.label' | translate }}</mat-label>
+        <input [formControl]="adminQuota.control" type="number" matInput>
+
+        @if (adminQuota.control.invalid) {
+          <mat-error>{{ adminQuota.errorKey() | translate }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="quota-container">
+      <mat-checkbox [formControl]="normalQuotaActive.control">
+        {{ 'admin.quota.normal' | translate }}
+      </mat-checkbox>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.quota.label' | translate }}</mat-label>
+        <input [formControl]="normalQuota.control" type="number" matInput>
+
+        @if (normalQuota.control.invalid) {
+          <mat-error>{{ normalQuota.errorKey() | translate }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </div>
+
+  <p class="subheader">{{ 'admin.analytics.title' | translate }}</p>
+
+  <div class="statistic">
+    <p class="statistics-label">{{ 'admin.analytics.today' | translate }}</p>
+
+    <p class="statistics-value">{{analytics().today}}</p>
+  </div>
+
+  <div class="statistic">
+    <p class="statistics-label">{{ 'admin.analytics.month' | translate }}</p>
+
+    <p class="statistics-value">{{analytics().thisMonth}}</p>
+  </div>
 </div>

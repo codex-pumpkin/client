@@ -5,7 +5,52 @@
   display: flex;
   flex-direction: column;
 
+  padding: 16px;
+}
+
+.subheader {
+  font: var(--mat-sys-headline-small);
+
+  padding-bottom: 16px;
+}
+
+#title {
+  font: var(--mat-sys-display-small);
+  font-weight: 500;
+}
+
+.quota-container {
+  display: flex;
+  flex-direction: row;
+
+  gap: 16px;
+
   align-items: center;
-  justify-content: center;
-  gap: 32px;
+}
+
+mat-checkbox {
+  padding-bottom: 18px;
+}
+
+#quotas-container {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.statistic {
+  display: flex;
+  flex-direction: row;
+
+  gap: 8px;
+}
+
+.statistics-label {
+  font: var(--mat-sys-body-medium);
+}
+
+.statistics-value {
+  font: var(--mat-sys-body-medium);
+  font-weight: 500;
 }
