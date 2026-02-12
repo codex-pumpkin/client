@@ -23,6 +23,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   ChangeConversationNameDialogViewModel
 } from '../change-conversation-name-dialog/ChangeConversationNameDialogViewModel';
+import {AccountDialogViewModel} from '../account-dialog/AccountDialogViewModel';
 
 /**
  * ViewModel for the COnversations component.
@@ -234,6 +235,20 @@ export class HomeViewModel {
 
   protected openSettings() {
     this.router.navigate(["home/settings"])
+  }
+
+  protected openAccount() {
+    console.log("Will open account")
+    this.dialog.open(AccountDialogViewModel)
+      .afterClosed()
+      .subscribe(navBack => {
+        console.log(`Account dialog closed with navBack = ${navBack}`)
+        if(navBack) {
+          this.router.navigate(["/login"]).then(res => {
+            console.log(`Navigation result: ${res} and got url after: ${document.URL} or from router: ${this.router.url}`)
+          })
+        }
+      })
   }
 
   protected openAdmin() {
