@@ -48,8 +48,13 @@ export const routes: Routes = [
     children: [
       {
         path: "",
-        redirectTo: "conversations/",
+        redirectTo: "conversations",
         pathMatch: "full"
+      },
+      {
+        path: "conversations",
+        component: ConversationsViewModel,
+        canActivate: [VerifiedAuthGuard]
       },
       {
         path: "conversations/:id",
