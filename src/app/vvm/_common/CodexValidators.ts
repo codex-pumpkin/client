@@ -40,6 +40,26 @@ export class CodexValidators {
       return null
     }
   }
+  /**
+   * Validator for a integers element.
+   */
+  public static readonly integer: ValidatorFn = (elem) => {
+    if(Number.isInteger(Number(elem.value))) {
+      return null
+    } else {
+      return this.errorRes('errors.validation.format.integer' )
+    }
+  }
+  /**
+   * Validator for positive element.
+   */
+  public static readonly positive: ValidatorFn = (elem) => {
+    if(Number(elem.value) <= 0) {
+      return this.errorRes("errors.validation.format.positive")
+    }  else {
+      return null
+    }
+  }
 
   /**
    * Creates a validator for checking the format of a url.
