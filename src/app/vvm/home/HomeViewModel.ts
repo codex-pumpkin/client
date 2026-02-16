@@ -175,6 +175,10 @@ export class HomeViewModel {
     }
   }
 
+  protected addConvo() {
+    this.router.navigate(["/home/conversations"])
+  }
+
   protected readonly menuConversation = signal<Conversation | null>(null)
 
   protected toggleDrawer() {

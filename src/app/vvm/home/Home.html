@@ -43,9 +43,14 @@
             <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
           }
 
-          <button matIconButton (click)="toggleSearch()">
-            <mat-icon>search</mat-icon>
-          </button>
+          <div>
+            <button matIconButton (click)="addConvo()">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button matIconButton (click)="toggleSearch()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
         </div>
 
         @if (!searchActive()) {
@@ -151,9 +156,14 @@
             <p class="conversations-title">{{ 'home.nav.conversations' | translate }}</p>
           }
 
-          <button matIconButton (click)="toggleSearch()">
-            <mat-icon>search</mat-icon>
-          </button>
+          <div>
+            <button matIconButton (click)="addConvo()">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button matIconButton (click)="toggleSearch()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
         </div>
 
         @if (!searchActive()) {
