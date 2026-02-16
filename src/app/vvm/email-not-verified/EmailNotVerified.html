@@ -1,15 +1,4 @@
 <card-layout
-  [title]="(sentFirst() ? 'not_verified.title.sent' : 'not_verified.title.initial') | translate"
-  [description]="(sentFirst() ? 'not_verified.description.sent'  : 'not_verified.description.initial') | translate:{email: email()}">
-
-  <div id="content">
-    <button matButton="filled" [disabled]="sentFirst() && resendTimer() > 0" (click)="sendEmail()">
-      {{
-        !sentFirst() ? ('not_verified.label.initial' | translate) :
-          resendTimer() > 0 ? ('not_verified.label.waiting' | translate:{timer: resendTimer()}) :
-            ('not_verified.label.resend' | translate)
-      }}
-    </button>
-  </div>
-
+  [title]="'not_verified.title' | translate"
+  [description]="'not_verified.description' | translate ">
 </card-layout>

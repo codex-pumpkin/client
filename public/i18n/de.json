@@ -88,19 +88,8 @@
     }
   },
   "not_verified": {
-    "title": {
-      "sent": "E-Mail-Bestätigung gesendet",
-      "initial": "E-Mail nicht verifiziert"
-    },
-    "description": {
-      "sent": "Eine Bestätigungsnachricht wurde an deine E-Mail-Adresse <b>{{email}}</b> gesendet. Bitte bestätige sie, indem du auf den Link in der E-Mail klickst.",
-      "initial": "Du musst deine E-Mail-Adresse <b>{{email}}</b> verifizieren, um auf dieses System zugreifen zu können. Bitte fordere unten eine Bestätigungs-E-Mail an und klicke auf den darin enthaltenen Link."
-    },
-    "label": {
-      "waiting": "Erneut senden ({{timer}})",
-      "initial": "E-Mail senden",
-      "resend": "Erneut senden"
-    }
+    "title": "Email not verified",
+    "description": "A verification email was sent to your email-address."
   },
   "admin": {
     "title": "Bereich für Administratoren",

@@ -100,15 +100,17 @@ export class AccountDialogViewModel {
           this.accountService.updateEmail$(newEmail)
             .subscribe(() => {
               console.log("Email change finished")
-              this.auth.requestEmailVerification$()
-                .subscribe(() => {
-                  console.log("Email verification requested finished")
-                  this.auth.logout$().subscribe(() => {
-                    this.auth.refreshAccount().then(() => {
-                      console.log(`Logout finished, will close with true, got account: ${this.auth.account$.value}`)
+              // The email of the account was changed.
+              // Now we need to trigger an authentication, so that an email-verification is sent.
+              from(this.auth.refreshAccount())
+                .subscribe(suc => {
+                  // The refresh was made.
+                  // The email should have been sent.
+                  // Now we actually log out.
+                  this.auth.logout$()
+                    .subscribe(() => {
                       this.close(true)
                     })
-                  })
                 })
             })
         }
