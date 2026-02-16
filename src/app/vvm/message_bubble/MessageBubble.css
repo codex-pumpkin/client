@@ -2,6 +2,8 @@ code {
   font-size: 15px;
 
   margin-top: 12px;
+
+  white-space: pre-line;
 }
 
 .message-bubble {
