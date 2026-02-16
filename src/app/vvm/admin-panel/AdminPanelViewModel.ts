@@ -8,7 +8,6 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField} from '@angular/material/input';
 import {MatInput, MatLabel} from '@angular/material/input';
-import {Analytics} from '../../model/domain/domain_models';
 import {filter} from 'rxjs';
 
 /**
@@ -101,8 +100,8 @@ export class AdminPanelViewModel implements OnInit {
     this.adminQuota.control.valueChanges.subscribe(value => {
       if(this.adminQuota.control.invalid) return
       const newQuota = {
-        admin: value ?? -1,
-        member: this.normalQuota.control.value ?? -1
+        admin: value ?? 0,
+        member: this.normalQuota.control.value ?? 0
       }
 
       this.infoService.setQuota(newQuota).subscribe()
@@ -110,8 +109,8 @@ export class AdminPanelViewModel implements OnInit {
     this.normalQuota.control.valueChanges.subscribe(value => {
       if(this.normalQuota.control.invalid) return
       const newQuota = {
-        member: value ?? -1,
-        admin: this.adminQuota.control.value ?? -1
+        member: value ?? 0,
+        admin: this.adminQuota.control.value ?? 0
       }
 
       this.infoService.setQuota(newQuota).subscribe()
