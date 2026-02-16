@@ -34,7 +34,7 @@ export interface AuthenticationService {
    * @param username The username
    * @param password The password
    */
-  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<Account, SignupError>>
+  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<true, SignupError>>
 
   /**
    * Logs in with Google id token.

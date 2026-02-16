@@ -44,8 +44,8 @@ export class FailingAuthenticationService implements AuthenticationService {
     return throwError(() => new HttpErrorResponse({status: 401}))
   }
 
-  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<Account, SignupError>> {
-    return of(Maybe.createNo<Account, SignupError>(Errors.Authentication));
+  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<true, SignupError>> {
+    return of(Maybe.createNo<true, SignupError>(Errors.Authentication));
   }
 
   submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>> {

@@ -142,8 +142,8 @@ export class SucceedingNetworkClient implements NetworkClient {
     return of(undefined)
   }
 
-  signup$(body: SignupRequest, token: string): Observable<TokenResponse> {
-    return of(SucceedingNetworkClient.tokens)
+  signup$(body: SignupRequest, token: string): Observable<void> {
+    return of()
   }
 
   submitEmailVerification$(body: EmailVerificationSubmitRequest, token: string): Observable<void> {

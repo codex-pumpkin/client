@@ -53,8 +53,8 @@ export class SucceedingAuthenticationService implements AuthenticationService {
     return call("")
   }
 
-  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<Account, SignupError>> {
-    return of(Maybe.createYes<Account, SignupError>(SucceedingAuthenticationService.account));
+  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<true, SignupError>> {
+    return of(Maybe.createYes<true, SignupError>(true));
   }
 
   submitEmailVerification$(verificationToken: string): Observable<Maybe<true, CodexError>> {

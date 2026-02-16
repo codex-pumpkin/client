@@ -159,8 +159,8 @@ export class HttpClientNetworkClient implements NetworkClient {
     )
   }
 
-  signup$(body: SignupRequest, token: string): Observable<TokenResponse> {
-    return this.client.post<TokenResponse>(
+  signup$(body: SignupRequest, token: string): Observable<void> {
+    return this.client.post<void>(
       this.url('/auth/signup'),
       body,
       { headers: this.headers(token) }

@@ -52,7 +52,7 @@ export interface NetworkClient {
   signup$(
     body: SignupRequest,
     token: string
-  ): Observable<TokenResponse>
+  ): Observable<void>
 
   /**
    * Request to POST /auth/refresh

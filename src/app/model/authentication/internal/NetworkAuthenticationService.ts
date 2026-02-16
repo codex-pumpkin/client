@@ -190,7 +190,7 @@ export class NetworkAuthenticationService implements AuthenticationService {
     return response$
   }
 
-  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<Account, SignupError>> {
+  signupWithCredentials$(email: string, username: string, password: string): Observable<Maybe<true, SignupError>> {
     const signup$ = this.api
       .signup$(
         {
@@ -201,10 +201,8 @@ export class NetworkAuthenticationService implements AuthenticationService {
         this.tokens.getRefreshOrEmpty()
       )
       .pipe(
-        tap(this.updateTokens), // When success, update tokens
-        switchMap(_ => this.refreshAccountInternal()), // When success, refresh cached account
-        map(account => Maybe.fromNullable(account, Errors.Authentication as SignupError)), // When success, map to 'yes'-maybe
-        catchError(createSignupError<Account>) // When error, map to 'no'-maybe
+        map(() => Maybe.createYes<true, CodexError>(true)),
+        catchError(createSignupError<true>) // When error, map to 'no'-maybe
       )
 
     return signup$

@@ -93,7 +93,7 @@ export class FailingNetworkClient implements NetworkClient {
     return internalServerError;
   }
 
-  signup$(body: SignupRequest, token: string): Observable<TokenResponse> {
+  signup$(body: SignupRequest, token: string): Observable<void> {
     return internalServerError;
   }
 
