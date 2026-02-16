@@ -38,7 +38,15 @@ type LLMConfigDraft = {
    */
   url: CodexFormControl<string>,
 
+  /**
+   * The name given to this config
+   */
   name: CodexFormControl<string>,
+
+  /**
+   * The model name of the llm.
+    */
+  modelName: CodexFormControl<string>
 
   /**
    * Whether the token is visible.
@@ -73,11 +81,6 @@ type LLMConfigDraft = {
   styleUrl: "Settings.css"
 })
 export class SettingsViewModel implements OnInit {
-
-  /**
-   * The account service.
-   */
-  accountService = inject(AccountService_T)
 
   /**
    * The information service.
@@ -124,17 +127,17 @@ export class SettingsViewModel implements OnInit {
 
   protected safe() {
     const drafts = this.drafts$.value
-    if(drafts.some(draft => draft.url.control.invalid || draft.name.control.invalid)) return
+    if(drafts.some(draft => draft.url.control.invalid || draft.name.control.invalid || draft.modelName.control.invalid)) return
 
     const promises = drafts.map(draft => {
       if(draft.config == null) { // Add remote one
         console.log("It was non-remote")
-        const res$ = this.infoService.addLLMConfig(draft.name.getOrBlank(), draft.url.getOrBlank(), draft.token.control.value)
+        const res$ = this.infoService.addLLMConfig(draft.name.getOrBlank(), draft.modelName.getOrBlank(), draft.url.getOrBlank(), draft.token.control.value)
         return firstValueFrom(res$)
       } else { // Update remote one
         console.log("It was remote")
         const token: string | null = !!draft.token.control.value ? draft.token.control.value : null
-        const res$ = this.infoService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.url.getOrBlank(), token)
+        const res$ = this.infoService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.modelName.getOrBlank(), draft.url.getOrBlank(), token)
         return firstValueFrom(res$)
       }
     })
@@ -172,7 +175,8 @@ export class SettingsViewModel implements OnInit {
     url: new CodexFormControl(config.url, [CodexValidators.url]),
     tokenVisible: false,
     draftId: config.id,
-    name: new CodexFormControl(config.name, [CodexValidators.nonempty])
+    name: new CodexFormControl(config.name, [CodexValidators.nonempty]),
+    modelName: new CodexFormControl(config.modelName, [CodexValidators.nonempty])
   })
 
   private readonly createDraft = (): LLMConfigDraft => ({
@@ -181,6 +185,7 @@ export class SettingsViewModel implements OnInit {
     token: new CodexFormControl("", []),
     url: new CodexFormControl("", [CodexValidators.url]),
     name: new CodexFormControl("", [CodexValidators.nonempty]),
+    modelName: new CodexFormControl("", [CodexValidators.nonempty]),
     tokenVisible: false,
     draftId: this.hex()
   })

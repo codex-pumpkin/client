@@ -62,8 +62,8 @@ export class NetworkInformationService implements InformationService {
       )
   }
 
-  addLLMConfig(name: string, url: string, token: string | null): Observable<boolean> {
-    const call = (t: string) => this.api.addLLMConfiguration$({name: name, api_url: url, api_key: token ?? undefined}, t)
+  addLLMConfig(name: string, modelName: string, url: string, token: string | null): Observable<boolean> {
+    const call = (t: string) => this.api.addLLMConfiguration$({name: name, model_name: modelName ,api_url: url, api_key: token ?? undefined}, t)
 
     return this.auth.safe(call)
       .pipe(
@@ -82,8 +82,8 @@ export class NetworkInformationService implements InformationService {
       )
   }
 
-  updateLLMConfig(id: string, name: string, url: string, token: string | null): Observable<boolean> {
-    const call = (t: string) => this.api.updateLLMConfiguration$({name: name, api_url: url, api_key: token ?? undefined}, id, t)
+  updateLLMConfig(id: string, name: string, modelName: string, url: string, token: string | null): Observable<boolean> {
+    const call = (t: string) => this.api.updateLLMConfiguration$({name: name, model_name: modelName, api_url: url, api_key: token ?? undefined}, id, t)
 
     return this.auth.safe(call)
       .pipe(

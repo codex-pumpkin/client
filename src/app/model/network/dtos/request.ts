@@ -60,6 +60,7 @@ export type UpdateAccountRequest = {
  */
 export type LLMConfigurationRequest = {
   name: string
+  model_name: string
   api_url: string
   api_key?: string
 }

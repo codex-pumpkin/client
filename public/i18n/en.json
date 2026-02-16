@@ -132,6 +132,9 @@
     "name": {
       "label": "Name"
     },
+    "model_name": {
+      "label": "LLM Model Name"
+    },
     "add": {
       "label": "Add Model"
     },

@@ -41,7 +41,8 @@ export class SucceedingNetworkClient implements NetworkClient {
     id: "llm-id",
     name: "llm-name",
     api_url: "llm-url",
-    api_key_set: true
+    api_key_set: true,
+    model_name: "chatgpt-3.4"
   }
 
   static readonly tokens: TokenResponse = {

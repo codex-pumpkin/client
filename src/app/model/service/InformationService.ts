@@ -39,12 +39,12 @@ export interface InformationService {
   /**
    * Adds an llm-configuration to the current account.
    */
-  addLLMConfig(name: string, url: string, token: string | null): Observable<boolean>
+  addLLMConfig(name: string, modelName: string, url: string, token: string | null): Observable<boolean>
 
   /**
    * Updates a specific llm-configuration.
    */
-  updateLLMConfig(id: string, name: string, url: string, token: string | null): Observable<boolean>
+  updateLLMConfig(id: string, name: string, modelName: string, url: string, token: string | null): Observable<boolean>
 
   /**
    * Deletes an llm-configuration.

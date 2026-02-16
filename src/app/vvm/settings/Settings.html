@@ -18,6 +18,15 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+          <mat-label>{{ 'settings.model_name.label' | translate }}</mat-label>
+          <input [formControl]="draft.modelName.control" matInput>
+
+          @if (draft.modelName.control.invalid) {
+            <mat-error>{{ draft.modelName.errorKey() | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <!-- Show the 'hidden' addition only for remote drafts that have one set and were not changed yet -->
           <mat-label>{{ 'settings.url.label' | translate }}</mat-label>
           <input [formControl]="draft.url.control" matInput>

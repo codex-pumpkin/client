@@ -41,6 +41,7 @@ export type LLMConfigurationResponse = {
   name: string
   api_url: string
   api_key_set: boolean
+  model_name: string
 }
 
 /**

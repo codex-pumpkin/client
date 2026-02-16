@@ -203,6 +203,11 @@ export type LLMConfig = {
   name: string,
 
   /**
+   * The model name of the llm
+   */
+  modelName: string,
+
+  /**
    * The url to the openai api of the model
    */
   url: string,

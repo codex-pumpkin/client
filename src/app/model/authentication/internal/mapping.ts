@@ -37,7 +37,8 @@ export const createLlmConfig = (response: LLMConfigurationResponse): LLMConfig =
   id: response.id,
   name: response.name,
   hasApiKey: response.api_key_set,
-  url: response.api_url
+  url: response.api_url,
+  modelName: response.model_name
 })
 
 /**
@@ -53,17 +54,6 @@ export const createTargetLanguage = (response: TargetLanguageResponse): TargetLa
       return TargetLanguage.SPICE
   }
 }
-
-/**
- * Maps a llm-config response to a domain model.
- * @param response The response.
- */
-export const createLlmResponse = (response: LLMConfigurationResponse): LLMConfig => ({
-  id: response.id,
-  hasApiKey: response.api_key_set,
-  url: response.api_url,
-  name: response.name
-})
 
 /**
  * Maps a message response to a domain model.
