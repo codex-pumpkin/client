@@ -56,7 +56,7 @@
         @if (!searchActive()) {
           <div class="convos-container">
             @for (convo of pinnedConversations(); track convo.id) {
-              <div matRipple class="nav-item">
+              <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
                 <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
@@ -74,7 +74,7 @@
 
         <div class="convos-container">
           @for (convo of conversations(); track convo.id) {
-            <div matRipple class="nav-item">
+            <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
               <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
@@ -169,7 +169,7 @@
         @if (!searchActive()) {
           <div class="convos-container">
             @for (convo of pinnedConversations(); track convo.id) {
-              <div matRipple class="nav-item">
+              <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
                 <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
@@ -187,7 +187,7 @@
 
         <div class="convos-container">
           @for (convo of conversations(); track convo.id) {
-            <div matRipple class="nav-item">
+            <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
               <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
