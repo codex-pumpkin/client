@@ -1,4 +1,4 @@
-import {CodexError, Errors, Maybe, SignupError} from '../../domain/domain_models';
+import {CodexError, LlmError, Errors, Maybe, SignupError} from '../../domain/domain_models';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 
@@ -34,6 +34,31 @@ export const createSignupError = <T>(err: unknown): Observable<Maybe<T, SignupEr
   }
 
   return signupError ? of(Maybe.createNo<T, SignupError>(signupError))
+    : convertError(err)
+}
+
+export const createLlmError = <T>(err: unknown): Observable<Maybe<T, LlmError>> => {
+  // This is guaranteed to work, if 'err' was passed from an angular http request.
+  const error = err as HttpErrorResponse;
+
+  let convoError: LlmError | null = null
+
+  const reasonsForLlm = [
+    "The requested LLM resource was not found.",
+    "Failed to connect to the LLM API.",
+    "Failed to authenticate with the LLM API.",
+    "The LLM API received a bad request.",
+    "The LLM API denied permission to access the requested resource.",
+    "An error occurred while communicating with the LLM API.",
+    "The LLM API rate limit has been exceeded."
+  ]
+  const anyMatching = reasonsForLlm.some(reason => error.error.detail.issue.includes(reason))
+
+  if (anyMatching) {
+    convoError = Errors.LlmConnection
+  }
+
+  return convoError ? of(Maybe.createNo<T, LlmError>(convoError))
     : convertError(err)
 }
 

@@ -58,12 +58,18 @@ export enum Errors {
    * Username is already in use
    */
   UsernameUsed,
+
+  /**
+   * Connection to llm did not work.
+   */
+  LlmConnection
 }
 
 export type CodexError = Errors.Connection | Errors.Timeout | Errors.Permission | Errors.Authentication | Errors.Unknown
 export type SignupError = CodexError | Errors.EmailUsed | Errors.UsernameUsed
 export type LoginError = CodexError
 export type LoginGoogleError = CodexError
+export type LlmError = CodexError | Errors.LlmConnection
 
 /**
  * A summary of analytics.

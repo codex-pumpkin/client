@@ -48,3 +48,15 @@
 .bubble {
   width: 100%;
 }
+
+.footer {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.error {
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-error);
+}

@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs';
-import {Conversation, LLMConfig, TargetLanguage} from '../domain/domain_models';
+import {CodexError, Conversation, LlmError, LLMConfig, Maybe, TargetLanguage} from '../domain/domain_models';
 import {inject, InjectionToken} from '@angular/core';
 import {NetworkAccountService} from './internal/NetworkAccountService';
 import {NetworkConversationService} from './internal/NetworkConversationService';
@@ -26,7 +26,7 @@ export interface ConversationService {
    * @param targetLanguage The target language.
    * @return The id of the created message
    */
-  start(prompt: string, llmConfig: LLMConfig, targetLanguage: TargetLanguage, name: string): Observable<string | null>
+  start(prompt: string, llmConfig: LLMConfig, targetLanguage: TargetLanguage, name: string): Observable<Maybe<string, LlmError>>
 
   /**
    * Updates the name of a conversation.

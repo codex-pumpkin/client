@@ -1,7 +1,7 @@
 import {Component, inject, OnInit, Pipe, PipeTransform, signal} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConversationService_T} from '../../model/service/ConversationService';
-import {Conversation, LLMConfig, TargetLanguage} from '../../model/domain/domain_models';
+import {Conversation, Errors, LLMConfig, TargetLanguage} from '../../model/domain/domain_models';
 import {map, timer} from 'rxjs';
 import {InformationService_T} from '../../model/service/InformationService';
 import {toSignal} from '@angular/core/rxjs-interop';
@@ -14,7 +14,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {PromptInputViewModel} from '../prompt_input/PromptInputViewModel';
 import {MessageBubbleViewModel} from '../message_bubble/MessageBubbleViewModel';
-import {DatePipe, formatDate} from '@angular/common';
+import {formatDate} from '@angular/common';
 
 @Pipe({
   name: 'key'
@@ -90,6 +90,11 @@ export class ConversationsViewModel implements OnInit {
   protected readonly conversation = signal<Conversation | null>(null)
 
   /**
+   * A generic error key that may have appeared.
+   */
+  protected readonly genericError = signal<string | null>(null)
+
+  /**
    * The llm-configurations.
    */
   protected readonly llmConfigs = toSignal(
@@ -121,52 +126,47 @@ export class ConversationsViewModel implements OnInit {
   protected prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
-    // Contains the ID, or if no ID is given, an empty string, which counts as an invalid id.
-    const id = this.route.snapshot.params["id"] as (string | undefined)
+    this.route.params.subscribe(params => {
+      // Contains the ID, or if no ID is given, an empty string, which counts as an invalid id.
+      const id = params["id"] as (string | undefined)
 
-    if(id) { // An ID was entered
-      this.conversationService.conversation(id)
-        .subscribe(convo => {
-          if(convo) { // The conversation exists
-            this.conversation.set(convo)
-            if(convo.messages.length == 0) {
-              // The conversation does not have any messages.
-              // That means, the first message must still be in progress.
-              // That means, we are now waiting.
-              this.isInitial.set(false)
-              this.isProcessing.set(true)
-            } else {
-              // The conversation has messages.
-              // That means, we do a normal display.
-              this.isInitial.set(false)
+      if (id) { // An ID was entered
+        this.conversationService.conversation(id)
+          .subscribe(convo => {
+            if (convo) { // The conversation exists
+              this.conversation.set(convo)
+              if (convo.messages.length == 0) {
+                // The conversation does not have any messages.
+                // That means, the first message must still be in progress.
+                // That means, we are now waiting.
+                this.isInitial.set(false)
+                this.isProcessing.set(true)
+              } else {
+                // The conversation has messages.
+                // That means, we do a normal display.
+                this.isInitial.set(false)
+              }
+
+              this.hasLoaded.set(true)
+            } else { // The conversation doesn't exist, so we go to the appropriate route
+              this.router.navigate(["/home/conversations"])
             }
-
-            this.hasLoaded.set(true)
-          } else { // The conversation doesn't exist, so we go to the appropriate route
-            this.router.navigate(["/home/conversations"])
-          }
-        })
-    } else { // No ID was entered, we go into initial state
-      this.conversation.set(null)
-      this.isInitial.set(true)
-      this.hasLoaded.set(true)
-    }
+          })
+      } else { // No ID was entered, we go into initial state
+        this.conversation.set(null)
+        this.isInitial.set(true)
+        this.hasLoaded.set(true)
+      }
+    })
 
     timer(100, 1000).subscribe(() => {
-      console.log("Inside 5 second polling handler")
       if(this.isProcessing()) {
-        console.log("Found state to be processing, so we refresh")
         const convoBefore = this.conversation()
         this.conversationService.refreshConversations().subscribe(() => {
           this.conversationService.conversation(convoBefore?.id ?? "").subscribe(convoAfter => {
-            console.log("Finished refreshing")
-            console.log(`Got conversation before: ${JSON.stringify(convoBefore)}`)
-            console.log(`Got conversation after: ${JSON.stringify(convoAfter)}`)
 
             if((convoAfter?.messages.length ?? -1) > (convoBefore?.messages.length ?? -1)) {
-              console.log("Will set processing to false")
               this.isProcessing.set(false)
-              console.log(`Set current convo to ${JSON.stringify(convoAfter)}`)
               this.conversation.set(convoAfter)
             }
           })
@@ -176,13 +176,18 @@ export class ConversationsViewModel implements OnInit {
   }
 
   protected start() {
-    if(this.llmConfig.control.invalid || this.prompt.control.invalid || this.targetLanguage.control.invalid){
+    if (this.llmConfig.control.invalid ||
+      this.prompt.control.invalid ||
+      this.targetLanguage.control.invalid ||
+      this.llmConfig.control.value == null ||
+      this.targetLanguage.control.value == null
+    ) {
       return
     }
 
     const prompt = this.prompt.getOrBlank()
-    const config = this.llmConfig.control.value!
-    const language = this.targetLanguage.control.value!
+    const config = this.llmConfig.control.value
+    const language = this.targetLanguage.control.value
 
     // Set back the prompt
     this.prompt.control.setValue("")
@@ -215,15 +220,22 @@ export class ConversationsViewModel implements OnInit {
     const date = formatDate(new Date(), 'mediumDate', this.getDateFormatLanguage())
     const convoName = this.translate.instant('conversation.name', { date: date })
     this.conversationService.start(prompt, config, targetLanguage, convoName)
-      .subscribe(id => {
-        if (!id) {
-          // TODO: Error handling
-        } else {
-          this.conversationService.conversation(id)
+      .subscribe(maybe => {
+        console.log(`Got maybe: ${JSON.stringify(maybe)}`)
+        if (maybe.isYes) {
+          this.conversationService.conversation(maybe.yes())
             .subscribe(convo => {
               console.log(`Set convo to ${JSON.stringify(convo)}`)
               this.conversation.set(convo)
             })
+        } else {
+          if(maybe.no() == Errors.LlmConnection) {
+            this.genericError.set('conversations.errors.llm')
+          } else {
+            this.genericError.set('conversations.errors.other')
+          }
+          this.isProcessing.set(false)
+          this.isInitial.set(true)
         }
       })
   }

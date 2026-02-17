@@ -43,7 +43,11 @@
       }
     </div>
 
-
-    <prompt-input (onSend)="start()" [disabled]="prompt.getOrBlank().length == 0" [formControl]="prompt.control"/>
+    <div class="footer">
+      @if (genericError()) {
+        <p class="error">{{ genericError() | translate }}</p>
+      }
+      <prompt-input (onSend)="start()" [disabled]="prompt.getOrBlank().length == 0" [formControl]="prompt.control"/>
+    </div>
   </div>
 }
