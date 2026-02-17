@@ -165,6 +165,10 @@
     "title": {
       "initial": "Turn ideas into code",
       "processing": "Processing your prompt…"
+    },
+    "errors": {
+      "llm": "An error occurred while trying to reach the language model. Speak to an admin.",
+      "other": "An error occurred while trying to create a conversation."
     }
   },
   "dialog": {

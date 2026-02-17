@@ -168,6 +168,10 @@
     "title": {
       "initial": "Ideen in Code verwandeln",
       "processing": "Deine Eingabe wird verarbeitet…"
+    },
+    "errors": {
+      "llm": "An error occured while trying to reach the language model. Speak to an admin.",
+      "other": "An error occured while trying to create a conversation."
     }
   },
   "dialog": {
