@@ -147,8 +147,8 @@ export class HomeViewModel {
     this.searchForm.control.valueChanges.pipe(startWith("")),
     toObservable(this.searchActive).pipe(startWith(false))])
     .pipe(
-      map(([convos, value, search]) => convos.filter(convo => (search && convo.name.includes(value ?? "")) ||
-        (!search && !convo.pinned))
+      map(([convos, value, search]) => convos.filter(convo => convo.messages.length > 0 && ((search && convo.name.includes(value ?? "")) ||
+        (!search && !convo.pinned)))
       )
     )
 
@@ -159,7 +159,7 @@ export class HomeViewModel {
 
   private readonly pinnedConversations$ = this.conversationService.conversations$
     .pipe(
-      map(convos => convos.filter(convo => convo.pinned)
+      map(convos => convos.filter(convo => convo.messages.length > 0 && convo.pinned)
       )
     )
 
@@ -183,6 +183,11 @@ export class HomeViewModel {
 
   protected toggleDrawer() {
 
+  }
+
+  protected openConvo(convo: Conversation) {
+    console.log("Inside openConvo()")
+     this.router.navigate([`/home/conversations/${convo.id}`])
   }
 
   protected openMenuFor(conversation: Conversation) {
