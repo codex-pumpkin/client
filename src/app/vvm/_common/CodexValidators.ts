@@ -11,7 +11,7 @@ export class CodexValidators {
   // TODO: Make this more secure
   private static readonly PASSWORD_REGEX = String.raw`^[^\s]{4,64}$`
 
-  private static readonly NONEMPTY_REGEX = String.raw`^.{1,256}$`
+  private static readonly NONEMPTY_REGEX = String.raw`^.{1,999999}$`
 
   /**
    * Validator for an email input.
