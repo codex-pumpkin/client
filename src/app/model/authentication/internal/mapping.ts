@@ -64,7 +64,7 @@ export const createMessage = (response: MessageResponse): Message => ({
   createdAt: response.created_at,
   prompt: response.message,
   response: response.response,
-  secondaryResponse: response.response_secondary ?? null,
+  secondaryResponse: response.graph ?? null,
   generationMillis: response.generation_millis
 })
 

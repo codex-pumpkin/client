@@ -59,3 +59,8 @@ code {
   align-items: start;
   justify-content: space-between;
 }
+
+circuit-graph {
+  width: 100%;
+  overflow: hidden;
+}

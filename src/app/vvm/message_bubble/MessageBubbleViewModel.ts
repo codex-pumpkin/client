@@ -5,6 +5,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {CircuitGraphViewModel} from '../circuit-graph/CircuitGraphViewModel';
 
 @Component({
   templateUrl: 'MessageBubble.html',
@@ -13,7 +14,8 @@ import {MatIcon} from '@angular/material/icon';
     MatSlideToggle,
     ReactiveFormsModule,
     MatIconButton,
-    MatIcon
+    MatIcon,
+    CircuitGraphViewModel
   ],
   styleUrl: 'MessageBubble.css',
   selector: 'message-bubble'

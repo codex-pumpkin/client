@@ -55,7 +55,7 @@ export class SucceedingNetworkClient implements NetworkClient {
     message: "message-message",
     generation_millis: 1234,
     response: "message-response",
-    response_secondary: undefined,
+    graph: undefined,
     created_at: "message-timestamp"
   }
 

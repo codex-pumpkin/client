@@ -1,0 +1,27 @@
+@if (nodes() && links()) {
+  <ngx-graph
+    class="chart-container"
+    [links]="links()!"
+    [nodes]="nodes()!"
+  >
+
+    <ng-template #nodeTemplate let-node>
+      <svg:g class="node">
+        <svg:rect
+          [attr.width]="node.dimension.width"
+          [attr.height]="node.dimension.height"
+          [attr.fill]="node.data.color"
+        />
+        <svg:text
+          [attr.x]="node.dimension.width / 2"
+          [attr.y]="node.dimension.height / 2"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-weight="bold"
+        >
+          {{ node.label }}
+        </svg:text>
+      </svg:g>
+    </ng-template>
+  </ngx-graph>
+}

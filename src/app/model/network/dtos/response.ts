@@ -8,7 +8,7 @@ export type MessageResponse = {
   message: string
   generation_millis: number
   response: string
-  response_secondary?: string
+  graph?: string
   created_at: string
 }
 

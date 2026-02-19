@@ -10,6 +10,7 @@ import {provideRouter} from '@angular/router';
 import {AppInitializer} from './AppInitializer';
 import {routes} from './navigation/routes';
 import {provideTranslateService} from '@ngx-translate/core';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
       fallbackLang: 'en',
       lang: 'en',
     }),
-    provideAppInitializer(() => inject(AppInitializer).init())
+    provideAppInitializer(() => inject(AppInitializer).init()),
+    provideAnimations()
   ],
 };

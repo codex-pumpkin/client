@@ -39,7 +39,7 @@ const messages: MessageResponse[] = [1, 4, 7, 9].map(key => ({
   message: `message-content`,
   generation_millis: 1000,
   response: "message-response",
-  response_secondary: undefined,
+  graph: undefined,
   created_at: "message-timestamp"
 }))
 

@@ -9,8 +9,8 @@
   </div>
 
   <div class="content-container">
-    @if (canBeVisualized() && isVisualized.value) {
-      <!-- TODO: Visualization here! -->
+    @if (canBeVisualized() && isVisualized.value && message().secondaryResponse != null) {
+      <circuit-graph [json]="message().secondaryResponse!"></circuit-graph>
     } @else {
       <div class="code-container">
         <code>
