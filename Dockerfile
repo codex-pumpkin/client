@@ -6,6 +6,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
+RUN npm install
 RUN npm run build
 
 # Phase 2 configures nginx to serve the disttribution
