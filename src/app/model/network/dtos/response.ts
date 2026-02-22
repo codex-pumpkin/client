@@ -29,8 +29,9 @@ export type ConversationResponse = {
  * DTO for an analytics response.
  */
 export type AnalyticsResponse = {
-  requests_today: number
-  requests_this_month: number
+  start_time: string,
+  interval_minutes: number,
+  usage: number[]
 }
 
 /**

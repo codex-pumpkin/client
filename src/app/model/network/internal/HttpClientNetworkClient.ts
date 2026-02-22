@@ -3,6 +3,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EnvironmentLoader_T} from '../../../environment/EnvironmentLoader';
 import {
+  AnalyticsRequest,
   ConversationRequest,
   EmailVerificationSubmitRequest,
   GoogleLoginRequest,
@@ -126,10 +127,11 @@ export class HttpClientNetworkClient implements NetworkClient {
     )
   }
 
-  getAnalytics$(token: string): Observable<AnalyticsResponse> {
+  getAnalytics$(body: AnalyticsRequest, token: string): Observable<AnalyticsResponse> {
     return this.client.get<AnalyticsResponse>(
       this.url('/analytics'),
-      { headers: this.headers(token) }
+      { headers: this.headers(token),
+        params: { period_of_days: body.period_of_days, time_interval_minutes: body.time_interval_minutes }}
     )
   }
 

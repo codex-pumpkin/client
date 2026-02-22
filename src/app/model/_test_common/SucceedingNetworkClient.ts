@@ -1,6 +1,7 @@
 /* v8 ignore start */
 import {NetworkClient} from '../network/NetworkClient';
 import {
+  AnalyticsRequest,
   ConversationRequest,
   EmailVerificationSubmitRequest,
   GoogleLoginRequest,
@@ -60,8 +61,9 @@ export class SucceedingNetworkClient implements NetworkClient {
   }
 
   static readonly analytics: AnalyticsResponse = {
-    requests_today: 67,
-    requests_this_month: 6767
+    start_time: "",
+    interval_minutes: 15,
+    usage: []
   }
 
   static readonly conversation: ConversationResponse = {
@@ -99,7 +101,7 @@ export class SucceedingNetworkClient implements NetworkClient {
     return of(SucceedingNetworkClient.account);
   }
 
-  getAnalytics$(token: string): Observable<AnalyticsResponse> {
+  getAnalytics$(body :AnalyticsRequest, token: string): Observable<AnalyticsResponse> {
     return of(SucceedingNetworkClient.analytics)
   }
 

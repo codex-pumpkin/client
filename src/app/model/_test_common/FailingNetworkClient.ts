@@ -1,6 +1,7 @@
 /* v8 ignore start */
 import {NetworkClient} from '../network/NetworkClient';
 import {
+  AnalyticsRequest,
   ConversationRequest,
   EmailVerificationSubmitRequest,
   GoogleLoginRequest,
@@ -49,7 +50,7 @@ export class FailingNetworkClient implements NetworkClient {
     return internalServerError;
   }
 
-  getAnalytics$(token: string): Observable<AnalyticsResponse> {
+  getAnalytics$(body: AnalyticsRequest, token: string): Observable<AnalyticsResponse> {
     return internalServerError;
   }
 

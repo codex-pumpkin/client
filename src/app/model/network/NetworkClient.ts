@@ -8,6 +8,7 @@ import {
   TokenResponse
 } from './dtos/response';
 import {
+  AnalyticsRequest,
   ConversationRequest,
   EmailVerificationSubmitRequest, GoogleLoginRequest,
   LLMConfigurationRequest,
@@ -190,7 +191,7 @@ export interface NetworkClient {
   /**
    * Request to GET /analytics
    */
-  getAnalytics$(token: string): Observable<AnalyticsResponse>
+  getAnalytics$(body: AnalyticsRequest, token: string): Observable<AnalyticsResponse>
 
   /**
    * Request to GET /llm-configurations

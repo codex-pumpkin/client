@@ -1,10 +1,10 @@
 import {InformationService} from '../InformationService';
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, map, Observable, of, tap} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, of, tap, combineLatest} from 'rxjs';
 import {Analytics, LLMConfig, QuotaConfig} from '../../domain/domain_models';
 import {AuthenticationService_T} from '../../authentication/AuthenticationService';
 import {NetworkClient_T} from '../../network/NetworkClient';
-import {createAnalytics, createLlmConfig} from '../../authentication/internal/mapping';
+import {createLlmConfig} from '../../authentication/internal/mapping';
 
 @Injectable({
   providedIn: "root"
@@ -20,13 +20,29 @@ export class NetworkInformationService implements InformationService {
   llmConfigurations$: BehaviorSubject<LLMConfig[] | null> = new BehaviorSubject<LLMConfig[] | null>(null);
 
   refreshAnalytics(): Observable<boolean> {
-    const call = (token: string) => this.api.getAnalytics$(token)
+    const today = (token: string) => this.api.getAnalytics$({period_of_days: 1, time_interval_minutes: 1440} , token)
+    const month = (token: string) => this.api.getAnalytics$({period_of_days: 30, time_interval_minutes: 43200} , token)
 
-    return this.auth.safe(call)
+    const todayCall = this.auth.safe(today)
+    const monthCall = this.auth.safe(month)
+
+    const combined = combineLatest([todayCall, monthCall])
+
+    const analytics: Observable<Analytics> = combined
       .pipe(
-        catchError(() => of(null)),
-        tap(analytics => this.analytics$.next(analytics ? createAnalytics(analytics) : null)),
-        map(analytics => !!analytics)
+        map(([today, month]) => {
+          const todaySum = today.usage.reduce((acc, value) => acc + value, 0);
+          const monthSum = month.usage.reduce((acc, value) => acc + value, 0);
+
+          return { today: todaySum, thisMonth: monthSum }
+        })
+      )
+
+    return analytics
+      .pipe(
+        tap(analytics => this.analytics$.next(analytics)),
+        map(() => true),
+        catchError(() => of(false))
       )
   }
 

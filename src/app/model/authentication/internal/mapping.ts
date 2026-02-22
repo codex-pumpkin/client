@@ -87,11 +87,3 @@ export const createConversation = (response: ConversationResponse, llmConfigs: L
  * Maps a quota-config response to a domain model.
  */
 export const createQuotaConfig = (response: QuotaConfigResponse): QuotaConfig => response
-
-/**
- * Maps an analytics response to a domain model.
- */
-export const createAnalytics = (response: AnalyticsResponse): Analytics => ({
-  today: response.requests_today,
-  thisMonth: response.requests_this_month
-})

@@ -96,3 +96,8 @@ export type MessageRequest = {
 export type GoogleLoginRequest = {
   id_token: string
 }
+
+export type AnalyticsRequest = {
+  period_of_days: number
+  time_interval_minutes: number
+}

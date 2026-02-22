@@ -40,12 +40,12 @@
   <div class="statistic">
     <p class="statistics-label">{{ 'admin.analytics.today' | translate }}</p>
 
-    <p class="statistics-value">{{analytics().today}}</p>
+    <p class="statistics-value">{{analytics()?.today}}</p>
   </div>
 
   <div class="statistic">
     <p class="statistics-label">{{ 'admin.analytics.month' | translate }}</p>
 
-    <p class="statistics-value">{{analytics().thisMonth}}</p>
+    <p class="statistics-value">{{analytics()?.thisMonth}}</p>
   </div>
 </div>
