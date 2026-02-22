@@ -1,5 +1,8 @@
 <div mat-dialog-title id="header">
-  <img class="profile-picture" [src]="profilePicture()" alt="PP">
+  <div>
+    <img class="profile-picture" [src]="profilePicture()" alt="PP" (click)="fileInput.click()">
+    <input type="file" #fileInput accept="image/png, image/jpeg" hidden (change)="onFileSelected($event)">
+  </div>
 
   <div id="username-container">
     <p id="username">{{ account().username }}</p>

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle,} from '@angular/material/dialog';
 import {ReactiveFormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -13,8 +13,6 @@ import {ChangeEmailDialogViewModel} from '../change-email-dialog/ChangeEmailDial
 import {ResetPasswordDialogViewModel} from '../reset-password-dialog/ResetPasswordDialogViewModel';
 import {MatIcon} from '@angular/material/icon';
 import {MatChip} from '@angular/material/chips';
-import {MatError, MatFormField} from '@angular/material/input';
-import {MatInput, MatLabel} from '@angular/material/input';
 
 @Component({
   templateUrl: 'AccountDialog.html',
@@ -131,6 +129,18 @@ export class AccountDialogViewModel {
     this.auth.logout$()
       .subscribe(() => {
         this.close(true)
+      })
+  }
+
+  protected onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement
+    if(!input.files?.length) return
+
+    const file = input.files[0]
+
+    this.accountService.updateProfilePicture(file)
+      .subscribe(res => {
+        this.accountService.refreshProfilePicture()
       })
   }
 

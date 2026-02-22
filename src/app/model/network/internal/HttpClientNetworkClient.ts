@@ -4,23 +4,28 @@ import {HttpClient} from '@angular/common/http';
 import {EnvironmentLoader_T} from '../../../environment/EnvironmentLoader';
 import {
   ConversationRequest,
-  EmailVerificationSubmitRequest, GoogleLoginRequest,
+  EmailVerificationSubmitRequest,
+  GoogleLoginRequest,
   LLMConfigurationRequest,
-  LoginRequest, MessageRequest,
-  PasswordResetRequestRequest, PasswordResetSubmitRequest,
+  LoginRequest,
+  MessageRequest,
+  PasswordResetRequestRequest,
+  PasswordResetSubmitRequest,
   RefreshRequest,
-  SignupRequest, UpdateAccountRequest, UpdateConversationRequest
+  SignupRequest,
+  UpdateAccountRequest,
+  UpdateConversationRequest
 } from '../dtos/request';
 import {Observable} from 'rxjs';
 import {
   AccountResponse,
   AnalyticsResponse,
   ConversationResponse,
-  LLMConfigurationResponse, MessageResponse,
+  LLMConfigurationResponse,
+  MessageResponse,
   TokenResponse
 } from '../dtos/response';
 import {QuotaConfig} from '../dtos/dtos';
-import {relative} from '@angular/compiler-cli';
 
 @Injectable({
   providedIn: 'root'
@@ -103,7 +108,11 @@ export class HttpClientNetworkClient implements NetworkClient {
     return this.client.put<void>(
       this.url('/account/profile-picture'),
       body,
-      { headers: this.headers(token) }
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }
     )
   }
 
