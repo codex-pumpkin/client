@@ -4,30 +4,30 @@
   },
   "login": {
     "title": "Login",
-    "description": "Enter your email or username and password to authenticate with an existing account. Authenticating is required to perform actions on this service.",
+    "description": "Enter your email address or username and your password to log in to an existing account. Logging in is required to perform actions in this service.",
     "identifier": {
-      "label": "Username or email"
+      "label": "Username or Email"
     },
     "password": {
       "label": "Password"
     },
     "confirm": {
-      "label": "Log in"
+      "label": "Sign in"
     },
     "signup_link": {
-      "pre": "Don't have an account? ",
-      "mid": "Sign up",
+      "pre": "Don't have an account yet? ",
+      "mid": "Register",
       "post": " instead."
     },
     "reset_link": {
       "pre": "Forgot your password? ",
-      "mid": "Reset it",
+      "mid": "Reset",
       "post": "."
     }
   },
   "signup": {
-    "title": "Create Account",
-    "description": "Create an account by providing an email, a username and a password. You will need these credentials to log in to your account later.",
+    "title": "Create account",
+    "description": "Create an account by providing an email address, a username, and a password. You will need these credentials to log in later.",
     "email": {
       "label": "Email"
     },
@@ -38,11 +38,11 @@
       "label": "Password"
     },
     "confirm": {
-      "label": "Sign up"
+      "label": "Register"
     },
     "login_link": {
       "pre": "Already have an account? ",
-      "mid": "Login",
+      "mid": "Sign in",
       "post": " instead."
     }
   },
@@ -51,18 +51,18 @@
   },
   "request_password_reset": {
     "title": {
-      "initial": "Reset Password",
+      "initial": "Reset password",
       "sent": "Email sent"
     },
     "description": {
-      "initial": "If you forgot the password to your account, enter the email address of your account below. A message with a link to reset the password fo your account will b sent to that email address.",
-      "sent": "A link that allows you to reset your password was sent to your email address."
+      "initial": "If you forgot your password, enter the email address of your account below. A message with a link to reset your password will be sent to this address.",
+      "sent": "A link to reset your password has been sent to your email address."
     },
     "email": {
       "label": "Email"
     },
     "send_mail": {
-      "label": "Reset Password"
+      "label": "Reset password"
     },
     "continue": {
       "label": "Continue"
@@ -70,36 +70,39 @@
   },
   "password_reset": {
     "title": {
-      "reset": "Password Reset",
-      "initial": "Reset Password"
+      "reset": "Password reset",
+      "initial": "Reset password"
     },
     "description": {
-      "reset": "Your password was reset. You can now log in to your account using the new password.",
+      "reset": "Your password has been reset. You can now log in with your new password.",
       "initial": "Enter your new password below."
     },
     "password": {
       "label": "New password"
     },
     "continue": {
-      "label": "Log in"
+      "label": "Sign in"
     },
     "perform_reset": {
       "label": "Reset"
     }
   },
   "not_verified": {
-    "title": {
-      "sent": "Email verification sent",
-      "initial": "Email not verified"
+    "title": "Email not verified",
+    "description": "A verification email was sent to your email address."
+  },
+  "admin": {
+    "title": "Administrator area",
+    "quota": {
+      "title": "Usage quota",
+      "admin": "Administrators",
+      "normal": "Users",
+      "label": "Requests per month"
     },
-    "description": {
-      "sent": "A verification message was sent to your email address <b>{{email}}</b>. Please confirm it by clicking the link in the email.",
-      "initial": "You need to verify your email address <b>{{email}}</b> to access this system. Please request a verification email below and click the link provided in the message."
-    },
-    "label": {
-      "waiting": "Resend ({{timer}})",
-      "initial": "Send email",
-      "resend": "Resend"
+    "analytics": {
+      "title": "Statistics",
+      "today": "Requests today:",
+      "month": "Requests this month:"
     }
   },
   "email_verification": {
@@ -108,15 +111,15 @@
       "failure": "Email not verified"
     },
     "description": {
-      "success": "Your email address was verified. You can now use your account.",
-      "failure": "The link you used may have been expired or ill-formed. Please try again."
+      "success": "Your email address has been verified. You can now use your account.",
+      "failure": "The link used may have expired or is invalid. Please try again."
     },
     "continue": "Continue"
   },
   "home": {
     "nav": {
-      "llm": "Language Models",
-      "admin": "Admin Panel",
+      "llm": "Language models",
+      "admin": "Admin area",
       "conversations": "Conversations"
     },
     "menu": {
@@ -127,19 +130,19 @@
     }
   },
   "settings": {
-    "title": "Language Models",
-    "description": "Use the following list to add new language-models to your account. For each new chat, you will be able to select which language model will be used. You need to provide a URL to the OpenAI-API, and optionally an authorization token if required.",
+    "title": "Language models",
+    "description": "Use the list below to add new language models to your account. For each new chat, you can choose which language model to use. You must provide a URL to the OpenAI API and optionally an authorization token if required.",
     "name": {
       "label": "Name"
     },
     "model_name": {
-      "label": "LLM Model Name"
+      "label": "LLM model name"
     },
     "add": {
-      "label": "Add Model"
+      "label": "Add model"
     },
     "safe": {
-      "label": "Safe Changes"
+      "label": "Save changes"
     },
     "token": {
       "label": {
@@ -147,7 +150,7 @@
         "new": "New token"
       },
       "hint": {
-        "update": "Replace the current token (not displayed for security)",
+        "update": "Replace the current token (not displayed for security reasons)",
         "new": "Set an initial token"
       }
     },
@@ -157,14 +160,14 @@
   },
   "conversations": {
     "language": {
-      "label": "Target Language"
+      "label": "Target language"
     },
     "llm": {
-      "label": "Language Model"
+      "label": "Language model"
     },
     "title": {
       "initial": "Turn ideas into code",
-      "processing": "Processing your prompt…"
+      "processing": "Your input is being processed…"
     },
     "errors": {
       "llm": "An error occurred while trying to reach the language model. Speak to an admin.",
@@ -173,8 +176,41 @@
   },
   "dialog": {
     "account": {
-      "admin": "Admin",
-      "member": "Member"
+      "admin": "Administrator",
+      "member": "Member",
+      "description": "Welcome to the account view. All your conversations are bound to this account and visible only to you.",
+      "email": {
+        "label": "Email:"
+      },
+      "password_change": {
+        "label": "Reset password"
+      },
+      "positive": "OK",
+      "negative": "Log out"
+    },
+    "change_email": {
+      "title": "Change email",
+      "description": "Change your email address. An email with a verification link will be sent to your new email address, which you must confirm. After that, you can log in again.",
+      "name": {
+        "label": "New email address"
+      },
+      "negative": "Cancel",
+      "positive": "Confirm"
+    },
+    "change_username": {
+      "title": "Change username",
+      "description": "Change your username.",
+      "name": {
+        "label": "New username"
+      },
+      "negative": "Cancel",
+      "positive": "Confirm"
+    },
+    "reset_password": {
+      "title": "Reset password",
+      "description": "An email address will be sent to you with which you can change your password.",
+      "negative": "Cancel",
+      "positive": "Confirm"
     },
     "change_conversation_name": {
       "title": "Edit name",
@@ -188,33 +224,35 @@
   },
   "errors": {
     "generic": {
-      "connection": "Could not reach the server",
-      "timeout": "Times out while trying to reach the server",
-      "permission": "You don't have permission to perform that action",
+      "connection": "Server could not be reached",
+      "timeout": "Timeout while trying to reach the server",
+      "permission": "You do not have permission to perform this action",
       "authentication": "Your identity could not be authenticated",
       "unknown": "An unknown error occurred"
     },
     "validation": {
       "format": {
-        "password": "Min. 4 characters required",
+        "password": "At least 4 characters required",
         "email": "Valid email address required",
-        "username": "Required 4-32 characters",
+        "username": "4–32 characters required",
         "url": "Valid URL required",
-        "nonempty": "Field can't be empty"
+        "nonempty": "Field must not be empty",
+        "positive": "Value must be strictly positive",
+        "integer": "Value must be an integer"
       }
     },
     "login": {
-      "invalid": "Invalid credentials",
+      "invalid": "Invalid login credentials",
       "invalid_google": "Authentication via Google failed"
     },
     "signup": {
       "invalid_google": "Authentication via Google failed",
-      "email_used": "Email already in use",
-      "username_used": "Username already in use"
+      "email_used": "Email address is already in use",
+      "username_used": "Username is already in use"
     }
   },
   "message_bubble": {
-    "time_label": "Responded within {{time}}s",
+    "time_label": "Response within {{time}} s",
     "visualization_label": "Visualize",
     "prompt": {
       "label": "Prompt"
@@ -228,7 +266,7 @@
       "label": "Python"
     },
     "spice": {
-      "label": "SPICE Netlist"
+      "label": "SPICE netlist"
     }
   },
   "prompt_input": {
