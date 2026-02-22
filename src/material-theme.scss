@@ -5,7 +5,25 @@
  * Light or dark mode is determined by the client.
  */
 html {
-  color-scheme: light dark;
+  color-scheme: light;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  border: none;
+}
+
+/*
+ * Sets up the theming.
+ * Light or dark mode is determined by the client.
+ */
+html.dark {
+  color-scheme: dark;
   @include mat.theme((
     color: (
       primary: mat.$azure-palette,

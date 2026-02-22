@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
+import {SettingsManager_T} from './model/settings/SettingsManager';
 
 @Component({
   selector: 'app-root',
@@ -11,5 +12,14 @@ import {MatIconModule} from '@angular/material/icon';
   ],
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit{
+
+  private readonly settings = inject(SettingsManager_T)
+
+  ngOnInit() {
+    this.settings.settings$.subscribe(value => {
+      document.documentElement.classList.toggle('dark', value.isDarkMode)
+    })
+  }
+
 }
