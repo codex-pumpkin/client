@@ -29,6 +29,15 @@
   width: 100%;
 }
 
+.bubbles-wrapper {
+  width: 100%;
+
+  overflow: scroll;
+
+  display: grid;
+  place-items: center;
+}
+
 .bubbles {
   width: 80%;
 

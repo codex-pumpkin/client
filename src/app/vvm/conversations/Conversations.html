@@ -35,12 +35,14 @@
       }
     </div>
 
-    <div class="bubbles">
-      @if (conversation()) {
-        @for (message of conversation()!.messages; track message.id) {
-          <message-bubble class="bubble" [message]="message" [conversation]="conversation()!"/>
+    <div class="bubbles-wrapper">
+      <div class="bubbles">
+        @if (conversation()) {
+          @for (message of conversation()!.messages; track message.id) {
+            <message-bubble class="bubble" [message]="message" [conversation]="conversation()!"/>
+          }
         }
-      }
+      </div>
     </div>
 
     <div class="footer">

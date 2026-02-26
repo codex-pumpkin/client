@@ -2,7 +2,7 @@ import {Component, inject, OnInit, Pipe, PipeTransform, signal} from '@angular/c
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConversationService_T} from '../../model/service/ConversationService';
 import {Conversation, Errors, LLMConfig, TargetLanguage} from '../../model/domain/domain_models';
-import {map, timer} from 'rxjs';
+import {map, take, timer} from 'rxjs';
 import {InformationService_T} from '../../model/service/InformationService';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {CodexFormControl} from '../_common/CodexFormControl';
@@ -160,44 +160,51 @@ export class ConversationsViewModel implements OnInit {
     })
 
     timer(100, 1000).subscribe(() => {
-      if(this.isProcessing()) {
         const convoBefore = this.conversation()
         this.conversationService.refreshConversations().subscribe(() => {
-          this.conversationService.conversation(convoBefore?.id ?? "").subscribe(convoAfter => {
-
+          this.conversationService.conversation(convoBefore?.id ?? "")
+            .pipe(take(1))
+            .subscribe(convoAfter => {
             if((convoAfter?.messages.length ?? -1) > (convoBefore?.messages.length ?? -1)) {
               this.isProcessing.set(false)
               this.conversation.set(convoAfter)
             }
           })
         })
-      }
     })
   }
 
   protected start() {
-    if (this.llmConfig.control.invalid ||
+    if(this.prompt.control.invalid) {
+      return
+    }
+
+    const prompt = this.prompt.getOrBlank()
+
+    if(this.conversation()) {
+      // Set back the prompt
+      this.prompt.control.setValue("")
+
+      this.isProcessing.set(true)
+      this.isInitial.set(false)
+
+      this.createMessage(prompt)
+    } else if (this.llmConfig.control.invalid ||
       this.prompt.control.invalid ||
       this.targetLanguage.control.invalid ||
       this.llmConfig.control.value == null ||
       this.targetLanguage.control.value == null
     ) {
       return
-    }
-
-    const prompt = this.prompt.getOrBlank()
-    const config = this.llmConfig.control.value
-    const language = this.targetLanguage.control.value
-
-    // Set back the prompt
-    this.prompt.control.setValue("")
-
-    this.isProcessing.set(true)
-    this.isInitial.set(false)
-
-    if(this.conversation()) {
-      this.createMessage(prompt)
     } else {
+      const config = this.llmConfig.control.value
+      const language = this.targetLanguage.control.value
+      // Set back the prompt
+      this.prompt.control.setValue("")
+
+      this.isProcessing.set(true)
+      this.isInitial.set(false)
+
       this.createConvo(prompt, config, language)
     }
   }
@@ -221,12 +228,12 @@ export class ConversationsViewModel implements OnInit {
     const convoName = this.translate.instant('conversation.name', { date: date })
     this.conversationService.start(prompt, config, targetLanguage, convoName)
       .subscribe(maybe => {
-        console.log(`Got maybe: ${JSON.stringify(maybe)}`)
         if (maybe.isYes) {
           this.conversationService.conversation(maybe.yes())
+            .pipe(take(1))
             .subscribe(convo => {
-              console.log(`Set convo to ${JSON.stringify(convo)}`)
               this.conversation.set(convo)
+              this.isProcessing.set(false)
             })
         } else {
           if(maybe.no() == Errors.LlmConnection) {
