@@ -1,7 +1,7 @@
 <div id="content">
   <input
     id="search-input"
-    [formControl]="formControl()!"
+    [formControl]="control()!"
     [placeholder]="'prompt_input.placeholder' | translate"
   >
   <button matIconButton (click)="onSend.emit()" [disabled]="disabled()">

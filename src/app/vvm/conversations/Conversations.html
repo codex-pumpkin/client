@@ -49,7 +49,7 @@
       @if (genericError()) {
         <p class="error">{{ genericError() | translate }}</p>
       }
-      <prompt-input (onSend)="start()" [disabled]="prompt.getOrBlank().length == 0" [formControl]="prompt.control"/>
+      <prompt-input (onSend)="start()" [control]="prompt.control"/>
     </div>
   </div>
 }

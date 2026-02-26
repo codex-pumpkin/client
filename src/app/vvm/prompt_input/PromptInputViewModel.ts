@@ -14,7 +14,7 @@ export class PromptInputViewModel {
   /**
    * The form control for the text field.
    */
-  public readonly formControl = input<FormControl<string | null>>();
+  public readonly control = input<FormControl<string | null>>();
 
   public readonly disabled = input<boolean>();
 

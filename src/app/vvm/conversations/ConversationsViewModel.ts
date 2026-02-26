@@ -126,6 +126,14 @@ export class ConversationsViewModel implements OnInit {
   protected prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
+    this.prompt.control.valueChanges.subscribe(value => {
+      if(value) {
+        this.prompt.control.enable()
+      } else {
+        this.prompt.control.disable()
+      }
+    })
+
     this.route.params.subscribe(params => {
       // Contains the ID, or if no ID is given, an empty string, which counts as an invalid id.
       const id = params["id"] as (string | undefined)
