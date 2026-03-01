@@ -3,6 +3,7 @@
     id="search-input"
     [formControl]="control()!"
     [placeholder]="'prompt_input.placeholder' | translate"
+    (keydown.enter)="onSend.emit()"
   >
   <button matIconButton (click)="onSend.emit()" [disabled]="disabled()">
     <mat-icon>send</mat-icon>
