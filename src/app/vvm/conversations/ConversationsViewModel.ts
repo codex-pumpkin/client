@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, Pipe, PipeTransform, signal} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, NgZone, OnInit, Pipe, PipeTransform, signal} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConversationService_T} from '../../model/service/ConversationService';
 import {Conversation, Errors, LLMConfig, TargetLanguage} from '../../model/domain/domain_models';
@@ -67,6 +67,9 @@ export class ConversationsViewModel implements OnInit {
 
   translate = inject(TranslateService)
 
+  private readonly ngZone = inject(NgZone)
+  private readonly cd = inject(ChangeDetectorRef)
+
   private readonly route = inject(ActivatedRoute)
 
   /**
@@ -126,15 +129,7 @@ export class ConversationsViewModel implements OnInit {
   protected prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
-    this.prompt.control.valueChanges.subscribe(value => {
-      if(value) {
-        this.prompt.control.enable()
-      } else {
-        this.prompt.control.disable()
-      }
-    })
-
-    this.route.params.subscribe(params => {
+        this.route.params.subscribe(params => {
       // Contains the ID, or if no ID is given, an empty string, which counts as an invalid id.
       const id = params["id"] as (string | undefined)
 
@@ -168,17 +163,20 @@ export class ConversationsViewModel implements OnInit {
     })
 
     timer(100, 1000).subscribe(() => {
-        const convoBefore = this.conversation()
-        this.conversationService.refreshConversations().subscribe(() => {
-          this.conversationService.conversation(convoBefore?.id ?? "")
-            .pipe(take(1))
-            .subscribe(convoAfter => {
-            if((convoAfter?.messages.length ?? -1) > (convoBefore?.messages.length ?? -1)) {
+    const convoBefore = this.conversation()
+    this.conversationService.refreshConversations().subscribe(() => {
+      this.conversationService.conversation(convoBefore?.id ?? "")
+        .pipe(take(1))
+        .subscribe(convoAfter => {
+          if ((convoAfter?.messages.length ?? -1) > (convoBefore?.messages.length ?? -1)) {
+            this.ngZone.run(() => {
               this.isProcessing.set(false)
               this.conversation.set(convoAfter)
-            }
-          })
+              this.cd.detectChanges()
+            })
+          }
         })
+      })
     })
   }
 
@@ -240,17 +238,23 @@ export class ConversationsViewModel implements OnInit {
           this.conversationService.conversation(maybe.yes())
             .pipe(take(1))
             .subscribe(convo => {
-              this.conversation.set(convo)
-              this.isProcessing.set(false)
+              this.ngZone.run(() => {
+                this.conversation.set(convo)
+                this.isProcessing.set(false)
+                this.cd.detectChanges()
+              })
             })
         } else {
-          if(maybe.no() == Errors.LlmConnection) {
-            this.genericError.set('conversations.errors.llm')
-          } else {
-            this.genericError.set('conversations.errors.other')
-          }
-          this.isProcessing.set(false)
-          this.isInitial.set(true)
+          this.ngZone.run(() => {
+            if(maybe.no() == Errors.LlmConnection) {
+              this.genericError.set('conversations.errors.llm')
+            } else {
+              this.genericError.set('conversations.errors.other')
+            }
+            this.isProcessing.set(false)
+            this.isInitial.set(true)
+            this.cd.detectChanges()
+          })
         }
       })
   }
