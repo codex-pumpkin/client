@@ -52,31 +52,54 @@ export class CircuitGraphViewModel implements OnInit {
    */
   protected readonly nodes = signal<Node[] | null>(null)
 
-  ngOnInit() {
-    const parsed = JSON.parse(this.json())
-    const mainNodes = parsed["main"]
-    const nodes = mainNodes as GraphJson[]
+ ngOnInit() {
+  const parsed = JSON.parse(this.json());
+  // Adjust the key if your JSON uses a different top‑level name (e.g., "main" or "components")
+  const components = parsed["components"] as GraphJson[];
 
-    const graphNodes: Node[] = nodes.map((node, index) => ({
-      id: index.toString(),
-      label: node.name
-    }))
+  // 1. Collect all unique net names (every string in any component's "nodes")
+  const netSet = new Set<string>();
+  components.forEach(comp => {
+    comp.nodes.forEach(net => netSet.add(net));
+  });
 
-    const biEdges: Edge[] = []
-    nodes.forEach(node => {
-      if(node.nodes.length != 2) {
-        return
+  // 2. Create a node for every net (connection points)
+  const netNodes: Node[] = Array.from(netSet).map(net => ({
+    id: net,
+    label: net,
+    data: { type: 'net' }          // mark as a net
+  }));
+
+  const graphEdges: Edge[] = [];
+  const componentNodes: Node[] = [];   // nodes for each component
+
+  // 3. Process each component – all become component nodes
+  components.forEach(comp => {
+    // Create a unique node ID for the component (prefix to avoid collisions with nets)
+    const compNodeId = `comp_${comp.name}`;
+    componentNodes.push({
+      id: compNodeId,
+      label: `${comp.name} (${comp.type})`,
+      data: {
+        type: 'component',           // mark as a component
+        componentType: comp.type,
+        values: comp.values
       }
+    });
 
-      const edge: Edge = {
-        source: node.nodes[0],
-        target: node.nodes[1]
-      }
-      biEdges.push(edge)
-    })
+    // Connect the component node to each of its nets (one edge per terminal)
+    comp.nodes.forEach((net, idx) => {
+      graphEdges.push({
+        source: compNodeId,           // from component
+        target: net,                  // to net
 
-    this.nodes.set(graphNodes)
-    this.links.set(biEdges)
-  }
+      });
+    });
+  });
+
+  // 4. Combine all nodes (net nodes + component nodes)
+  this.nodes.set([...netNodes, ...componentNodes]);
+  this.links.set(graphEdges);
+}
 
 }
