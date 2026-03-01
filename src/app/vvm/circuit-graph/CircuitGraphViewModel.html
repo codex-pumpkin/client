@@ -4,20 +4,37 @@
     [links]="links()!"
     [nodes]="nodes()!"
   >
-
     <ng-template #nodeTemplate let-node>
       <svg:g class="node">
-        <svg:rect
-          [attr.width]="node.dimension.width"
-          [attr.height]="node.dimension.height"
-          [attr.fill]="node.data.color"
+        <!-- Net node: circle -->
+        <!-- "Math.min(node.dimension.width, node.dimension.height) / 16" for auto adjusting radius -->
+        <svg:circle
+          *ngIf="node.data.type === 'net'"
+          [attr.cx]="node.dimension.width / 2"
+          [attr.cy]="node.dimension.height / 2"
+          [attr.r]=0.1
+          fill="lightblue"
+          stroke="blue"
+          stroke-width="1.5"
         />
+        <!-- Component node: rectangle -->
+        <svg:rect
+          *ngIf="node.data.type === 'component'"
+          width="100%"
+          height="100%"
+          fill="lightgreen"
+          stroke="green"
+          stroke-width="1.5"
+          rx="4"
+        />
+        <!-- Node label -->
         <svg:text
           [attr.x]="node.dimension.width / 2"
           [attr.y]="node.dimension.height / 2"
           text-anchor="middle"
           dominant-baseline="middle"
           font-weight="bold"
+          font-size="10"
         >
           {{ node.label }}
         </svg:text>
