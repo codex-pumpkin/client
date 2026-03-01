@@ -79,7 +79,7 @@ export class CircuitGraphViewModel implements OnInit {
     const compNodeId = `comp_${comp.name}`;
     componentNodes.push({
       id: compNodeId,
-      label: `${comp.name} (${comp.type})`,
+      label: `${comp.name}`,
       data: {
         type: 'component',           // mark as a component
         componentType: comp.type,
