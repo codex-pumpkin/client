@@ -29,6 +29,7 @@
         />
         <!-- Node label -->
         <svg:text
+          *ngIf="node.data.type === 'component'"
           [attr.x]="node.dimension.width / 2"
           [attr.y]="node.dimension.height / 2"
           text-anchor="middle"
