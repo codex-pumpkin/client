@@ -59,19 +59,23 @@ export class CircuitGraphViewModel implements OnInit {
     const gnd: GraphJson = { name: "GND", nodes: ["0"], type: "Ground", values: undefined }
     nodes.push(gnd)
 
-    const graphNodes: Node[] = nodes.map((node, index) => ({
+    const graphNodes: Node[] = nodes.map(node => ({
       id: node.name,
       label: node.name
     }))
 
-    const nodeNumbers = nodes.map(node => Math.max(...node.nodes.map(node => Number.parseInt(node))))
-    // The highest node that exists
-    const maxNode = Math.max(...nodeNumbers)
+    const spiceNodes = new Set<string>()
+    nodes.forEach(node => {
+      node.nodes.forEach(nodeNode => {
+        spiceNodes.add(nodeNode)
+      })
+    })
+
     const edges: Edge[] = []
 
-    for(let i = 0; i <= maxNode; i++) {
+    spiceNodes.forEach(node => {
       const componentsWithNode = nodes.filter(
-        component => component.nodes.includes(i.toString())
+        component => component.nodes.includes(node)
       )
 
       const pairs = getPairs(componentsWithNode)
@@ -82,7 +86,7 @@ export class CircuitGraphViewModel implements OnInit {
         }
         edges.push(edge)
       })
-    }
+    });
 
     this.nodes.set(graphNodes)
     this.links.set(edges)
