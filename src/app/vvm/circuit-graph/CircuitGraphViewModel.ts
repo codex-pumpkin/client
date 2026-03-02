@@ -54,7 +54,7 @@ export class CircuitGraphViewModel implements OnInit {
 
   ngOnInit() {
     const parsed = JSON.parse(this.json())
-    const mainNodes = parsed["main"]
+    const mainNodes = parsed["components"]
     const nodes = mainNodes as GraphJson[]
     const gnd: GraphJson = { name: "GND", nodes: ["0"], type: "Ground", values: undefined }
     nodes.push(gnd)
