@@ -234,7 +234,7 @@
       "format": {
         "password": "Mindestens 4 Zeichen erforderlich",
         "email": "Gültige E-Mail-Adresse erforderlich",
-        "username": "4–32 Zeichen erforderlich",
+        "username": "4-32 alphanumerische Zeichen erforderlich",
         "url": "Gültige URL erforderlich",
         "nonempty": "Feld darf nicht leer sein",
         "positive": "Der Wert muss strikt positiv sein",

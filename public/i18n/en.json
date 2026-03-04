@@ -234,7 +234,7 @@
       "format": {
         "password": "At least 4 characters required",
         "email": "Valid email address required",
-        "username": "4–32 characters required",
+        "username": "4–32 alphanumeric chars required",
         "url": "Valid URL required",
         "nonempty": "Field must not be empty",
         "positive": "Value must be strictly positive",
