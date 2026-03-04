@@ -168,6 +168,10 @@ export class HomeViewModel {
    */
   protected readonly pinnedConversations = toSignal(this.pinnedConversations$)
 
+  ngOnInit() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
+
   protected toggleSearch() {
     this.searchActive.set(!this.searchActive())
     if(this.searchActive()) {

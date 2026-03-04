@@ -6,7 +6,7 @@ import {
   provideZoneChangeDetection,
 } from '@angular/core';
 import {provideHttpClient} from '@angular/common/http';
-import {provideRouter} from '@angular/router';
+import {provideRouter, withRouterConfig} from '@angular/router';
 import {AppInitializer} from './AppInitializer';
 import {routes} from './navigation/routes';
 import {provideTranslateService} from '@ngx-translate/core';
@@ -17,7 +17,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({eventCoalescing: true}),
     provideHttpClient(),
-    provideRouter(routes),
+    provideRouter(routes, withRouterConfig({
+      onSameUrlNavigation: "reload"
+    })),
     provideTranslateService({
       fallbackLang: 'en',
       lang: 'en',
