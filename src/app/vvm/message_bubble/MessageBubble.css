@@ -40,12 +40,12 @@ code {
 }
 
 .prompt-label {
-  font: var(--mat-sys-title-small);
+  font: var(--mat-sys-title-medium);
   font-weight: 500;
 }
 
 .prompt {
-  font: var(--mat-sys-body-medium);
+  font: var(--mat-sys-body-large);
   font-weight: 300;
 
   word-break: break-all;
