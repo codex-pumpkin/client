@@ -4,9 +4,9 @@ import {SucceedingNetworkClient} from '../../_test_common/SucceedingNetworkClien
 import {SucceedingAuthenticationService} from '../../_test_common/SucceedingAuthenticationService';
 import {NetworkClient_T} from '../../network/NetworkClient';
 import {AuthenticationService_T} from '../../authentication/AuthenticationService';
-import {firstValueFrom, Observable, of} from 'rxjs';
+import {firstValueFrom, map, Observable, of} from 'rxjs';
 import {NetworkConversationService} from './NetworkConversationService';
-import {Conversation, TargetLanguage} from '../../domain/domain_models';
+import {Conversation, LLMConfig, TargetLanguage} from '../../domain/domain_models';
 import {FailingNetworkClient} from '../../_test_common/FailingNetworkClient';
 
 describe("NetworkConversationService", () => {
@@ -47,7 +47,8 @@ describe("NetworkConversationService", () => {
       id: "llm-config-id",
       name: "llm-config-name",
       hasApiKey: true,
-      url: "https://example.com"
+      url: "https://example.com",
+      modelName: "ChatGPT"
     },
     messages: [
       {
@@ -115,12 +116,21 @@ describe("NetworkConversationService", () => {
     }])
     subject.api = api
 
+    const llmConfig: LLMConfig = {
+      name: "gpt",
+      id: "llm-1",
+      modelName: "model-name-1",
+      url: "https://example.com",
+      hasApiKey: true
+    }
+    subject.infoService.llmConfigurations$.next([llmConfig])
+
     subject.refreshConversations()
       .subscribe(() => {
         // Now it was updated
         const convos = subject.conversations$.value
         expect(convos.length).toEqual(1)
-        expect(convos[0].llmConfig.name).toEqual("name-1")
+        expect(convos[0].llmConfig.name).toEqual("gpt")
       })
   })
 
@@ -161,12 +171,14 @@ describe("NetworkConversationService", () => {
   })
 
   it("start() returns id on success", () => {
-    expectEmitsFirst(subject.start("", conversation.llmConfig, TargetLanguage.PYTHON, ""), SucceedingNetworkClient.conversation.id)
+    expectEmitsFirst(subject.start("", conversation.llmConfig, TargetLanguage.PYTHON, "")
+      .pipe(map(maybe => maybe.yes())), SucceedingNetworkClient.conversation.id)
   })
 
-  it("start() returns null on success", () => {
+  it("start() returns no on success", () => {
     subject.api = new FailingNetworkClient()
-    expectEmitsFirst(subject.start("", conversation.llmConfig, TargetLanguage.PYTHON, ""), null)
+    expectEmitsFirst(subject.start("", conversation.llmConfig, TargetLanguage.PYTHON, "")
+      .pipe(map(maybe => maybe.isNo)), true)
   })
 
 })

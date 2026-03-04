@@ -8,11 +8,16 @@ import {Errors, Maybe} from '../../domain/domain_models';
 import {MemoryTokenStore} from '../../_test_common/MemoryTokenStore';
 import {SucceedingNetworkClient} from '../../_test_common/SucceedingNetworkClient';
 import {FailingNetworkClient} from '../../_test_common/FailingNetworkClient';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe("NetworkAuthenticationService", () => {
   let subject: NetworkAuthenticationService
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [NetworkAuthenticationService],
+    });
     subject = TestBed.inject(NetworkAuthenticationService);
 
     (subject as any).tokens = new MemoryTokenStore();

@@ -25,7 +25,8 @@ describe("mapping.ts", () => {
       id: "id-4",
       name: "name-55",
       api_url: "url-88",
-      api_key_set: false
+      api_key_set: false,
+      model_name: "model-name-12"
     }
 
     const mapped = createLlmConfig(llmConfig)

@@ -52,7 +52,7 @@ export const createLlmError = <T>(err: unknown): Observable<Maybe<T, LlmError>> 
     "An error occurred while communicating with the LLM API.",
     "The LLM API rate limit has been exceeded."
   ]
-  const anyMatching = reasonsForLlm.some(reason => error.error.detail.issue.includes(reason))
+  const anyMatching = reasonsForLlm.some(reason => error.error?.detail?.issue?.includes(reason))
 
   if (anyMatching) {
     convoError = Errors.LlmConnection

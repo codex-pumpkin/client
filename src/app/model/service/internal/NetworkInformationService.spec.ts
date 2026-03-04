@@ -8,7 +8,7 @@ import {firstValueFrom, Observable} from 'rxjs';
 import {NetworkInformationService} from './NetworkInformationService';
 import {TestBed} from '@angular/core/testing';
 import {FailingNetworkClient} from '../../_test_common/FailingNetworkClient';
-import {createAnalytics, createQuotaConfig} from '../../authentication/internal/mapping';
+import {createQuotaConfig} from '../../authentication/internal/mapping';
 import {FailingAuthenticationService} from '../../_test_common/FailingAuthenticationService';
 
 describe("NetworkInformationService", () => {
@@ -51,7 +51,7 @@ describe("NetworkInformationService", () => {
   it("refreshAnalytics$ updates and returns true on success", () => {
     subject.refreshAnalytics().subscribe(res => {
       expect(res).toBeTruthy()
-      expect(subject.analytics$.value).toEqual(createAnalytics(SucceedingNetworkClient.analytics))
+      expect(subject.analytics$.value).toEqual({thisMonth: 0, today: 0})
     })
   })
 
@@ -82,11 +82,11 @@ describe("NetworkInformationService", () => {
   })
 
   it("addLLMConfig returns true on success", () => {
-    expectEmitsFirst(subject.addLLMConfig("", "", ""), true)
+    expectEmitsFirst(subject.addLLMConfig("", "", "", ""), true)
   })
 
   it("updateLLMConfig returns true on success", () => {
-    expectEmitsFirst(subject.updateLLMConfig("", "", "", ""), true)
+    expectEmitsFirst(subject.updateLLMConfig("", "", "", "", ""), true)
   })
 
   it("deleteLLMConfig$ returns true on success", () => {
@@ -105,12 +105,12 @@ describe("NetworkInformationService", () => {
 
   it("updateLLMConfig returns false when unsuccessful", () => {
     subject.auth = new FailingAuthenticationService()
-    expectEmitsFirst(subject.updateLLMConfig("", "", "", ""), false)
+    expectEmitsFirst(subject.updateLLMConfig("", "", "", "", ""), false)
 
     subject.auth = new SucceedingAuthenticationService()
     subject.api = new FailingNetworkClient()
 
-    expectEmitsFirst(subject.updateLLMConfig("", "", "", ""), false)
+    expectEmitsFirst(subject.updateLLMConfig("", "", "", "", ""), false)
   })
 
   it("deleteLLMConfig$ returns false when unsuccessful", () => {
@@ -125,11 +125,11 @@ describe("NetworkInformationService", () => {
 
   it("addLLMConfig returns false when unsuccessful", () => {
     subject.auth = new FailingAuthenticationService()
-    expectEmitsFirst(subject.addLLMConfig("", "", ""), false)
+    expectEmitsFirst(subject.addLLMConfig("", "", "", ""), false)
 
     subject.auth = new SucceedingAuthenticationService()
     subject.api = new FailingNetworkClient()
 
-    expectEmitsFirst(subject.addLLMConfig("", "", ""), false)
+    expectEmitsFirst(subject.addLLMConfig("", "", "", ""), false)
   })
 });

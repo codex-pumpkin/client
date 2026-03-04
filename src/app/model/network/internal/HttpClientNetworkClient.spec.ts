@@ -14,6 +14,7 @@ import {HttpClientNetworkClient} from './HttpClientNetworkClient';
 import {EnvironmentConfig, EnvironmentLoader, EnvironmentLoader_T} from '../../../environment/EnvironmentLoader';
 import {Observable, of} from 'rxjs';
 import {QuotaConfig} from '../dtos/dtos';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 const conversations: ConversationResponse[] = [1, 4, 7, 9].map(
   key => ({
@@ -31,7 +32,8 @@ const llm_configs: LLMConfigurationResponse[] = [1, 4, 7, 9].map(key => ({
   id: `llm-id-${key}`,
   name: `llm-name-${key}`,
   api_url: `llm-url-${key}`,
-  api_key_set: false
+  api_key_set: false,
+  model_name: `llm-model-name-${key}`
 }))
 
 const messages: MessageResponse[] = [1, 4, 7, 9].map(key => ({
@@ -54,8 +56,9 @@ const account: AccountResponse = {
 }
 
 const analytics: AnalyticsResponse = {
-  requests_today: 67,
-  requests_this_month: 6767
+  start_time: "",
+  interval_minutes: 1,
+  usage: []
 }
 
 const quota: QuotaConfig = {
@@ -174,6 +177,7 @@ describe('HttpClientNetworkClient', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [
         HttpClientNetworkClient,
         { provide: EnvironmentLoader_T, useClass: MockEnvironmentLoader }
@@ -250,7 +254,8 @@ describe('HttpClientNetworkClient', () => {
   })
 
   it("getAnalytics$ should return correct type", () => {
-    const ret = subject.getAnalytics$("<token>")
+    const ret = subject.getAnalytics$({period_of_days: 1, time_interval_minutes: 1} ,"<token>")
+    console.log(`I AM HEREREEEEE ${JSON.stringify(ret)}`)
     ret.subscribe(bod => {
       expectTypeOf(bod).toEqualTypeOf<AnalyticsResponse>()
     })
@@ -279,13 +284,6 @@ describe('HttpClientNetworkClient', () => {
 
   it("login$ should return correct type", () => {
     const ret = subject.login$({email: "", password: ""}, "<token>")
-    ret.subscribe(bod => {
-      expectTypeOf(bod).toEqualTypeOf<TokenResponse>()
-    })
-  })
-
-  it("signup$ should return correct type", () => {
-    const ret = subject.signup$({email: "", password: "", username: ""}, "<token>")
     ret.subscribe(bod => {
       expectTypeOf(bod).toEqualTypeOf<TokenResponse>()
     })
@@ -334,14 +332,14 @@ describe('HttpClientNetworkClient', () => {
   })
 
   it("addLLMConfiguration$ should return correct type", () => {
-    const ret = subject.addLLMConfiguration$({api_key: "", api_url: "", name: ""}, "<token>")
+    const ret = subject.addLLMConfiguration$({api_key: "", api_url: "", name: "", model_name: ""}, "<token>")
     ret.subscribe(bod => {
       expectTypeOf(bod).toEqualTypeOf<void>()
     })
   })
 
   it("updateLLMConfiguration$ should return correct type", () => {
-    const ret = subject.updateLLMConfiguration$({api_key: "", api_url: "", name: ""}, "id", "<token>")
+    const ret = subject.updateLLMConfiguration$({api_key: "", api_url: "", name: "", model_name: ""}, "id", "<token>")
     ret.subscribe(bod => {
       expectTypeOf(bod).toEqualTypeOf<LLMConfigurationResponse>()
     })

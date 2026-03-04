@@ -3,6 +3,7 @@ import {EnvironmentLoader} from '../EnvironmentLoader';
 import {TestBed} from '@angular/core/testing';
 import {AssetEnvironmentLoader} from './AssetEnvironmentLoader';
 import {of, throwError} from 'rxjs';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('AssetEnvironmentNetworkClient', () => {
   let subject: EnvironmentLoader
@@ -13,6 +14,11 @@ describe('AssetEnvironmentNetworkClient', () => {
         return of({ SERVER_BASE_URL: "test-base-url" })
       })
     }
+
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [AssetEnvironmentLoader]
+    })
 
     subject = TestBed.inject(AssetEnvironmentLoader);
 
