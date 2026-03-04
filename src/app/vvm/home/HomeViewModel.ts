@@ -147,7 +147,7 @@ export class HomeViewModel {
     this.searchForm.control.valueChanges.pipe(startWith("")),
     toObservable(this.searchActive).pipe(startWith(false))])
     .pipe(
-      map(([convos, value, search]) => convos.filter(convo => convo.messages.length > 0 && ((search && convo.name.includes(value ?? "")) ||
+      map(([convos, value, search]) => convos.filter(convo => convo.messages.length > 0 && ((search && convo.name.toLowerCase().includes(value?.toLowerCase() ?? "")) ||
         (!search && !convo.pinned)))
       )
     )
