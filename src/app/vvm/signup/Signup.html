@@ -44,8 +44,10 @@
     <google-button (clickHandler)="openGoogleAuth()"></google-button>
 
     <div id="actions">
-      <p>{{ 'signup.login_link.pre'|translate }}<a
-        routerLink="/login">{{ 'signup.login_link.mid'|translate }}</a>{{ 'signup.login_link.post'|translate }}</p>
+      <div id="links">
+        <p>{{ 'signup.login_link.pre'|translate }}<a
+          routerLink="/login">{{ 'signup.login_link.mid'|translate }}</a>{{ 'signup.login_link.post'|translate }}</p>
+      </div>
 
       <button id="login-button" matButton="filled" (click)="signup()">{{ 'signup.confirm.label' | translate }}</button>
     </div>
