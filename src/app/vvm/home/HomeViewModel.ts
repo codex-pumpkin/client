@@ -224,7 +224,12 @@ export class HomeViewModel {
     }
 
     this.conversationService.delete(convo.id)
-      .subscribe(() => this.conversationService.refreshConversations().subscribe())
+      .subscribe(
+        () => this.conversationService.refreshConversations()
+          .subscribe(() => {
+            this.router.navigate(["/home/conversations"])
+          })
+      )
   }
 
   protected pinConvo() {
@@ -262,10 +267,5 @@ export class HomeViewModel {
 
   protected openAdmin() {
     this.router.navigate(["home/admin-panel"])
-  }
-
-  protected openConversation() {
-    const id = "5eef3bec-9c15-4384-b8d1-f42a188684d0"
-    this.router.navigate([`home/conversations/${id}`])
   }
 }
