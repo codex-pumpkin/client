@@ -41,16 +41,16 @@ export class RequestPasswordResetViewModel {
   /**
    * The email field.
    */
-  protected readonly email = new CodexFormControl("", [CodexValidators.email])
+  readonly email = new CodexFormControl("", [CodexValidators.email])
 
-  protected readonly genericError = signal<string | null>(null)
+  readonly genericError = signal<string | null>(null)
 
   /**
    * Whether the email was sent.
    */
-  protected readonly mailSent = signal(false)
+  readonly mailSent = signal(false)
 
-  protected requestPasswordReset() {
+  requestPasswordReset() {
     this.genericError.set(null)
     if (this.email.control.invalid)
       return
@@ -67,7 +67,7 @@ export class RequestPasswordResetViewModel {
       })
   }
 
-  protected continue() {
+  continue() {
     this.router.navigate([""])
   }
 
