@@ -76,7 +76,7 @@ export class AccountDialogViewModel {
    */
   private readonly dialogRef = inject(MatDialogRef<AccountDialogViewModel>);
 
-  protected changeUsername() {
+  changeUsername() {
     this.dialog.open(ChangeUsernameDialogViewModel, {data: this.account()})
       .afterClosed()
       .subscribe((newUsername: string) => {
@@ -89,7 +89,7 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected changeEmail() {
+  changeEmail() {
     this.dialog.open(ChangeEmailDialogViewModel, {data: this.account()})
       .afterClosed()
       .subscribe((newEmail: string) => {
@@ -115,7 +115,7 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected resetPassword() {
+  resetPassword() {
     this.dialog.open(ResetPasswordDialogViewModel)
       .afterClosed()
       .subscribe(doReset => {
@@ -125,15 +125,16 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected logout() {
+  logout() {
     this.auth.logout$()
       .subscribe(() => {
         this.close(true)
       })
   }
 
-  protected onFileSelected(event: Event) {
+  onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement
+    console.log(`Got input: ${JSON.stringify(input)} and ${!input.files?.length}`)
     if(!input.files?.length) return
 
     const file = input.files[0]
