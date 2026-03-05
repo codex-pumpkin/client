@@ -94,7 +94,7 @@ export class SettingsViewModel implements OnInit {
 
   private readonly drafts$ = new BehaviorSubject<LLMConfigDraft[]>([])
 
-  protected readonly drafts = toSignal(this.drafts$, {initialValue: [] as LLMConfigDraft[]})
+  readonly drafts = toSignal(this.drafts$, {initialValue: [] as LLMConfigDraft[]})
 
   ngOnInit() {
     // When the component loads, we initialize the drafts with all existing configs.
@@ -107,14 +107,14 @@ export class SettingsViewModel implements OnInit {
     this.drafts$.next(drafts)
   }
 
-  protected addDraft() {
+  addDraft() {
     const draft = this.createDraft()
     console.log(`Added draft ${JSON.stringify(draft.draftId)}`)
     const drafts = [...this.drafts$.value, draft]
     this.drafts$.next(drafts)
   }
 
-  protected removeDraft(draft: LLMConfigDraft) {
+  removeDraft(draft: LLMConfigDraft) {
     // Remove the draft from the state
     this.drafts$.next(this.drafts$.value.filter(d => d.draftId != draft.draftId))
 
@@ -125,7 +125,7 @@ export class SettingsViewModel implements OnInit {
     }
   }
 
-  protected safe() {
+  safe() {
     const drafts = this.drafts$.value
     if(drafts.some(draft => draft.url.control.invalid || draft.name.control.invalid || draft.modelName.control.invalid)) return
 
@@ -155,7 +155,7 @@ export class SettingsViewModel implements OnInit {
     })
   }
 
-  protected toggleVisibility(id: string) {
+  toggleVisibility(id: string) {
     this.drafts$.next(this.drafts$.value.map(draft => {
       if(draft.draftId == id) {
         return {
