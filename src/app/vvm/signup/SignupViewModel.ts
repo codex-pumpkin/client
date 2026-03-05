@@ -52,17 +52,17 @@ export class SignupViewModel extends GoogleAuthViewModel {
    */
   private readonly auth = inject(AuthenticationService_T)
 
-  protected readonly email = new CodexFormControl("", [CodexValidators.email])
-  protected readonly username = new CodexFormControl("", [CodexValidators.username])
-  protected readonly password = new CodexFormControl("", [CodexValidators.password])
-  protected readonly passwordVisible = signal(false)
-  protected readonly genericError = signal<string | null>(null)
+  public readonly email = new CodexFormControl("", [CodexValidators.email])
+  public readonly username = new CodexFormControl("", [CodexValidators.username])
+  public readonly password = new CodexFormControl("", [CodexValidators.password])
+  public readonly passwordVisible = signal(false)
+  public readonly genericError = signal<string | null>(null)
 
-  protected togglePassword() {
+  public togglePassword() {
     this.passwordVisible.set(!this.passwordVisible())
   }
 
-  protected signup() {
+  public signup() {
     console.log("Inside signup() handler")
     this.genericError.set(null)
 
@@ -101,7 +101,7 @@ export class SignupViewModel extends GoogleAuthViewModel {
     })
   }
 
-  protected handleGoogleResponse(response: any): void {
+  public handleGoogleResponse(response: any): void {
     this.genericError.set(null)
     const code = response.code
 

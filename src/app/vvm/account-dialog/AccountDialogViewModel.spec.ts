@@ -68,8 +68,6 @@ describe("AccountDialogViewModel", () => {
     vm.changeEmail();
     expect(dialogMock.open).toHaveBeenCalled();
     expect(accountServiceMock.updateEmail$).toHaveBeenCalledWith("newValue");
-    // logout is triggered after refreshAccount
-    // We wrap in Promise.resolve to await async
     await Promise.resolve();
     expect(authMock.logout$).toHaveBeenCalled();
     expect(dialogRefMock.close).toHaveBeenCalledWith(true);
