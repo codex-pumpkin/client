@@ -10,7 +10,7 @@ export class AccountAuthGuard implements CanActivate {
   /**
    * The auth service
    */
-  private readonly auth = inject(AuthenticationService_T)
+  public auth = inject(AuthenticationService_T)
 
   /**
    * The router
@@ -36,7 +36,7 @@ export class VerifiedAuthGuard implements CanActivate {
   /**
    * The auth service
    */
-  private readonly auth = inject(AuthenticationService_T)
+  public auth = inject(AuthenticationService_T)
 
   /**
    * The router
@@ -48,10 +48,10 @@ export class VerifiedAuthGuard implements CanActivate {
 
     if (!account) { // If account is required but not given, we redirect to /login
       return this.router.createUrlTree(["login"])
-    } else if (!account.isVerified) {
-      return this.router.createUrlTree(["email-not-verified"])
-    } else { // If account is given, we allow
+    } else if (account.isVerified) {
       return true
+    } else { // If account is given, we allow
+      return this.router.createUrlTree(["email-not-verified"])
     }
   }
 }
