@@ -3,11 +3,11 @@ import {Injectable} from '@angular/core';
 import {Settings} from '../../domain/domain_models';
 import {BehaviorSubject} from 'rxjs';
 
-const INITIAL_SETTINGS: Settings = {
+export const INITIAL_SETTINGS: Settings = {
   isDarkMode: false
 }
 
-const KEY_SETTINGS = "codex.localstorage.settings"
+export const KEY_SETTINGS = "codex.localstorage.settings"
 
 @Injectable({
   providedIn: "root"
@@ -17,7 +17,9 @@ export class LocalStorageSettingsManager implements SettingsManager {
   settings$: BehaviorSubject<Settings>
 
   constructor() {
+
     this.settings$ = new BehaviorSubject(this.reloadSettings())
+    console.log("Inside constructor")
   }
 
   private saveSettings(settings: Settings) {
@@ -26,18 +28,22 @@ export class LocalStorageSettingsManager implements SettingsManager {
 
   private reloadSettings(): Settings {
     const localContent = localStorage.getItem(KEY_SETTINGS)
-    const localSettings = JSON.parse(localContent ?? "{}")
 
-    let toUseSettings: Settings
-
-    try {
-      toUseSettings = localSettings as Settings
-    } catch {
-      toUseSettings = INITIAL_SETTINGS
+    if (!localContent) {
       this.saveSettings(INITIAL_SETTINGS)
+      return INITIAL_SETTINGS
     }
 
-    return toUseSettings
+    try {
+      const parsed = JSON.parse(localContent)
+
+      if (typeof parsed.isDarkMode === "boolean") {
+        return parsed
+      }
+    } catch {}
+
+    this.saveSettings(INITIAL_SETTINGS)
+    return INITIAL_SETTINGS
   }
 
   setIsDarkMode(isDarkMode: boolean): void {
