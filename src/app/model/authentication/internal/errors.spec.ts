@@ -20,6 +20,6 @@ describe("errors.ts", () => {
     expectObservableMaybeNo(createSignupError(auth), Errors.Authentication)
     expectObservableMaybeNo(createSignupError(permission), Errors.Permission)
     expectObservableMaybeNo(createSignupError(other), Errors.Unknown)
-    expectObservableMaybeNo(createSignupError(conflict), Errors.EmailUsed) // TODO: Change when logic implemented
+    expectObservableMaybeNo(createSignupError(conflict), Errors.UsernameUsed)
   })
 });

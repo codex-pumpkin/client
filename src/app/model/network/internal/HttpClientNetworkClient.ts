@@ -276,7 +276,7 @@ export class HttpClientNetworkClient implements NetworkClient {
     id: string,
     token: string
   ): Observable<string> {
-    return this.client.post<string>( // TODO: The return type needs to be figured out. Speak with Kyrylo
+    return this.client.post<string>(
       this.url(`/conversations/${id}/messages`),
       body,
       { headers: this.headers(token) }

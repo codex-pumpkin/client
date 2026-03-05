@@ -29,8 +29,11 @@ export const createSignupError = <T>(err: unknown): Observable<Maybe<T, SignupEr
   let signupError: SignupError | null = null
 
   if(error.status == 409) {
-    // TODO: Decide here if it is username XOR email that causes a conflict
-    signupError = Errors.EmailUsed
+    if(error.error?.detail?.field == "email") {
+      signupError = Errors.EmailUsed
+    } else {
+      signupError = Errors.UsernameUsed
+    }
   }
 
   return signupError ? of(Maybe.createNo<T, SignupError>(signupError))

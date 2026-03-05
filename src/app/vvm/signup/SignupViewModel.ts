@@ -79,7 +79,7 @@ export class SignupViewModel extends GoogleAuthViewModel {
           this.email.setErrorKey("errors.signup.email_used")
           break;
         case Errors.UsernameUsed:
-          this.email.setErrorKey("errors.signup.username_used")
+          this.username.setErrorKey("errors.signup.username_used")
           break;
         default:
           this.genericError.set(genericErrorTranslation(err))
