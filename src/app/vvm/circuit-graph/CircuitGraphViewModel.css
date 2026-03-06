@@ -1,6 +1,172 @@
-ngx-graph {
+/* Host fills whatever container the parent gives it.
+   If the parent has no explicit height, we fall back to 100dvh
+   so the graph always has space to render. */
+:host {
+  display: block;
   width: 100%;
-  height: 500px;
+  height: auto;
+  min-height: 560px;
+  --cg-border: #d7e1ee;
+  --cg-window-bg: #f8fbff;
+  --cg-toolbar-border: #dbe5f1;
+  --cg-toolbar-bg: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+  --cg-toolbar-title: #1f3b62;
+  --cg-button-border: #b7c8de;
+  --cg-button-bg: #ffffff;
+  --cg-button-fg: #1f3b62;
+  --cg-button-hover-bg: #edf4ff;
+  --cg-host-bg:
+    radial-gradient(circle at 10% 0%, rgba(232, 245, 255, 0.7), transparent 40%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  --cg-wire-signal: #2980b9;
+  --cg-wire-vdd: #27ae60;
+  --cg-wire-gnd: #7f8c8d;
+  --cg-type-resistor: #d35400;
+  --cg-type-voltage: #27ae60;
+  --cg-type-current: #27ae60;
+  --cg-type-mosfet: #6c3483;
+  --cg-type-capacitor: #c0392b;
+  --cg-type-inductor: #1a5276;
+  --cg-type-default: #2c3e50;
+}
 
+:host-context(html.dark) {
+  --cg-border: rgba(241, 154, 70, 0.45);
+  --cg-window-bg:
+    radial-gradient(circle at 18% -8%, rgba(255, 169, 90, 0.22), transparent 52%),
+    linear-gradient(165deg, #191411 0%, #241912 42%, #2f1f14 100%);
+  --cg-toolbar-border: rgba(242, 159, 80, 0.46);
+  --cg-toolbar-bg: linear-gradient(140deg, #7a401b 0%, #b65f25 48%, #f29f50 100%);
+  --cg-toolbar-title: #fff2e5;
+  --cg-button-border: rgba(255, 206, 160, 0.5);
+  --cg-button-bg: linear-gradient(180deg, rgba(58, 35, 23, 0.95) 0%, rgba(88, 51, 30, 0.95) 100%);
+  --cg-button-fg: #ffd5a8;
+  --cg-button-hover-bg: linear-gradient(180deg, rgba(97, 55, 30, 0.98) 0%, rgba(126, 70, 37, 0.98) 100%);
+  --cg-host-bg:
+    radial-gradient(circle at 22% -5%, rgba(245, 161, 79, 0.16), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(194, 101, 35, 0.18), transparent 44%),
+    linear-gradient(180deg, #16110e 0%, #21170f 100%);
+  --cg-wire-signal: #f39a4a;
+  --cg-wire-vdd: #ffbe73;
+  --cg-wire-gnd: #c9854f;
+  --cg-type-resistor: #ff9f43;
+  --cg-type-voltage: #ffc277;
+  --cg-type-current: #f3aa63;
+  --cg-type-mosfet: #ffbc7b;
+  --cg-type-capacitor: #e68139;
+  --cg-type-inductor: #cf7431;
+  --cg-type-default: #f5b26b;
+}
+
+.circuit-window {
+  width: 100%;
+  min-height: 560px;
+  border: 1px solid var(--cg-border);
+  border-radius: 10px;
+  background: var(--cg-window-bg);
   overflow: hidden;
+}
+
+.window-toolbar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--cg-toolbar-border);
+  background: var(--cg-toolbar-bg);
+}
+
+.toolbar-title {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cg-toolbar-title);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-btn {
+  min-width: 42px;
+  height: 30px;
+  border: 1px solid var(--cg-button-border);
+  border-radius: 6px;
+  background: var(--cg-button-bg);
+  color: var(--cg-button-fg);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.toolbar-btn:hover {
+  background: var(--cg-button-hover-bg);
+}
+
+.circuit-host {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  background: var(--cg-host-bg);
+  overflow: hidden;
+}
+
+.circuit-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.circuit-svg.panning {
+  cursor: grabbing;
+}
+
+.comp-group {
+  cursor: move;
+}
+
+.comp-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.comp-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.rail-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.node-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  fill: color-mix(in srgb, var(--cg-wire-gnd) 62%, white 38%);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  :host {
+    min-height: 430px;
+  }
+
+  .circuit-window {
+    min-height: 430px;
+  }
+
+  .circuit-host {
+    height: 390px;
+  }
 }

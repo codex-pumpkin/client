@@ -1,28 +1,195 @@
-@if (nodes() && links()) {
-  <ngx-graph
-    class="chart-container"
-    [links]="links()!"
-    [nodes]="nodes()!"
-    [view]="[800, 800]"
-  >
+<div class="circuit-window">
+  <div class="window-toolbar">
+    <div class="toolbar-title">Circuit Visualization</div>
+    <div class="toolbar-actions">
+      <button type="button" class="toolbar-btn" (click)="zoomOut()">-</button>
+      <button type="button" class="toolbar-btn" (click)="fitAll()">Fit</button>
+      <button type="button" class="toolbar-btn" (click)="zoomIn()">+</button>
+    </div>
+  </div>
 
-    <ng-template #nodeTemplate let-node>
-      <svg:g class="node">
-        <svg:rect
-          [attr.width]="node.dimension.width"
-          [attr.height]="node.dimension.height"
-          [attr.fill]="node.data.color"
-        />
-        <svg:text
-          [attr.x]="node.dimension.width / 2"
-          [attr.y]="node.dimension.height / 2"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          font-weight="bold"
-        >
-          {{ node.label }}
-        </svg:text>
-      </svg:g>
-    </ng-template>
-  </ngx-graph>
-}
+  <div class="circuit-host"
+       (mousemove)="onMouseMove($event)"
+       (mouseup)="onMouseUp()"
+       (mouseleave)="onMouseUp()"
+       (click)="deselectAll()">
+    <svg #svgEl class="circuit-svg"
+         [class.panning]="isPanning()"
+         (mousedown)="onSvgMouseDown($event)"
+         (wheel)="onWheel($event)">
+      <g #svgRoot [attr.transform]="svgTransform()">
+
+      <!-- ── Wire layer (drawn first, below components) ───────────────── -->
+      <g pointer-events="none">
+
+        @let wd = wires();
+
+        <!-- VDD power rail -->
+        @if (wd.vddDrops.length > 0) {
+          <line
+            [attr.x1]="wd.vddBusX1" [attr.y1]="wd.vddBusY"
+            [attr.x2]="wd.vddBusX2" [attr.y2]="wd.vddBusY"
+            [attr.stroke]="WIRE_VDD" stroke-width="2" stroke-linecap="round"/>
+          <text [attr.x]="wd.vddLabelX" [attr.y]="wd.vddBusY + 4"
+                [attr.fill]="WIRE_VDD" class="rail-label" text-anchor="end">VDD</text>
+          @for (pt of wd.vddDrops; track $index) {
+            <line
+              [attr.x1]="pt.x" [attr.y1]="pt.y"
+              [attr.x2]="pt.x" [attr.y2]="wd.vddBusY"
+              [attr.stroke]="WIRE_VDD" stroke-width="2" stroke-linecap="round"/>
+            <circle
+              [attr.cx]="pt.x" [attr.cy]="wd.vddBusY" r="4"
+              [attr.fill]="WIRE_VDD"/>
+          }
+        }
+
+        <!-- GND rail -->
+        @if (wd.gndDrops.length > 0) {
+          <line
+            [attr.x1]="wd.gndBusX1" [attr.y1]="wd.gndBusY"
+            [attr.x2]="wd.gndBusX2" [attr.y2]="wd.gndBusY"
+            [attr.stroke]="WIRE_GND" stroke-width="2" stroke-linecap="round"/>
+          <!-- GND symbol -->
+          <g [attr.transform]="'translate(' + wd.gndCentreX + ',' + wd.gndBusY + ')'">
+            <line x1="-12" y1="0"  x2="12" y2="0"  [attr.stroke]="WIRE_GND" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="-8"  y1="7"  x2="8"  y2="7"  [attr.stroke]="WIRE_GND" stroke-width="2"   stroke-linecap="round"/>
+            <line x1="-4"  y1="14" x2="4"  y2="14" [attr.stroke]="WIRE_GND" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+          @for (pt of wd.gndDrops; track $index) {
+            <line
+              [attr.x1]="pt.x" [attr.y1]="pt.y"
+              [attr.x2]="pt.x" [attr.y2]="wd.gndBusY"
+              [attr.stroke]="WIRE_GND" stroke-width="2" stroke-linecap="round"/>
+            <circle
+              [attr.cx]="pt.x" [attr.cy]="wd.gndBusY" r="4"
+              [attr.fill]="WIRE_GND"/>
+          }
+        }
+
+        <!-- Signal node wires -->
+        @for (np of wd.nodePaths; track np.id) {
+          <path
+            [attr.d]="np.d"
+            [attr.stroke]="WIRE_SIGNAL"
+            stroke-width="2" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+          <text [attr.x]="np.labelX" [attr.y]="np.labelY" class="node-label">
+            n{{ np.id }}
+          </text>
+          @for (jpt of np.junctions; track $index) {
+            <circle [attr.cx]="jpt.x" [attr.cy]="jpt.y" r="4" [attr.fill]="WIRE_SIGNAL"/>
+          }
+        }
+
+      </g>
+
+      <!-- ── Component layer ──────────────────────────────────────────── -->
+      @for (comp of comps(); track comp.name) {
+        @let p   = compPos(comp.name);
+        @let c   = color(comp);
+        @let sel = selComp() === comp.name;
+
+        <g class="comp-group"
+           [attr.data-comp]="comp.name"
+           [attr.transform]="'translate(' + p.x + ',' + p.y + ')'"
+           (mousedown)="onCompMouseDown($event, comp.name)"
+           (click)="$event.stopPropagation(); selComp.set(comp.name)">
+
+          <!-- Hit area -->
+          <rect x="-55" y="-55" width="110" height="110" fill="transparent"/>
+
+          <!-- Selection highlight -->
+          @if (sel) {
+            <rect x="-46" y="-46" width="92" height="92" rx="4"
+                  [attr.stroke]="c" stroke-width="1.5"
+                  [attr.fill]="selectionFill()" stroke-dasharray="4,3"/>
+          }
+
+          <!-- ── Symbols ─────────────────────────────────────────────── -->
+          @switch (normalizedType(comp)) {
+
+            @case ('Resistor') {
+              <!-- Horizontal: leads left (-32) and right (+32) -->
+              <line x1="-32" y1="0" x2="-16" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="-16,-9 -12,9 -4,-9 4,9 12,-9 16,9" [attr.stroke]="c"
+                        stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <line x1="16" y1="0" x2="32" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('VoltageSource') {
+              <circle cx="0" cy="0" r="24" [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <line x1="0" y1="-14" x2="0" y2="-5" [attr.stroke]="c" stroke-width="2"/>
+              <line x1="-5" y1="-9.5" x2="5" y2="-9.5" [attr.stroke]="c" stroke-width="2"/>
+              <line x1="-5" y1="9.5" x2="5" y2="9.5" [attr.stroke]="c" stroke-width="2"/>
+              <line x1="0" y1="-24" x2="0" y2="-38" [attr.stroke]="c" stroke-width="2"/>
+              <line x1="0" y1="24"  x2="0" y2="38"  [attr.stroke]="c" stroke-width="2"/>
+            }
+
+            @case ('CurrentSource') {
+              <circle cx="0" cy="0" r="24" [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <line x1="0" y1="-14" x2="0" y2="14" [attr.stroke]="c" stroke-width="2"/>
+              <polygon points="-5,-3 5,-3 0,-13" [attr.fill]="c"/>
+              <line x1="0" y1="-24" x2="0" y2="-38" [attr.stroke]="c" stroke-width="2"/>
+              <line x1="0" y1="24"  x2="0" y2="38"  [attr.stroke]="c" stroke-width="2"/>
+            }
+
+            @case ('Mosfet') {
+              <!-- Clean 3-terminal MOS symbol: Gate (left), Drain (top-right), Source (bottom-right) -->
+              <line x1="-40" y1="0" x2="-20" y2="0" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="-20" y1="-22" x2="-20" y2="22" [attr.stroke]="c" stroke-width="3" stroke-linecap="round"/>
+
+              <line x1="4" y1="-22" x2="4" y2="22" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+
+              <line x1="4" y1="-16" x2="22" y2="-16" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="22" y1="-16" x2="22" y2="-40" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+
+              <line x1="4" y1="16" x2="22" y2="16" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="22" y1="16" x2="22" y2="40" [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+
+              <!-- Source arrow for recognisable transistor look -->
+              <polygon points="12,16 6,12 6,20" [attr.fill]="c"/>
+            }
+
+            @case ('Capacitor') {
+              <!-- Standard capacitor (clean IEC style) -->
+              <line x1="-34" y1="0" x2="-11" y2="0" [attr.stroke]="c" stroke-width="2.4" stroke-linecap="round"/>
+              <line x1="11" y1="0" x2="34" y2="0" [attr.stroke]="c" stroke-width="2.4" stroke-linecap="round"/>
+              <line x1="-11" y1="-19" x2="-11" y2="19" [attr.stroke]="c" stroke-width="3.4" stroke-linecap="square"/>
+              <line x1="11" y1="-19" x2="11" y2="19" [attr.stroke]="c" stroke-width="3.4" stroke-linecap="square"/>
+            }
+
+            @case ('Inductor') {
+              <line x1="-32" y1="0" x2="-26" y2="0" [attr.stroke]="c" stroke-width="2"/>
+              <path d="M-26,0 A6.5,6.5 0 0,1 -13,0" [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M-13,0 A6.5,6.5 0 0,1 0,0"   [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M0,0   A6.5,6.5 0 0,1 13,0"  [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M13,0  A6.5,6.5 0 0,1 26,0"  [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <line x1="26" y1="0" x2="32" y2="0" [attr.stroke]="c" stroke-width="2"/>
+            }
+
+            @default {
+              <rect x="-22" y="-14" width="44" height="28" rx="3"
+                    [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+            }
+          }
+
+          <!-- Name label -->
+          <text x="12" y="-50" text-anchor="start" [attr.fill]="c" class="comp-label">
+            {{ comp.name }}
+          </text>
+
+          <!-- First value -->
+          @let firstEntry = valueEntries(comp)[0];
+          @if (firstEntry) {
+            <text x="12" y="62" text-anchor="start" [attr.fill]="c" class="comp-value">
+              {{ firstEntry.v }}
+            </text>
+          }
+
+        </g>
+      }
+
+      </g>
+    </svg>
+  </div>
+</div>

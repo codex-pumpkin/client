@@ -24,7 +24,9 @@ class KeyPipe implements PipeTransform {
   transform(value: TargetLanguage): string {
     return value == TargetLanguage.PYTHON ? 'languages.python.label'
       : value == TargetLanguage.JAVA ? 'languages.java.label'
-        : 'languages.spice.label'
+        : value == TargetLanguage.ENGLISH ? 'languages.english.label'
+          : value == TargetLanguage.GERMAN ? 'languages.german.label'
+            : 'languages.spice.label'
   }
 
 }
@@ -111,7 +113,13 @@ export class ConversationsViewModel implements OnInit {
   /**
    * All available target languages.
    */
-  protected readonly TargetLanguages = [TargetLanguage.SPICE, TargetLanguage.JAVA, TargetLanguage.PYTHON]
+  protected readonly TargetLanguages = [
+    TargetLanguage.SPICE,
+    TargetLanguage.JAVA,
+    TargetLanguage.PYTHON,
+    TargetLanguage.ENGLISH,
+    TargetLanguage.GERMAN
+  ]
 
   /**
    * The selected llm-config.

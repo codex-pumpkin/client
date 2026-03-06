@@ -53,7 +53,8 @@ export class MessageBubbleViewModel {
 
     const language = this.conversation().targetLanguage
     const fileExt = language == TargetLanguage.SPICE ? '.cir' :
-      language == TargetLanguage.JAVA ? '.java' : '.py'
+      language == TargetLanguage.JAVA ? '.java' :
+        language == TargetLanguage.PYTHON ? '.py' : '.txt'
 
     const a = document.createElement('a');
     a.href = url;

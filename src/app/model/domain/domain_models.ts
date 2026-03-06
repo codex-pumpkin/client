@@ -16,7 +16,17 @@ export enum TargetLanguage {
   /**
    * Python code
    */
-  PYTHON
+  PYTHON,
+
+  /**
+   * English text
+   */
+  ENGLISH,
+
+  /**
+   * German text
+   */
+  GERMAN
 }
 
 /**

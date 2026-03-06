@@ -5,6 +5,8 @@ export type TargetLanguage =
   | 'spice_netlist'
   | 'python'
   | 'java'
+  | 'english'
+  | 'german'
 
 /**
  * DTO for the quota configuration.

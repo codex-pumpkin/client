@@ -265,11 +265,20 @@
     "python": {
       "label": "Python"
     },
+    "english": {
+      "label": "Englisch"
+    },
+    "german": {
+      "label": "Deutsch"
+    },
     "spice": {
       "label": "SPICE-Netzliste"
     }
   },
   "prompt_input": {
-    "placeholder": "Prompt eingeben"
+    "placeholder": "Prompt eingeben",
+    "examples": {
+      "transistor_chain_connected": "Erzeuge eine elektronische Schaltung mit 8 Transistoren in einer Reihe. Der letzte Transistor darf nicht unverbunden bleiben. Ich will keine schwebenden Knoten. Jeder Knoten muss auf beiden Seiten verbunden sein."
+    }
   }
 }
