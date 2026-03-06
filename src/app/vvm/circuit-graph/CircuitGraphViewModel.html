@@ -1,28 +1,299 @@
-@if (nodes() && links()) {
-  <ngx-graph
-    class="chart-container"
-    [links]="links()!"
-    [nodes]="nodes()!"
-    [view]="[800, 800]"
-  >
+<div class="circuit-window">
+  <div class="window-toolbar">
+    <div class="toolbar-title">Circuit Visualization</div>
+    <div class="toolbar-actions">
+      <button type="button" class="toolbar-btn" (click)="zoomOut()">−</button>
+      <button type="button" class="toolbar-btn" (click)="fitAll()">Fit</button>
+      <button type="button" class="toolbar-btn" (click)="zoomIn()">+</button>
+    </div>
+  </div>
 
-    <ng-template #nodeTemplate let-node>
-      <svg:g class="node">
-        <svg:rect
-          [attr.width]="node.dimension.width"
-          [attr.height]="node.dimension.height"
-          [attr.fill]="node.data.color"
-        />
-        <svg:text
-          [attr.x]="node.dimension.width / 2"
-          [attr.y]="node.dimension.height / 2"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          font-weight="bold"
-        >
-          {{ node.label }}
-        </svg:text>
-      </svg:g>
-    </ng-template>
-  </ngx-graph>
-}
+  <div class="circuit-host" (click)="deselectAll()">
+    <svg #svgEl class="circuit-svg"
+         [class.panning]="isPanning()"
+         (mousedown)="onSvgMouseDown($event)"
+         (mousemove)="onMouseMove($event)"
+         (mouseup)="onMouseUp()"
+         (mouseleave)="onMouseUp()"
+         (wheel)="onWheel($event)">
+      <g #svgRoot [attr.transform]="svgTransform()">
+
+      <!-- Wire layer -->
+      <g pointer-events="none">
+        @let wd = wires();
+
+        @if (wd.vddDrops.length > 0) {
+          <line [attr.x1]="wd.vddBusX1" [attr.y1]="wd.vddBusY"
+                [attr.x2]="wd.vddBusX2" [attr.y2]="wd.vddBusY"
+                [attr.stroke]="WIRE_VDD" stroke-width="2" stroke-linecap="round"/>
+          <text [attr.x]="wd.vddLabelX" [attr.y]="wd.vddBusY + 4"
+                [attr.fill]="WIRE_VDD" class="rail-label" text-anchor="end">VDD</text>
+          @for (pt of wd.vddDrops; track $index) {
+            <line [attr.x1]="pt.x" [attr.y1]="pt.y"
+                  [attr.x2]="pt.x" [attr.y2]="wd.vddBusY"
+                  [attr.stroke]="WIRE_VDD" stroke-width="2" stroke-linecap="round"/>
+            <circle [attr.cx]="pt.x" [attr.cy]="wd.vddBusY" r="4" [attr.fill]="WIRE_VDD"/>
+          }
+        }
+
+        @if (wd.gndDrops.length > 0) {
+          <line [attr.x1]="wd.gndBusX1" [attr.y1]="wd.gndBusY"
+                [attr.x2]="wd.gndBusX2" [attr.y2]="wd.gndBusY"
+                [attr.stroke]="WIRE_GND" stroke-width="2" stroke-linecap="round"/>
+          <g [attr.transform]="'translate(' + wd.gndCentreX + ',' + wd.gndBusY + ')'">
+            <line x1="-12" y1="0"  x2="12" y2="0"  [attr.stroke]="WIRE_GND" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="-8"  y1="7"  x2="8"  y2="7"  [attr.stroke]="WIRE_GND" stroke-width="2"   stroke-linecap="round"/>
+            <line x1="-4"  y1="14" x2="4"  y2="14" [attr.stroke]="WIRE_GND" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+          @for (pt of wd.gndDrops; track $index) {
+            <line [attr.x1]="pt.x" [attr.y1]="pt.y"
+                  [attr.x2]="pt.x" [attr.y2]="wd.gndBusY"
+                  [attr.stroke]="WIRE_GND" stroke-width="2" stroke-linecap="round"/>
+            <circle [attr.cx]="pt.x" [attr.cy]="wd.gndBusY" r="4" [attr.fill]="WIRE_GND"/>
+          }
+        }
+
+        @for (np of wd.nodePaths; track np.id) {
+          <path [attr.d]="np.d" [attr.stroke]="WIRE_SIGNAL"
+                stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text [attr.x]="np.labelX" [attr.y]="np.labelY" class="node-label">n{{ np.id }}</text>
+          @for (jpt of np.junctions; track $index) {
+            <circle [attr.cx]="jpt.x" [attr.cy]="jpt.y" r="4" [attr.fill]="WIRE_SIGNAL"/>
+          }
+        }
+      </g>
+
+      <!-- Component layer -->
+      @for (comp of comps(); track comp.name) {
+        @let p   = compPos(comp.name);
+        @let c   = color(comp);
+        @let sel = selComp() === comp.name;
+        @let pv  = primaryValue(comp);
+
+        <g class="comp-group"
+           [attr.data-comp]="comp.name"
+           [attr.transform]="'translate(' + p.x + ',' + p.y + ')'"
+           (mousedown)="onCompMouseDown($event, comp.name)"
+           (click)="$event.stopPropagation(); selComp.set(comp.name)">
+
+          <!-- Hit area -->
+          <rect x="-55" y="-55" width="110" height="110" fill="transparent"/>
+
+          <!-- Selection highlight -->
+          @if (sel) {
+            <rect x="-50" y="-50" width="100" height="100" rx="4"
+                  [attr.stroke]="c" stroke-width="1.5"
+                  [attr.fill]="selectionFill()" stroke-dasharray="4,3"/>
+          }
+
+          @switch (normalizedType(comp)) {
+
+            @case ('Resistor') {
+              <!--
+                Zigzag resistor, horizontal. Terminals: (−32,0) and (+32,0).
+              -->
+              <line x1="-32" y1="0" x2="-16" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="-16,-10 -8,10 0,-10 8,10 16,-10"
+                        [attr.stroke]="c" stroke-width="2" fill="none"
+                        stroke-linejoin="round" stroke-linecap="round"/>
+              <line x1="16" y1="0" x2="32" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('Capacitor') {
+              <!--
+                Parallel-plate capacitor, horizontal. Terminals: (−32,0) and (+32,0).
+              -->
+              <line x1="-32" y1="0"   x2="-8"  y2="0"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="-8"  y1="-18" x2="-8"  y2="18" [attr.stroke]="c" stroke-width="3.5" stroke-linecap="square"/>
+              <line x1="8"   y1="-18" x2="8"   y2="18" [attr.stroke]="c" stroke-width="3.5" stroke-linecap="square"/>
+              <line x1="8"   y1="0"   x2="32"  y2="0"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+            }
+
+            @case ('BehavioralCapacitor') {
+              <!--
+                Behavioral capacitor: flat left plate + curved right plate.
+                The curve signals an expression-driven value.
+                Terminals: (−32,0) and (+32,0).
+              -->
+              <line x1="-32" y1="0"   x2="-8"  y2="0"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="-8"  y1="-18" x2="-8"  y2="18" [attr.stroke]="c" stroke-width="3.5" stroke-linecap="square"/>
+              <!-- Curved right plate = behavioral -->
+              <path d="M8,-18 Q22,0 8,18"                [attr.stroke]="c" stroke-width="3"   fill="none" stroke-linecap="round"/>
+              <line x1="8"   y1="0"   x2="32"  y2="0"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <text x="0" y="-24" text-anchor="middle" [attr.fill]="c" class="symbol-tag">f(x)</text>
+            }
+
+            @case ('Inductor') {
+              <!--
+                Inductor coil: 4 arcs, horizontal. Each arc is a half-ellipse bump.
+                Terminals: (−32,0) and (+32,0).
+              -->
+              <line x1="-32" y1="0" x2="-24" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- 4 bumps, each spanning 12px, arching 10px above centre -->
+              <path d="M-24,0 A6,10 0 0,1 -12,0" [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M-12,0 A6,10 0 0,1   0,0" [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M0,0   A6,10 0 0,1  12,0" [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <path d="M12,0  A6,10 0 0,1  24,0" [attr.stroke]="c" stroke-width="2" fill="none"/>
+              <line x1="24"  y1="0" x2="32"  y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('VoltageSource') {
+              <!--
+                Circle with + top / − bottom. Standard IEC voltage source.
+                Terminals: (0,−38) and (0,+38).
+              -->
+              <circle cx="0" cy="0" r="24" [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <!-- + at top -->
+              <line x1="0"  y1="-16" x2="0"  y2="-8"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <line x1="-4" y1="-12" x2="4"  y2="-12" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- − at bottom -->
+              <line x1="-4" y1="12"  x2="4"  y2="12"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- leads -->
+              <line x1="0" y1="-24" x2="0" y2="-38" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <line x1="0" y1="24"  x2="0" y2="38"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('CurrentSource') {
+              <!--
+                Circle with upward arrow inside = conventional current direction.
+                Terminals: (0,−38) and (0,+38).
+              -->
+              <circle cx="0" cy="0" r="24" [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <!-- arrow shaft -->
+              <line x1="0" y1="14" x2="0" y2="-8" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- arrowhead -->
+              <polygon points="0,-15 -5,-5 5,-5" [attr.fill]="c"/>
+              <!-- leads -->
+              <line x1="0" y1="-24" x2="0" y2="-38" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <line x1="0" y1="24"  x2="0" y2="38"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('Mosfet') {
+              <!--
+                N-channel MOSFET. Gate(left), Drain(top-right), Source(bottom-right).
+                Terminals: Gate(−40,0) Drain(+22,−40) Source(+22,+40)
+              -->
+              <!-- gate lead + oxide bar -->
+              <line x1="-40" y1="0"   x2="-18" y2="0"   [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="-18" y1="-24" x2="-18" y2="24"  [attr.stroke]="c" stroke-width="3"   stroke-linecap="round"/>
+              <!-- channel bar (gap from oxide) -->
+              <line x1="-8"  y1="-22" x2="-8"  y2="-8"  [attr.stroke]="c" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="-8"  y1="-4"  x2="-8"  y2="4"   [attr.stroke]="c" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="-8"  y1="8"   x2="-8"  y2="22"  [attr.stroke]="c" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- drain -->
+              <line x1="-8"  y1="-16" x2="22"  y2="-16" [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="22"  y1="-16" x2="22"  y2="-40" [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <!-- source + arrow -->
+              <line x1="-8"  y1="16"  x2="22"  y2="16"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="22"  y1="16"  x2="22"  y2="40"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <!-- inward arrow on source line showing N-type -->
+              <polygon points="-8,16 0,11 0,21" [attr.fill]="c"/>
+            }
+
+            @case ('BJT') {
+              <!--
+                NPN BJT. Base(left), Collector(top-right), Emitter(bottom-right).
+                Classic circle with base bar, collector and emitter lines with emitter arrow.
+                Terminals: Base(−40,0) Collector(+22,−38) Emitter(+22,+38)
+              -->
+              <circle cx="0" cy="0" r="26" [attr.stroke]="c" stroke-width="1.8" [attr.fill]="componentBodyFill()"/>
+              <!-- base lead + vertical bar -->
+              <line x1="-40" y1="0"   x2="-16" y2="0"   [attr.stroke]="c" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="-16" y1="-20" x2="-16" y2="20"  [attr.stroke]="c" stroke-width="3"   stroke-linecap="round"/>
+              <!-- collector line -->
+              <line x1="-16" y1="-14" x2="14"  y2="-28" [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="14"  y1="-28" x2="22"  y2="-38" [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <!-- emitter line + arrow -->
+              <line x1="-16" y1="14"  x2="14"  y2="28"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="14"  y1="28"  x2="22"  y2="38"  [attr.stroke]="c" stroke-width="2"   stroke-linecap="round"/>
+              <!-- NPN emitter arrow (pointing outward) -->
+              <polygon points="14,28 6,20 18,22" [attr.fill]="c"/>
+            }
+
+            @case ('Diode') {
+              <!--
+                Diode: triangle pointing right (anode→cathode) + bar at cathode.
+                Terminals: Anode(−28,0) Cathode(+28,0).
+              -->
+              <!-- anode lead -->
+              <line x1="-28" y1="0" x2="-14" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- triangle body (anode left, tip at right) -->
+              <polygon points="-14,-14 -14,14 14,0" [attr.stroke]="c" stroke-width="2"
+                       [attr.fill]="componentBodyFill()" stroke-linejoin="round"/>
+              <!-- cathode bar -->
+              <line x1="14" y1="-14" x2="14" y2="14" [attr.stroke]="c" stroke-width="3" stroke-linecap="square"/>
+              <!-- cathode lead -->
+              <line x1="14" y1="0" x2="28" y2="0" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+            }
+
+            @case ('VCCS') {
+              <!--
+                Voltage-Controlled Current Source: diamond + current arrow inside.
+                Terminals: in+(−36,−24) in−(−36,+24) out+(+36,−24) out−(+36,+24)
+              -->
+              <polygon points="0,-34 38,0 0,34 -38,0"
+                       [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <!-- current arrow pointing upward -->
+              <line x1="0" y1="16" x2="0" y2="-8"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <polygon points="0,-14 -5,-4 5,-4" [attr.fill]="c"/>
+              <!-- input leads -->
+              <line x1="-38" y1="-24" x2="-52" y2="-24" [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="-38" y1="24"  x2="-52" y2="24"  [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- output leads -->
+              <line x1="38"  y1="-24" x2="52"  y2="-24" [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="38"  y1="24"  x2="52"  y2="24"  [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- polarity tags on input side -->
+              <text x="-26" y="-16" text-anchor="middle" [attr.fill]="c" class="symbol-tag">+</text>
+              <text x="-26" y="26"  text-anchor="middle" [attr.fill]="c" class="symbol-tag">−</text>
+            }
+
+            @case ('VCVS') {
+              <!--
+                Voltage-Controlled Voltage Source: diamond + +/− marks inside.
+                Terminals: in+(−36,−24) in−(−36,+24) out+(+36,−24) out−(+36,+24)
+              -->
+              <polygon points="0,-34 38,0 0,34 -38,0"
+                       [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <!-- +/− voltage polarity inside -->
+              <line x1="0"  y1="-16" x2="0"  y2="-8"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <line x1="-4" y1="-12" x2="4"  y2="-12" [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <line x1="-4" y1="12"  x2="4"  y2="12"  [attr.stroke]="c" stroke-width="2" stroke-linecap="round"/>
+              <!-- input leads -->
+              <line x1="-38" y1="-24" x2="-52" y2="-24" [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="-38" y1="24"  x2="-52" y2="24"  [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- output leads -->
+              <line x1="38"  y1="-24" x2="52"  y2="-24" [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="38"  y1="24"  x2="52"  y2="24"  [attr.stroke]="c" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- polarity tags on input side -->
+              <text x="-26" y="-16" text-anchor="middle" [attr.fill]="c" class="symbol-tag">+</text>
+              <text x="-26" y="26"  text-anchor="middle" [attr.fill]="c" class="symbol-tag">−</text>
+            }
+
+            @default {
+              <rect x="-22" y="-14" width="44" height="28" rx="3"
+                    [attr.stroke]="c" stroke-width="2" [attr.fill]="componentBodyFill()"/>
+              <text x="0" y="5" text-anchor="middle" [attr.fill]="c" class="symbol-tag">
+                {{ normalizedType(comp) }}
+              </text>
+            }
+          }
+
+          <!-- Component name (above) -->
+          <text x="0" y="-44" text-anchor="middle" [attr.fill]="c" class="comp-label">
+            {{ comp.name }}
+          </text>
+
+          <!-- Primary value (below) — value only, no key -->
+          @if (pv) {
+            <text x="0" y="52" text-anchor="middle" [attr.fill]="c" class="comp-value">
+              {{ pv }}
+            </text>
+          }
+
+        </g>
+      }
+
+      </g>
+    </svg>
+  </div>
+</div>
