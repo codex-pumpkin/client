@@ -4,7 +4,8 @@ import {Settings} from '../../domain/domain_models';
 import {BehaviorSubject} from 'rxjs';
 
 export const INITIAL_SETTINGS: Settings = {
-  isDarkMode: false
+  isDarkMode: false,
+  language: 'en'
 }
 
 export const KEY_SETTINGS = "codex.localstorage.settings"
@@ -37,8 +38,11 @@ export class LocalStorageSettingsManager implements SettingsManager {
     try {
       const parsed = JSON.parse(localContent)
 
-      if (typeof parsed.isDarkMode === "boolean") {
-        return parsed
+      if (
+        typeof parsed.isDarkMode === "boolean" &&
+        (parsed.language === 'en' || parsed.language === 'de')
+      ) {
+        return parsed as Settings
       }
     } catch {}
 
@@ -48,8 +52,15 @@ export class LocalStorageSettingsManager implements SettingsManager {
 
   setIsDarkMode(isDarkMode: boolean): void {
     const current = this.settings$.getValue()
-    current.isDarkMode = isDarkMode
-    this.saveSettings(current)
+    const next = {...current, isDarkMode}
+    this.saveSettings(next)
+    this.settings$.next(this.reloadSettings())
+  }
+
+  setLanguage(language: 'en' | 'de'): void {
+    const current = this.settings$.getValue()
+    const next = {...current, language}
+    this.saveSettings(next)
     this.settings$.next(this.reloadSettings())
   }
 

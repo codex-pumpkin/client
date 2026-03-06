@@ -360,6 +360,11 @@ export type Settings = {
   /**
    * Whether the application is set to dark mode.
    */
-  isDarkMode: boolean
+  isDarkMode: boolean,
+
+  /**
+   * UI language of the application.
+   */
+  language: 'en' | 'de'
 
 }
