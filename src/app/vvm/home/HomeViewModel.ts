@@ -105,7 +105,7 @@ export class HomeViewModel {
       .pipe(
         tap(account => {
           if (!account) {
-            this.router.navigate([""])
+            this.router.navigate(["/login"])
           }
         }),
         filter(account => !!account)
