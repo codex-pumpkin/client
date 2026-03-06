@@ -7,6 +7,9 @@
           <button matIconButton (click)="toggleDarkMode()">
             <mat-icon>{{ isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
           </button>
+          <button matIconButton (click)="toggleLanguage()" [attr.aria-label]="'Switch language to ' + (currentLanguage() === 'en' ? 'German' : 'English')">
+            <span class="lang-toggle-label">{{ currentLanguage() === 'en' ? 'EN' : 'DE' }}</span>
+          </button>
         </nav>
 
         <div class="separator"></div>
@@ -59,7 +62,10 @@
               <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
-                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
+                  <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
+                </button>
+                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
               </div>
@@ -77,7 +83,10 @@
             <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
-              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+              <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
+                <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
+              </button>
+              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>
@@ -119,6 +128,9 @@
 
           <button matIconButton (click)="toggleDarkMode()">
             <mat-icon>{{ isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          </button>
+          <button matIconButton (click)="toggleLanguage()" [attr.aria-label]="'Switch language to ' + (currentLanguage() === 'en' ? 'German' : 'English')">
+            <span class="lang-toggle-label">{{ currentLanguage() === 'en' ? 'EN' : 'DE' }}</span>
           </button>
         </nav>
 
@@ -172,7 +184,10 @@
               <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
-                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+                <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
+                  <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
+                </button>
+                <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
               </div>
@@ -190,7 +205,10 @@
             <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
-              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="openMenuFor(convo)">
+              <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
+                <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
+              </button>
+              <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>

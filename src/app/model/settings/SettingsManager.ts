@@ -18,6 +18,11 @@ export interface SettingsManager {
    */
   setIsDarkMode(isDarkMode: boolean): void
 
+  /**
+   * Sets the current UI language.
+   */
+  setLanguage(language: 'en' | 'de'): void
+
 }
 
 /**

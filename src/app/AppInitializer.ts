@@ -10,6 +10,7 @@ import {InformationService_T} from './model/service/InformationService';
 import {registerLocaleData} from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeEn from '@angular/common/locales/en';
+import {SettingsManager_T} from './model/settings/SettingsManager';
 
 @Injectable({
   providedIn: "root"
@@ -30,6 +31,7 @@ export class AppInitializer {
    * The info service.
    */
   private readonly infoService = inject(InformationService_T)
+  private readonly settings = inject(SettingsManager_T)
 
   /**
    * The environment loader
@@ -69,10 +71,11 @@ export class AppInitializer {
 
   private loadTranslations() {
     this.translation.addLangs(['en', 'de']);
-    this.translation.setFallbackLang(this.translation.getBrowserLang() ?? 'en');
+    this.translation.setFallbackLang('en');
     this.translation.setTranslation('en', translationEN);
     this.translation.setTranslation('de', translationDE);
-    this.translation.use(this.translation.getBrowserLang() ?? 'en')
+    const configured = this.settings.settings$.value.language
+    this.translation.use(configured)
 
     registerLocaleData(localeDe)
     registerLocaleData(localeEn)

@@ -24,6 +24,7 @@ import {
   ChangeConversationNameDialogViewModel
 } from '../change-conversation-name-dialog/ChangeConversationNameDialogViewModel';
 import {AccountDialogViewModel} from '../account-dialog/AccountDialogViewModel';
+import {TranslateService} from '@ngx-translate/core';
 
 /**
  * ViewModel for the COnversations component.
@@ -85,6 +86,7 @@ export class HomeViewModel {
    * The dialog handler.
    */
   private readonly dialog: MatDialog = inject(MatDialog);
+  private readonly translate = inject(TranslateService)
 
   private readonly isMobile$ = this.breakpointObserver
     .observe(Breakpoints.HandsetPortrait)
@@ -134,6 +136,14 @@ export class HomeViewModel {
         map(settings => settings.isDarkMode)
       ),
     {initialValue: this.settings.settings$.value.isDarkMode}
+  )
+
+  protected readonly currentLanguage = toSignal(
+    this.settings.settings$
+      .pipe(
+        map(settings => settings.language)
+      ),
+    {initialValue: this.settings.settings$.value.language}
   )
 
   /**
@@ -247,8 +257,20 @@ export class HomeViewModel {
       .subscribe(() => this.conversationService.refreshConversations().subscribe())
   }
 
+  protected toggleConvoPin(convo: Conversation, event?: Event) {
+    event?.stopPropagation()
+    this.conversationService.setPinned(convo.id, !convo.pinned)
+      .subscribe(() => this.conversationService.refreshConversations().subscribe())
+  }
+
   protected toggleDarkMode() {
     this.settings.setIsDarkMode(!this.settings.settings$.value.isDarkMode)
+  }
+
+  protected toggleLanguage() {
+    const next = this.settings.settings$.value.language === 'en' ? 'de' : 'en'
+    this.settings.setLanguage(next)
+    this.translate.use(next)
   }
 
   protected openSettings() {
