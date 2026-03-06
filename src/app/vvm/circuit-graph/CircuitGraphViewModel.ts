@@ -35,13 +35,18 @@ export type WireData = {
 // ─── Colours — CSS variables allow light/dark theming via the stylesheet ───
 
 export const TYPE_COLORS: Record<string, string> = {
-  Resistor:      'var(--cg-type-resistor)',
-  VoltageSource: 'var(--cg-type-voltage)',
-  CurrentSource: 'var(--cg-type-current)',
-  Mosfet:        'var(--cg-type-mosfet)',
-  Capacitor:     'var(--cg-type-capacitor)',
-  Inductor:      'var(--cg-type-inductor)',
-  default:       'var(--cg-type-default)',
+  Resistor:            'var(--cg-type-resistor)',
+  VoltageSource:       'var(--cg-type-voltage)',
+  CurrentSource:       'var(--cg-type-current)',
+  Mosfet:              'var(--cg-type-mosfet)',
+  Capacitor:           'var(--cg-type-capacitor)',
+  BehavioralCapacitor: 'var(--cg-type-capacitor)',
+  Inductor:            'var(--cg-type-inductor)',
+  VCCS:                'var(--cg-type-vccs)',
+  VCVS:                'var(--cg-type-vcvs)',
+  Diode:               'var(--cg-type-diode)',
+  BJT:                 'var(--cg-type-bjt)',
+  default:             'var(--cg-type-default)',
 };
 
 const WIRE_SIGNAL = 'var(--cg-wire-signal)';
@@ -56,12 +61,17 @@ const SNAP        = 10;
 
 function normalizeType(type: string): string {
   const t = (type ?? '').toLowerCase();
-  if (t === 'mosfet' || t === 'transistor' || t === 'bjt' || t === 'npn' || t === 'pnp') return 'Mosfet';
-  if (t === 'resistor')                                                                    return 'Resistor';
-  if (t === 'capacitor')                                                                   return 'Capacitor';
-  if (t === 'inductor')                                                                    return 'Inductor';
-  if (t === 'voltagesource' || t === 'vsource' || t === 'vsrc')                           return 'VoltageSource';
-  if (t === 'currentsource' || t === 'isource' || t === 'isrc')                           return 'CurrentSource';
+  if (t === 'mosfet' || t === 'nmos' || t === 'pmos' || t === 'fet')      return 'Mosfet';
+  if (t === 'bjt'  || t === 'npn'  || t === 'pnp')                        return 'BJT';
+  if (t === 'diode' || t === 'd')                                          return 'Diode';
+  if (t === 'resistor')                                                    return 'Resistor';
+  if (t === 'capacitor')                                                   return 'Capacitor';
+  if (t === 'behavioralcapacitor' || t === 'bcap' || t === 'behavioral_capacitor') return 'BehavioralCapacitor';
+  if (t === 'inductor')                                                    return 'Inductor';
+  if (t === 'voltagesource' || t === 'vsource' || t === 'vsrc')           return 'VoltageSource';
+  if (t === 'currentsource' || t === 'isource' || t === 'isrc')           return 'CurrentSource';
+  if (t === 'vccs' || t === 'voltage_controlled_current_source')          return 'VCCS';
+  if (t === 'vcvs' || t === 'voltage_controlled_voltage_source')          return 'VCVS';
   return type;
 }
 
@@ -69,14 +79,19 @@ function kindOf(comp: CircuitComponent): string {
   const normalized = normalizeType(comp.type);
   if (normalized !== comp.type) return normalized;
 
-  // Secondary heuristics for netlists that use non-standard type labels.
   const rawType = (comp.type ?? '').toLowerCase();
   const name    = (comp.name ?? '').toLowerCase();
   const nodeCnt = comp.nodes?.length ?? 0;
 
-  if (name.startsWith('m') || name.startsWith('q'))                     return 'Mosfet';
-  if (rawType.includes('fet') || rawType.includes('transistor') || rawType.includes('bjt')) return 'Mosfet';
-  if (nodeCnt >= 3 && nodeCnt <= 4 && normalized === comp.type)         return 'Mosfet';
+  // SPICE name prefixes: M=MOSFET, Q=BJT, D=Diode
+  if (name.startsWith('m'))                                               return 'Mosfet';
+  if (name.startsWith('q'))                                               return 'BJT';
+  if (name.startsWith('d') && nodeCnt === 2)                             return 'Diode';
+  if (rawType.includes('fet') || rawType.includes('mosfet'))             return 'Mosfet';
+  if (rawType.includes('bjt') || rawType.includes('transistor'))         return 'BJT';
+  if (rawType.includes('diode'))                                         return 'Diode';
+  if (nodeCnt === 3 && normalized === comp.type)                         return 'BJT';
+  if (nodeCnt === 4 && normalized === comp.type)                         return 'Mosfet';
 
   return normalized;
 }
@@ -151,14 +166,26 @@ export function computeLayout(comps: CircuitComponent[]): CompPos {
 export function terminalPoint(comp: CircuitComponent, idx: number, pos: CompPos): Point {
   const p = pos[comp.name] ?? { x: 0, y: 0 };
   switch (kindOf(comp)) {
-    case 'Resistor': case 'Inductor': case 'Capacitor':
+    case 'Resistor': case 'Inductor': case 'Capacitor': case 'BehavioralCapacitor':
       return idx === 0 ? { x: p.x - 32, y: p.y } : { x: p.x + 32, y: p.y };
     case 'VoltageSource': case 'CurrentSource':
       return idx === 0 ? { x: p.x, y: p.y - 38 } : { x: p.x, y: p.y + 38 };
+    case 'Diode':
+      // Anode (idx 0) left, Cathode (idx 1) right
+      return idx === 0 ? { x: p.x - 28, y: p.y } : { x: p.x + 28, y: p.y };
     case 'Mosfet':
       if (idx === 0) return { x: p.x + 22, y: p.y - 40 };  // Drain  (top-right)
       if (idx === 1) return { x: p.x - 40, y: p.y };        // Gate   (left)
       return             { x: p.x + 22, y: p.y + 40 };      // Source (bottom-right)
+    case 'BJT':
+      if (idx === 0) return { x: p.x - 40, y: p.y };        // Base   (left)
+      if (idx === 1) return { x: p.x + 22, y: p.y - 38 };  // Collector (top-right)
+      return             { x: p.x + 22, y: p.y + 38 };      // Emitter   (bottom-right)
+    case 'VCCS': case 'VCVS':
+      if (idx === 0) return { x: p.x - 36, y: p.y - 24 };  // in+
+      if (idx === 1) return { x: p.x - 36, y: p.y + 24 };  // in-
+      if (idx === 2) return { x: p.x + 36, y: p.y - 24 };  // out+
+      return             { x: p.x + 36, y: p.y + 24 };      // out-
     default:
       return idx === 0 ? { x: p.x - 22, y: p.y } : { x: p.x + 22, y: p.y };
   }
@@ -380,6 +407,30 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
 
   protected valueEntries(comp: CircuitComponent): { k: string; v: string }[] {
     return comp.values ? Object.entries(comp.values).map(([k, v]) => ({ k, v })) : [];
+  }
+
+  // Returns just the value string for the most meaningful attribute — no key prefix.
+  protected primaryValue(comp: CircuitComponent): string | null {
+    if (!comp.values) return null;
+    const PRIMARY: Record<string, string> = {
+      Resistor:            'resistance',
+      Capacitor:           'capacitance',
+      BehavioralCapacitor: 'capacitance_expression',
+      Inductor:            'inductance',
+      VoltageSource:       'dc_value',
+      CurrentSource:       'dc_value',
+      VCCS:                'gain',
+      VCVS:                'gain',
+      Mosfet:              'width',
+      Diode:               'area',
+      BJT:                 'area',
+    };
+    const key = PRIMARY[kindOf(comp)];
+    const val = key ? comp.values[key] : null;
+    if (val != null) return String(val);
+    // Fallback: first available value
+    const first = Object.values(comp.values)[0];
+    return first != null ? String(first) : null;
   }
 
   protected readonly resistorPoints = '0,-16 -9,-12 9,-8 -9,-4 9,0 -9,4 9,8 -9,12 0,16';

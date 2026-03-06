@@ -27,6 +27,10 @@
   --cg-type-mosfet: #6c3483;
   --cg-type-capacitor: #c0392b;
   --cg-type-inductor: #1a5276;
+  --cg-type-vccs: #16a085;
+  --cg-type-vcvs: #8e44ad;
+  --cg-type-diode: #e67e22;
+  --cg-type-bjt: #c0392b;
   --cg-type-default: #2c3e50;
 }
 
@@ -55,6 +59,10 @@
   --cg-type-mosfet: #ffbc7b;
   --cg-type-capacitor: #e68139;
   --cg-type-inductor: #cf7431;
+  --cg-type-vccs: #48c9b0;
+  --cg-type-vcvs: #c39bd3;
+  --cg-type-diode: #f0a500;
+  --cg-type-bjt: #ff6b6b;
   --cg-type-default: #f5b26b;
 }
 
@@ -139,7 +147,14 @@
 .comp-value {
   font-family: 'Courier New', Courier, monospace;
   font-size: 10px;
-  opacity: 0.75;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.symbol-tag {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  font-weight: 600;
   pointer-events: none;
 }
 
