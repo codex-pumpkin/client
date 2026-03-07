@@ -131,7 +131,7 @@
   },
   "settings": {
     "title": "Sprachmodelle",
-    "description": "Verwende die folgende Liste, um neue Sprachmodelle zu deinem Konto hinzuzufügen. Für jeden neuen Chat kannst du auswählen, welches Sprachmodell verwendet werden soll. Du musst eine URL zur OpenAI-API angeben und optional ein Autorisierungstoken, falls erforderlich.",
+    "description": "Verwende die folgende Liste, um neue Sprachmodelle zu deinem Konto hinzuzufügen. Für jeden neuen Chat kannst du auswählen, welches Sprachmodell verwendet werden soll. Der Anbieter muss im Modellnamen angegeben werden (z.B. 'openai/gpt-4o-mini', 'anthropic/claude-sonnet-4-6', 'deepseek/deepseek-chat'). Das URL-Feld ist nur für lokale Sprachmodelle erforderlich – in allen anderen Fällen bitte leer lassen.",
     "name": {
       "label": "Name"
     },
