@@ -52,6 +52,12 @@ export const createTargetLanguage = (response: TargetLanguageResponse): TargetLa
       return TargetLanguage.PYTHON
     case "spice_netlist":
       return TargetLanguage.SPICE
+    case "english":
+      return TargetLanguage.ENGLISH
+    case "german":
+      return TargetLanguage.GERMAN
+    default:
+      return TargetLanguage.SPICE
   }
 }
 

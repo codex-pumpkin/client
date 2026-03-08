@@ -12,6 +12,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {InformationService_T} from '../../model/service/InformationService';
+import { Validators } from '@angular/forms';
 
 /**
  * Models an llm configuration in the ui-state.
@@ -183,7 +184,12 @@ export class SettingsViewModel implements OnInit {
     config: null,
     dirty: false,
     token: new CodexFormControl("", []),
-    url: new CodexFormControl("", [CodexValidators.url]),
+    url: new CodexFormControl("", [
+      (control) => {
+        if (!control.value) return null;
+        return CodexValidators.url(control);
+      }
+    ]),
     name: new CodexFormControl("", [CodexValidators.nonempty]),
     modelName: new CodexFormControl("", [CodexValidators.nonempty]),
     tokenVisible: false,

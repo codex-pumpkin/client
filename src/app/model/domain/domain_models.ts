@@ -16,7 +16,17 @@ export enum TargetLanguage {
   /**
    * Python code
    */
-  PYTHON
+  PYTHON,
+
+  /**
+   * English text
+   */
+  ENGLISH,
+
+  /**
+   * German text
+   */
+  GERMAN
 }
 
 /**
@@ -350,6 +360,11 @@ export type Settings = {
   /**
    * Whether the application is set to dark mode.
    */
-  isDarkMode: boolean
+  isDarkMode: boolean,
+
+  /**
+   * UI language of the application.
+   */
+  language: 'en' | 'de'
 
 }

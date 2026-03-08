@@ -113,6 +113,15 @@ export class NetworkConversationService implements ConversationService {
       case TargetLanguage.PYTHON:
         lang = "python"
         break
+      case TargetLanguage.ENGLISH:
+        lang = "english"
+        break
+      case TargetLanguage.GERMAN:
+        lang = "german"
+        break
+      default:
+        lang = "spice_netlist"
+        break
     }
 
     const call = (token: string) => this.api.postConversation$({

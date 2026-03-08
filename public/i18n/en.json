@@ -131,7 +131,7 @@
   },
   "settings": {
     "title": "Language models",
-    "description": "Use the list below to add new language models to your account. For each new chat, you can choose which language model to use. You must provide a URL to the OpenAI API and optionally an authorization token if required.",
+    "description": "Use the following list to add new language models to your account. For each new chat you can choose which language model to use. The provider must be specified in the model name (e.g. 'openai/gpt-4o-mini', 'anthropic/claude-sonnet-4-6', 'deepseek/deepseek-chat'). The URL field is only required for local language models — in all other cases please leave it empty.",
     "name": {
       "label": "Name"
     },
@@ -265,11 +265,20 @@
     "python": {
       "label": "Python"
     },
+    "english": {
+      "label": "English"
+    },
+    "german": {
+      "label": "German"
+    },
     "spice": {
       "label": "SPICE netlist"
     }
   },
   "prompt_input": {
-    "placeholder": "Enter prompt"
+    "placeholder": "Enter prompt",
+    "examples": {
+      "transistor_chain_connected": "Generate an electronic circuit with 8 transistors in a row. Do not leave the last transistor unconnected. I do not want floating nodes. Every node must be connected on both sides."
+    }
   }
 }
