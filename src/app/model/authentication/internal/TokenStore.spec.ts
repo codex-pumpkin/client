@@ -1,12 +1,11 @@
-import {TokenStore} from './TokenStore';
-import {beforeEach} from 'vitest';
-import {TestBed} from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { TokenStore } from './TokenStore';
 
 describe("TokenStore", () => {
   let subject: TokenStore
 
   beforeEach(() => {
-    subject = TestBed.inject(TokenStore)
+    subject = new TokenStore()
   })
 
   it("Setting/Unsetting access token works", () => {

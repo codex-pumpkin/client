@@ -1,0 +1,36 @@
+Node.js version v25.6.1 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+[1m[33m
+Warning: This is a simple server for use in testing or debugging Angular applications
+locally. It hasn't been reviewed for security issues.
+
+Binding this server to an open connection can result in compromising your application or
+computer. Using a different host than the one passed to the "--host" flag might result in
+websocket connection issues.
+    [39m[22m
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/vvm/admin-panel/AdminPanel.html:43:47:
+[37m      43 │     <p class="statistics-value">{{analytics()?.[32mtoday[37m}}</p>
+         ╵                                                [32m~~~~~[0m
+
+  Warning occurs in the template of component AdminPanelViewModel.
+
+    src/app/vvm/admin-panel/AdminPanelViewModel.ts:17:15:
+[37m      17 │   templateUrl: [32m"AdminPanel.html"[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/vvm/admin-panel/AdminPanel.html:49:47:
+[37m      49 │     <p class="statistics-value">{{analytics()?.[32mthisMonth[37m}}</p>
+         ╵                                                [32m~~~~~~~~~[0m
+
+  Warning occurs in the template of component AdminPanelViewModel.
+
+    src/app/vvm/admin-panel/AdminPanelViewModel.ts:17:15:
+[37m      17 │   templateUrl: [32m"AdminPanel.html"[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
