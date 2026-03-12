@@ -77,22 +77,22 @@ export class ConversationsViewModel implements OnInit {
   /**
    * Whether the initial state of the screen is loaded.
    */
-  protected readonly hasLoaded = signal(false)
+  readonly hasLoaded = signal(false)
 
   /**
    * Whether the screen is in the initial state for creating a request.
    */
-  protected readonly isInitial = signal(false)
+  readonly isInitial = signal(false)
 
   /**
    * Whether the screen is in the initial state for creating a request.
    */
-  protected readonly isProcessing = signal(false)
+  readonly isProcessing = signal(false)
 
   /**
    * The currently stored conversation.
    */
-  protected readonly conversation = signal<Conversation | null>(null)
+  readonly conversation = signal<Conversation | null>(null)
 
   /**
    * A generic error key that may have appeared.
@@ -102,7 +102,7 @@ export class ConversationsViewModel implements OnInit {
   /**
    * The llm-configurations.
    */
-  protected readonly llmConfigs = toSignal(
+  readonly llmConfigs = toSignal(
     this.infoService.llmConfigurations$
       .pipe(
         map(configs => configs ?? [])
@@ -124,17 +124,17 @@ export class ConversationsViewModel implements OnInit {
   /**
    * The selected llm-config.
    */
-  protected llmConfig = new CodexFormControl<LLMConfig | null>(null, [CodexValidators.nonnull])
+  llmConfig = new CodexFormControl<LLMConfig | null>(null, [CodexValidators.nonnull])
 
   /**
    * The target language.
    */
-  protected targetLanguage = new CodexFormControl<TargetLanguage>(TargetLanguage.SPICE, [CodexValidators.nonnull])
+  targetLanguage = new CodexFormControl<TargetLanguage>(TargetLanguage.SPICE, [CodexValidators.nonnull])
 
   /**
    * Form control for the prompt input.
    */
-  protected prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
+  prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -189,7 +189,7 @@ export class ConversationsViewModel implements OnInit {
     })
   }
 
-  protected start() {
+  start() {
     if(this.prompt.control.invalid) {
       return
     }
