@@ -25,7 +25,6 @@ export class PromptInputViewModel {
   public sendCallback = new EventEmitter<void>();
 
   public click() {
-    console.log("Inside click()")
     this.sendCallback.emit()
   }
 }
