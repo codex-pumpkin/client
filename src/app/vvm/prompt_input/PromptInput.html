@@ -3,9 +3,9 @@
     id="search-input"
     [formControl]="control()!"
     [placeholder]="'prompt_input.placeholder' | translate"
-    (keydown.enter)="onSend.emit()"
+    (keydown.enter)="sendCallback.emit()"
   >
-  <button matIconButton (click)="onSend.emit()" [disabled]="disabled()">
+  <button id="prompt-input-send" matIconButton (click)="click()" [disabled]="disabled()">
     <mat-icon>send</mat-icon>
   </button>
 </div>

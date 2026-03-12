@@ -21,7 +21,7 @@
             <p class="piid-email">{{account().email}}</p>
           </div>
           <div class="spacer"></div>
-          <button matIconButton (click)="openAccount()">
+          <button class="open-account-dialog" matIconButton (click)="openAccount()">
             <mat-icon>settings</mat-icon>
           </button>
         </div>
@@ -48,7 +48,7 @@
 
           <div>
             <button matIconButton (click)="addConvo()">
-              <mat-icon>add</mat-icon>
+              <mat-icon class="add-conversation-button">add</mat-icon>
             </button>
             <button matIconButton (click)="toggleSearch()">
               <mat-icon>search</mat-icon>
@@ -143,7 +143,7 @@
             <p class="piid-email">{{account().email}}</p>
           </div>
           <div class="spacer"></div>
-          <button matIconButton (click)="openAccount()">
+          <button  class="open-account-dialog" matIconButton (click)="openAccount()">
             <mat-icon>settings</mat-icon>
           </button>
         </div>
@@ -170,7 +170,7 @@
 
           <div>
             <button matIconButton (click)="addConvo()">
-              <mat-icon>add</mat-icon>
+              <mat-icon class="add-conversation-button">add</mat-icon>
             </button>
             <button matIconButton (click)="toggleSearch()">
               <mat-icon>search</mat-icon>
