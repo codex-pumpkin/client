@@ -11,6 +11,7 @@ import { AccountService_T } from "../../model/service/AccountService";
 import { ConversationService_T } from "../../model/service/ConversationService";
 import {BehaviorSubject, of} from 'rxjs';
 import { Conversation } from "../../model/domain/domain_models";
+import {TranslateService} from '@ngx-translate/core';
 
 describe("HomeViewModel", () => {
 
@@ -62,6 +63,10 @@ describe("HomeViewModel", () => {
     setPinned: vi.fn(() => of(null))
   };
 
+  const translateMock = {
+    use: vi.fn(() => undefined)
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -73,7 +78,8 @@ describe("HomeViewModel", () => {
         {provide: SettingsManager_T, useValue: settingsMock},
         {provide: AuthenticationService_T, useValue: authMock},
         {provide: AccountService_T, useValue: accountServiceMock},
-        {provide: ConversationService_T, useValue: conversationServiceMock}
+        {provide: ConversationService_T, useValue: conversationServiceMock},
+        { provide: TranslateService, useValue: translateMock }
       ]
     });
 
