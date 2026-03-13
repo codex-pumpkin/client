@@ -87,7 +87,6 @@ describe("AccountDialogViewModel", () => {
 
   it("does nothing if no file selected", () => {
     const event = { target: { files: [] } } as unknown as Event;
-    console.log("Will test not to call update profile picture")
     vm.onFileSelected(event);
     expect(accountServiceMock.updateProfilePicture).not.toHaveBeenCalled();
   });

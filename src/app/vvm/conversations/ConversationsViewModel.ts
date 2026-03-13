@@ -130,7 +130,6 @@ export class ConversationsViewModel implements OnInit {
   prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
-    console.log(`Inside ngOnInit`)
     this.infoService.llmConfigurations$
       .pipe(
         map(configs => configs ?? [])

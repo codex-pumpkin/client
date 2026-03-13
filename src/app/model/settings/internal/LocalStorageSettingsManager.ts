@@ -20,7 +20,6 @@ export class LocalStorageSettingsManager implements SettingsManager {
   constructor() {
 
     this.settings$ = new BehaviorSubject(this.reloadSettings())
-    console.log("Inside constructor")
   }
 
   private saveSettings(settings: Settings) {

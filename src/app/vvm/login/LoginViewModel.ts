@@ -84,7 +84,6 @@ export class LoginViewModel extends GoogleAuthViewModel {
       isEmail ? null : this.identifier.getOrBlank(),
       this.password.getOrBlank()
     ).subscribe(maybe => {
-      console.log(`Got maybe ${JSON.stringify(maybe)}`)
       if(maybe.isYes) reactYes()
       else reactNo(maybe.no())
     })

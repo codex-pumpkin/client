@@ -93,11 +93,9 @@ export class AccountDialogViewModel {
     this.dialog.open(ChangeEmailDialogViewModel, {data: this.account()})
       .afterClosed()
       .subscribe((newEmail: string) => {
-        console.log("Email dialog closed")
         if (newEmail) {
           this.accountService.updateEmail$(newEmail)
             .subscribe(() => {
-              console.log("Email change finished")
               // The email of the account was changed.
               // Now we need to trigger an authentication, so that an email-verification is sent.
               from(this.auth.refreshAccount())
@@ -134,7 +132,6 @@ export class AccountDialogViewModel {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement
-    console.log(`Got input: ${JSON.stringify(input)} and ${!input.files?.length}`)
     if(!input.files?.length) return
 
     const file = input.files[0]

@@ -1,7 +1,7 @@
 <div mat-dialog-title id="header">
   <div>
     <img class="profile-picture" [src]="profilePicture()" alt="PP" (click)="fileInput.click()">
-    <input type="file" #fileInput accept="image/png, image/jpeg" hidden (change)="onFileSelected($event)">
+    <input id="profile-picture-input" type="file" #fileInput accept="image/png, image/jpeg" hidden (change)="onFileSelected($event)">
   </div>
 
   <div id="username-container">
@@ -23,7 +23,7 @@
     <p id="email-label">{{ 'dialog.account.email.label' | translate }}</p>
     <p id="email-value">{{ account().email }}</p>
 
-    <button matIconButton (click)="changeEmail()">
+    <button id="change-email-button" matIconButton (click)="changeEmail()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>

@@ -200,13 +200,11 @@ export class HomeViewModel {
   }
 
   openConvo(convo: Conversation) {
-    console.log("Inside openConvo()")
      this.router.navigate([`/home/conversations/${convo.id}`])
   }
 
   openMenuFor(conversation: Conversation) {
     this.menuConversation.set(conversation)
-    console.log(`Set menu convo ${JSON.stringify(this.menuConversation())}`)
   }
 
   protected openEditNameDialog() {
@@ -223,7 +221,6 @@ export class HomeViewModel {
         if(result) {
           this.conversationService.updateName(convo.id, result)
             .subscribe(() => {
-              console.log("Will refresh convos")
               this.conversationService.refreshConversations().subscribe()
             })
         }
@@ -278,14 +275,11 @@ export class HomeViewModel {
   }
 
   openAccount() {
-    console.log("Will open account")
     this.dialog.open(AccountDialogViewModel)
       .afterClosed()
       .subscribe(navBack => {
-        console.log(`Account dialog closed with navBack = ${navBack}`)
         if(navBack) {
           this.router.navigate(["/login"]).then(res => {
-            console.log(`Navigation result: ${res} and got url after: ${document.URL} or from router: ${this.router.url}`)
           })
         }
       })

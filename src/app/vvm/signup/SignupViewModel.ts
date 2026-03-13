@@ -63,7 +63,6 @@ export class SignupViewModel extends GoogleAuthViewModel {
   }
 
   public signup() {
-    console.log("Inside signup() handler")
     this.genericError.set(null)
 
     const inputs = [this.email, this.username, this.password];
@@ -71,7 +70,6 @@ export class SignupViewModel extends GoogleAuthViewModel {
     if (anyError) return;
 
     const reactNo = (err: SignupError) => {
-      console.log("Inside reactNo()")
       switch (err) {
         case Errors.Unknown:
           break;
@@ -87,7 +85,6 @@ export class SignupViewModel extends GoogleAuthViewModel {
     }
 
     const reactYes = () => {
-      console.log("Inside reactYes()")
       this.router.navigate(["/email-not-verified"])
     }
 
