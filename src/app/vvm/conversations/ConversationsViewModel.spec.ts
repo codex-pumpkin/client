@@ -1,14 +1,41 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { TestBed } from "@angular/core/testing";
-import { BehaviorSubject, of } from "rxjs";
+import {beforeEach, describe, expect, it, vi} from "vitest";
+import {TestBed} from "@angular/core/testing";
+import {BehaviorSubject, of} from "rxjs";
 
-import { ConversationsViewModel } from "./ConversationsViewModel";
-import { ConversationService_T } from "../../model/service/ConversationService";
-import { InformationService_T } from "../../model/service/InformationService";
-import { Router, ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { NgZone, ChangeDetectorRef } from "@angular/core";
-import { TargetLanguage } from "../../model/domain/domain_models";
+import {ConversationsViewModel} from "./ConversationsViewModel";
+import {ConversationService_T} from "../../model/service/ConversationService";
+import {InformationService_T} from "../../model/service/InformationService";
+import {ActivatedRoute, Router} from "@angular/router";
+import {TranslateService} from "@ngx-translate/core";
+import {ChangeDetectorRef} from "@angular/core";
+import {Conversation, LLMConfig, LlmError, Maybe, Message, TargetLanguage} from "../../model/domain/domain_models";
+
+const llmConfig: LLMConfig = {
+  id: "id",
+  modelName: "gpt-4",
+  url: "http://example.com",
+  name: "ChatGPT",
+  hasApiKey: true
+}
+
+const msg: Message = {
+  id: "id",
+  prompt: "Create circuit",
+  response: "Here is circuit",
+  secondaryResponse: "beep boop",
+  generationMillis: 1234,
+  createdAt: ""
+}
+
+const convo: Conversation = {
+  id: "id",
+  name: "name",
+  targetLanguage: TargetLanguage.JAVA,
+  createdAt: "",
+  pinned: false,
+  llmConfig: llmConfig,
+  messages: [msg]
+}
 
 describe("ConversationsViewModel", () => {
 
@@ -25,22 +52,18 @@ describe("ConversationsViewModel", () => {
   };
 
   const conversationServiceMock = {
-    conversation: vi.fn(() => of(null)),
-    refreshConversations: vi.fn(() => of(null)),
-    sendMessage: vi.fn(() => of("msg")),
-    start: vi.fn(() => of({ isYes: false, no: () => null }))
+    conversation: vi.fn(() => new BehaviorSubject<Conversation | null>(convo).asObservable()),
+    refreshConversations: vi.fn(() => of(true)),
+    sendMessage: vi.fn(() => of(null)),
+    start: vi.fn(() => of(Maybe.createYes<string, LlmError>("das")))
   };
 
   const infoServiceMock = {
-    llmConfigurations$: of([])
+    llmConfigurations$: new BehaviorSubject<LLMConfig[]>([])
   };
 
   const translateMock = {
     instant: vi.fn(() => "Conversation Name")
-  };
-
-  const zoneMock = {
-    run: (fn: any) => fn()
   };
 
   const cdMock = {
@@ -57,7 +80,6 @@ describe("ConversationsViewModel", () => {
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: TranslateService, useValue: translateMock },
-        { provide: NgZone, useValue: zoneMock },
         { provide: ChangeDetectorRef, useValue: cdMock }
       ]
     });
@@ -85,10 +107,7 @@ describe("ConversationsViewModel", () => {
 
   it("loads conversation with messages", () => {
     conversationServiceMock.conversation.mockReturnValue(
-      of({
-        id: "1",
-        messages: [{ id: "m1" }]
-      })
+      of(convo)
     );
 
     vm.ngOnInit();
