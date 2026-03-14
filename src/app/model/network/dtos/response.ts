@@ -9,6 +9,7 @@ export type MessageResponse = {
   generation_millis: number
   response: string
   graph?: string
+  simulation_result?: string
   created_at: string
 }
 
