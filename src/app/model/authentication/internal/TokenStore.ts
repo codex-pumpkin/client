@@ -57,7 +57,7 @@ export class TokenStore {
    * Gets the refresh token.
    */
   getRefreshOrEmpty(): string {
-    return this.getRefresh() ?? ""
+    return this.getRefresh() ?? "00000000-0000-0000-0000-000000000000" // We use empty UUID so that we don't get a 422 response
   }
 
 }
