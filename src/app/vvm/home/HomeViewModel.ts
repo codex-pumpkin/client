@@ -149,7 +149,7 @@ export class HomeViewModel {
   /**
    * Whether the search s active right now.
    */
-  protected readonly searchActive = signal(false)
+  readonly searchActive = signal(false)
 
   protected readonly searchForm = new CodexFormControl("", [])
 
@@ -182,31 +182,29 @@ export class HomeViewModel {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
-  protected toggleSearch() {
+  toggleSearch() {
     this.searchActive.set(!this.searchActive())
     if(this.searchActive()) {
       setTimeout(() => (document.getElementsByClassName("search").item(0) as HTMLElement)?.focus(), 2)
     }
   }
 
-  protected addConvo() {
+  addConvo() {
     this.router.navigate(["/home/conversations"])
   }
 
-  protected readonly menuConversation = signal<Conversation | null>(null)
+  readonly menuConversation = signal<Conversation | null>(null)
 
   protected toggleDrawer() {
 
   }
 
-  protected openConvo(convo: Conversation) {
-    console.log("Inside openConvo()")
+  openConvo(convo: Conversation) {
      this.router.navigate([`/home/conversations/${convo.id}`])
   }
 
-  protected openMenuFor(conversation: Conversation) {
+  openMenuFor(conversation: Conversation) {
     this.menuConversation.set(conversation)
-    console.log(`Set menu convo ${JSON.stringify(this.menuConversation())}`)
   }
 
   protected openEditNameDialog() {
@@ -223,7 +221,6 @@ export class HomeViewModel {
         if(result) {
           this.conversationService.updateName(convo.id, result)
             .subscribe(() => {
-              console.log("Will refresh convos")
               this.conversationService.refreshConversations().subscribe()
             })
         }
@@ -246,7 +243,7 @@ export class HomeViewModel {
       )
   }
 
-  protected pinConvo() {
+  pinConvo() {
     const convo = this.menuConversation()
 
     if(!convo) {
@@ -263,7 +260,7 @@ export class HomeViewModel {
       .subscribe(() => this.conversationService.refreshConversations().subscribe())
   }
 
-  protected toggleDarkMode() {
+  toggleDarkMode() {
     this.settings.setIsDarkMode(!this.settings.settings$.value.isDarkMode)
   }
 
@@ -273,25 +270,22 @@ export class HomeViewModel {
     this.translate.use(next)
   }
 
-  protected openSettings() {
+  openSettings() {
     this.router.navigate(["home/settings"])
   }
 
-  protected openAccount() {
-    console.log("Will open account")
+  openAccount() {
     this.dialog.open(AccountDialogViewModel)
       .afterClosed()
       .subscribe(navBack => {
-        console.log(`Account dialog closed with navBack = ${navBack}`)
         if(navBack) {
           this.router.navigate(["/login"]).then(res => {
-            console.log(`Navigation result: ${res} and got url after: ${document.URL} or from router: ${this.router.url}`)
           })
         }
       })
   }
 
-  protected openAdmin() {
+  openAdmin() {
     this.router.navigate(["home/admin-panel"])
   }
 }

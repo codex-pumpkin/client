@@ -32,7 +32,7 @@ export class MessageBubbleViewModel {
   /**
    * The generation time, in seconds, rounded to one decimal
    */
-  protected readonly generationMillis = () => Number((this.message().generationMillis / 1000).toFixed(1));
+  readonly generationMillis = () => Number((this.message().generationMillis / 1000).toFixed(1));
 
   /**
    * The parent conversation
@@ -42,7 +42,7 @@ export class MessageBubbleViewModel {
   /**
    * Whether the circuit visualization is switched on
    */
-  protected readonly isVisualized = new FormControl<boolean>(false)
+  readonly isVisualized = new FormControl<boolean>(false)
 
   /**
    * Whether the simulation result is switched on
@@ -52,14 +52,14 @@ export class MessageBubbleViewModel {
   /**
    * Whether the message can be visualized (circuit graph)
    */
-  protected readonly canBeVisualized = () => [TargetLanguage.SPICE].includes(this.conversation()?.targetLanguage)
-
+  readonly canBeVisualized = () => [TargetLanguage.SPICE].includes(this.conversation()?.targetLanguage)
   /**
    * Whether a simulation result is available for this message
    */
   protected readonly hasSimulationResult = () => this.message().simulationResult != null
 
   protected downloadCode() {
+
     const blob = new Blob([this.message().response], { type: 'text/plain;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 

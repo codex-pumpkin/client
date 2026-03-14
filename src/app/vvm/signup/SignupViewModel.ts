@@ -52,18 +52,17 @@ export class SignupViewModel extends GoogleAuthViewModel {
    */
   private readonly auth = inject(AuthenticationService_T)
 
-  protected readonly email = new CodexFormControl("", [CodexValidators.email])
-  protected readonly username = new CodexFormControl("", [CodexValidators.username])
-  protected readonly password = new CodexFormControl("", [CodexValidators.password])
-  protected readonly passwordVisible = signal(false)
-  protected readonly genericError = signal<string | null>(null)
+  public readonly email = new CodexFormControl("", [CodexValidators.email])
+  public readonly username = new CodexFormControl("", [CodexValidators.username])
+  public readonly password = new CodexFormControl("", [CodexValidators.password])
+  public readonly passwordVisible = signal(false)
+  public readonly genericError = signal<string | null>(null)
 
-  protected togglePassword() {
+  public togglePassword() {
     this.passwordVisible.set(!this.passwordVisible())
   }
 
-  protected signup() {
-    console.log("Inside signup() handler")
+  public signup() {
     this.genericError.set(null)
 
     const inputs = [this.email, this.username, this.password];
@@ -71,7 +70,6 @@ export class SignupViewModel extends GoogleAuthViewModel {
     if (anyError) return;
 
     const reactNo = (err: SignupError) => {
-      console.log("Inside reactNo()")
       switch (err) {
         case Errors.Unknown:
           break;
@@ -87,7 +85,6 @@ export class SignupViewModel extends GoogleAuthViewModel {
     }
 
     const reactYes = () => {
-      console.log("Inside reactYes()")
       this.router.navigate(["/email-not-verified"])
     }
 
@@ -101,7 +98,7 @@ export class SignupViewModel extends GoogleAuthViewModel {
     })
   }
 
-  protected handleGoogleResponse(response: any): void {
+  public handleGoogleResponse(response: any): void {
     this.genericError.set(null)
     const code = response.code
 

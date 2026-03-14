@@ -50,24 +50,24 @@ export class PasswordResetViewModel {
   /**
    * Whether the password was reset.
    */
-  protected readonly reset = signal(false)
+  readonly reset = signal(false)
 
   /**
    * A generic error message.
    */
-  protected readonly genericError = signal<string | null>(null)
+  readonly genericError = signal<string | null>(null)
 
   /**
    * Visibility of the password form field.
    */
-  protected readonly passwordVisibility = signal(false)
+  readonly passwordVisibility = signal(false)
 
   /**
    * The password form field.
    */
-  protected readonly password = new CodexFormControl("", [CodexValidators.password])
+  readonly password = new CodexFormControl("", [CodexValidators.password])
 
-  protected resetPassword() {
+  resetPassword() {
     if (this.password.control.invalid)
       return
 
@@ -83,11 +83,11 @@ export class PasswordResetViewModel {
       })
   }
 
-  protected togglePasswordVisibility() {
+  togglePasswordVisibility() {
     this.passwordVisibility.set(!this.passwordVisibility())
   }
 
-  protected continue() {
+  continue() {
     this.router.navigate([""])
   }
 

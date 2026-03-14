@@ -55,7 +55,6 @@ describe("VerifiedAuthGuard", () => {
     subject.auth = noAccService as AuthenticationService
 
     const urlTree = subject.canActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
-    console.log((urlTree as UrlTree).toString())
     expect((urlTree as UrlTree).toString()).equals("/login")
   })
 
@@ -63,7 +62,6 @@ describe("VerifiedAuthGuard", () => {
     subject.auth = memberService as AuthenticationService
 
     const urlTree = subject.canActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
-    console.log((urlTree as UrlTree).toString())
     expect((urlTree as UrlTree).toString()).equals("/email-not-verified")
   })
 
@@ -98,7 +96,6 @@ describe("AccountAuthGuard", () => {
     subject.auth = noAccService as AuthenticationService
 
     const urlTree = subject.canActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
-    console.log((urlTree as UrlTree).toString())
     expect((urlTree as UrlTree).toString()).equals("/login")
   })
 

@@ -27,7 +27,6 @@ export class ResetPasswordDialogViewModel {
    * Event handler for the confirm button.
    */
   protected confirm() {
-    console.log("Reset password but clicked")
     this.dialog.close(true);
   }
 
@@ -35,7 +34,6 @@ export class ResetPasswordDialogViewModel {
    * Event handler for the cancel button.
    */
   protected cancel() {
-    console.log("Reset password cancelled")
     this.dialog.close(false);
   }
 }

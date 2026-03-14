@@ -95,27 +95,25 @@ export class SettingsViewModel implements OnInit {
 
   private readonly drafts$ = new BehaviorSubject<LLMConfigDraft[]>([])
 
-  protected readonly drafts = toSignal(this.drafts$, {initialValue: [] as LLMConfigDraft[]})
+  readonly drafts = toSignal(this.drafts$, {initialValue: [] as LLMConfigDraft[]})
 
   ngOnInit() {
     // When the component loads, we initialize the drafts with all existing configs.
     const configs = this.infoService.llmConfigurations$.value ?? []
     const drafts = configs.map(this.createDraftFromConfig)
 
-    console.log("Got drafts")
     console.table(drafts)
 
     this.drafts$.next(drafts)
   }
 
-  protected addDraft() {
+  addDraft() {
     const draft = this.createDraft()
-    console.log(`Added draft ${JSON.stringify(draft.draftId)}`)
     const drafts = [...this.drafts$.value, draft]
     this.drafts$.next(drafts)
   }
 
-  protected removeDraft(draft: LLMConfigDraft) {
+  removeDraft(draft: LLMConfigDraft) {
     // Remove the draft from the state
     this.drafts$.next(this.drafts$.value.filter(d => d.draftId != draft.draftId))
 
@@ -126,17 +124,15 @@ export class SettingsViewModel implements OnInit {
     }
   }
 
-  protected safe() {
+  safe() {
     const drafts = this.drafts$.value
     if(drafts.some(draft => draft.url.control.invalid || draft.name.control.invalid || draft.modelName.control.invalid)) return
 
     const promises = drafts.map(draft => {
       if(draft.config == null) { // Add remote one
-        console.log("It was non-remote")
         const res$ = this.infoService.addLLMConfig(draft.name.getOrBlank(), draft.modelName.getOrBlank(), draft.url.getOrBlank(), draft.token.control.value)
         return firstValueFrom(res$)
       } else { // Update remote one
-        console.log("It was remote")
         const token: string | null = !!draft.token.control.value ? draft.token.control.value : null
         const res$ = this.infoService.updateLLMConfig(draft.config.id, draft.name.getOrBlank(), draft.modelName.getOrBlank(), draft.url.getOrBlank(), token)
         return firstValueFrom(res$)
@@ -146,7 +142,6 @@ export class SettingsViewModel implements OnInit {
     const combined = Promise.all(promises)
 
     from(combined).subscribe(() => { // All hve been added
-      console.log("Finished combined")
       from(this.infoService.refreshLLmConfigs()).subscribe(() => { // Account and its LL M's have been refreshed
         // We use all the configs from remote to repopulate the list of
         const newConfigs = this.infoService.llmConfigurations$.value ?? []
@@ -156,7 +151,7 @@ export class SettingsViewModel implements OnInit {
     })
   }
 
-  protected toggleVisibility(id: string) {
+  toggleVisibility(id: string) {
     this.drafts$.next(this.drafts$.value.map(draft => {
       if(draft.draftId == id) {
         return {

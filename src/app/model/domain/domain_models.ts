@@ -128,7 +128,6 @@ export class Maybe<Y, N> {
 
   private constructor(valueYes?: Y, valueNo?: N) {
     if((valueYes == undefined && valueNo == undefined) || (valueYes && valueNo)) {
-      console.log(`Will create maybe with values yes: ${JSON.stringify(valueYes)} and no: ${JSON.stringify(valueNo)}`)
       throw new Error("Maybe needs to be either no or yes")
     }
 
