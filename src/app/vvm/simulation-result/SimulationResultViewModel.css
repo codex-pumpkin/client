@@ -216,7 +216,8 @@
   stroke-linejoin: round;
   stroke-linecap: round;
 }
-
+/*  Error state when simulation data cannot be loaded or parsed.
+*/
 .sim-error {
   display: flex;
   align-items: center;
