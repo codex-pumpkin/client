@@ -53,7 +53,8 @@ describe("mapping.ts", () => {
       prompt: "Hello",
       response: "Hi",
       secondaryResponse: "",
-      generationMillis: 42
+      generationMillis: 42,
+      simulationResult: null
     });
   });
 
