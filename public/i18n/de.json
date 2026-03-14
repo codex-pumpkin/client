@@ -254,6 +254,7 @@
   "message_bubble": {
     "time_label": "Antwort innerhalb von {{time}} s",
     "visualization_label": "Visualisieren",
+    "simulation_label": "Simulieren",
     "prompt": {
       "label": "Prompt"
     }

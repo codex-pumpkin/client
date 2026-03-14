@@ -17,7 +17,7 @@ export enum TargetLanguage {
    * Python code
    */
   PYTHON,
-
+  
   /**
    * English text
    */
@@ -27,6 +27,7 @@ export enum TargetLanguage {
    * German text
    */
   GERMAN
+
 }
 
 /**
@@ -298,6 +299,11 @@ export type Message = {
    * The optional secondary response
    */
   secondaryResponse: string | null,
+
+  /**
+   * The optional simulation result
+   */
+  simulationResult: string | null,
 
   /**
    * The time the message took to create
