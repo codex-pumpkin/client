@@ -257,6 +257,12 @@
     "simulation_label": "Simulieren",
     "prompt": {
       "label": "Prompt"
+    },
+    "view_mode": {
+      "label": "Anzeigemodus",
+      "code": "Code",
+      "visualization": "Schaltkreis",
+      "simulation": "Simulation"
     }
   },
   "languages": {

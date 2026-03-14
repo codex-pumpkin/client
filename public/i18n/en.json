@@ -257,6 +257,12 @@
     "simulation_label": "Simulate",
     "prompt": {
       "label": "Prompt"
+    },
+    "view_mode": {
+      "label": "View Mode",
+      "code": "Code",
+      "visualization": "Circuit",
+      "simulation": "Simulation"
     }
   },
   "languages": {

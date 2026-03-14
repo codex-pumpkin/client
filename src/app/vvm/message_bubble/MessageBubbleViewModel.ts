@@ -1,23 +1,32 @@
-import {Component, input} from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import {Conversation, Message, TargetLanguage} from '../../model/domain/domain_models';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {CircuitGraphViewModel} from '../circuit-graph/CircuitGraphViewModel';
 import {SimulationResultViewModel} from '../simulation-result/SimulationResultViewModel';
+import {MatFormField} from '@angular/material/form-field';
+import {MatLabel} from '@angular/material/form-field';
+import {MatOption} from '@angular/material/select';
+import {MatSelect} from '@angular/material/select';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {map} from 'rxjs';
+import {CodexFormControl} from '../_common/CodexFormControl';
 
 @Component({
   templateUrl: 'MessageBubble.html',
   imports: [
     TranslatePipe,
-    MatSlideToggle,
     ReactiveFormsModule,
     MatIconButton,
     MatIcon,
     CircuitGraphViewModel,
-    SimulationResultViewModel
+    SimulationResultViewModel,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect
   ],
   styleUrl: 'MessageBubble.css',
   selector: 'message-bubble'
@@ -40,14 +49,30 @@ export class MessageBubbleViewModel {
   public conversation = input.required<Conversation>()
 
   /**
-   * Whether the circuit visualization is switched on
+   * View mode
    */
-  readonly isVisualized = new FormControl<boolean>(false)
+  readonly viewMode = new CodexFormControl<'code' | 'visualization' | 'simulation'>('code', [])
 
-  /**
-   * Whether the simulation result is switched on
-   */
-  protected readonly isSimulationShown = new FormControl<boolean>(false)
+  readonly validViewModes = computed(() => {
+    const arr = ['code']
+    if(this.message().simulationResult != null) {
+      arr.push('simulation')
+    }
+    if(this.message().secondaryResponse != null) {
+      arr.push('visualization')
+    }
+    return arr
+  })
+
+  isVisualized = toSignal(this.viewMode.control.valueChanges.pipe(
+    map(mode => mode == 'visualization')
+  ))
+  isSimulated = toSignal(this.viewMode.control.valueChanges.pipe(
+    map(mode => mode == 'simulation')
+  ))
+  isCode = toSignal(this.viewMode.control.valueChanges.pipe(
+    map(mode => mode == 'code')
+  ))
 
   /**
    * Whether the message can be visualized (circuit graph)
