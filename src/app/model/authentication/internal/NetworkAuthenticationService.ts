@@ -175,9 +175,8 @@ export class NetworkAuthenticationService implements AuthenticationService {
               }, this.tokens.getAccessOrEmpty())
               .pipe(
                 switchMap((res) => { // When the refresh call finished successfully, we save the new token and make the call a second time
-                  const newToken = res.access_token;
-                  this.tokens.setAccess(newToken)
-                  return call(newToken); // The second call is simply returned. If an error occurs again, we don't care
+                  this.updateTokens(res)
+                  return call(res.access_token); // The second call is simply returned. If an error occurs again, we don't care
                 }),
                 catchError((refErr) => throwError(() => refErr)) // If refresh causes an error, we propagate it
               );
