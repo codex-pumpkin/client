@@ -28,14 +28,29 @@ export abstract class GoogleAuthViewModel implements OnInit {
   protected abstract handleGoogleResponse(response: any): void
 
   ngOnInit() {
-    this.client = google.accounts.oauth2.initCodeClient({
-      client_id: this.env.get().GOOGLE_CLIENT_ID,
-      scope: "openid email profile",
-      ux_mode: "popup",
-      callback: (response: any) => {
-        console.info(`Received google code from google server.`);
-        this.handleGoogleResponse(response)
-      }
+    this.waitForGoogle().then(() => {
+      this.client = google.accounts.oauth2.initCodeClient({
+        client_id: this.env.get().GOOGLE_CLIENT_ID,
+        scope: "openid email profile",
+        ux_mode: "popup",
+        callback: (response: any) => {
+          console.info(`Received google code from google server.`);
+          this.handleGoogleResponse(response)
+        }
+      });
+    })
+  }
+
+  private waitForGoogle(): Promise<void> {
+    return new Promise(resolve => {
+      const check = () => {
+        if ((window as any).google?.accounts?.oauth2) {
+          resolve();
+        } else {
+          setTimeout(check, 50);
+        }
+      };
+      check();
     });
   }
 
