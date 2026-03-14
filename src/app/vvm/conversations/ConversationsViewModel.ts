@@ -109,9 +109,7 @@ export class ConversationsViewModel implements OnInit {
   protected readonly TargetLanguages = [
     TargetLanguage.SPICE,
     TargetLanguage.JAVA,
-    TargetLanguage.PYTHON,
-    TargetLanguage.ENGLISH,
-    TargetLanguage.GERMAN
+    TargetLanguage.PYTHON
   ]
 
   /**
