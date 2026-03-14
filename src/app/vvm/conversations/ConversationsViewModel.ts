@@ -43,7 +43,6 @@ class KeyPipe implements PipeTransform {
     MatOption,
     MatLabel,
     TranslatePipe,
-    KeyPipe,
     PromptInputViewModel,
     MessageBubbleViewModel
   ],
@@ -104,25 +103,9 @@ export class ConversationsViewModel implements OnInit {
   readonly llmConfigs = signal<LLMConfig[]>([])
 
   /**
-   * All available target languages.
-   */
-  protected readonly TargetLanguages = [
-    TargetLanguage.SPICE,
-    TargetLanguage.JAVA,
-    TargetLanguage.PYTHON,
-    TargetLanguage.ENGLISH,
-    TargetLanguage.GERMAN
-  ]
-
-  /**
    * The selected llm-config.
    */
   llmConfig = new CodexFormControl<LLMConfig | null>(null, [CodexValidators.nonnull])
-
-  /**
-   * The target language.
-   */
-  targetLanguage = new CodexFormControl<TargetLanguage>(TargetLanguage.SPICE, [CodexValidators.nonnull])
 
   /**
    * Form control for the prompt input.
@@ -206,21 +189,18 @@ export class ConversationsViewModel implements OnInit {
       this.createMessage(prompt)
     } else if (this.llmConfig.control.invalid ||
       this.prompt.control.invalid ||
-      this.targetLanguage.control.invalid ||
-      this.llmConfig.control.value == null ||
-      this.targetLanguage.control.value == null
+      this.llmConfig.control.value == null
     ) {
       return
     } else {
       const config = this.llmConfig.control.value
-      const language = this.targetLanguage.control.value
       // Set back the prompt
       this.prompt.control.setValue("")
 
       this.isProcessing.set(true)
       this.isInitial.set(false)
 
-      this.createConvo(prompt, config, language)
+      this.createConvo(prompt, config, TargetLanguage.SPICE)
     }
   }
 

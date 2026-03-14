@@ -11,16 +11,6 @@
         <p class="title">{{ 'conversations.title.initial' | translate }}</p>
 
         <mat-form-field appearance="outline">
-          <mat-select [formControl]="targetLanguage.control">
-            @for (language of TargetLanguages; track language) {
-              <mat-option [value]="language">{{ language | key | translate }}</mat-option>
-            }
-          </mat-select>
-
-          <mat-label>{{ 'conversations.language.label' | translate }}</mat-label>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
           <mat-select [formControl]="llmConfig.control">
             @for (config of llmConfigs(); track config.id) {
               <mat-option [value]="config">{{ config.name }}</mat-option>

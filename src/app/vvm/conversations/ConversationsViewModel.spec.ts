@@ -24,7 +24,8 @@ const msg: Message = {
   response: "Here is circuit",
   secondaryResponse: "beep boop",
   generationMillis: 1234,
-  createdAt: ""
+  createdAt: "",
+  simulationResult: ""
 }
 
 const convo: Conversation = {
@@ -136,7 +137,6 @@ describe("ConversationsViewModel", () => {
   it("start() creates conversation if none exists", () => {
     vm.prompt.control.setValue("hello");
     vm.llmConfig.control.setValue({ id: "cfg" } as any);
-    vm.targetLanguage.control.setValue(TargetLanguage.SPICE);
 
     vm.start();
 
