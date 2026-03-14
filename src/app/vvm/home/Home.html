@@ -62,9 +62,6 @@
               <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
-                <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
-                  <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
-                </button>
                 <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
@@ -83,9 +80,6 @@
             <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
-              <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
-                <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
-              </button>
               <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                 <mat-icon>more_vert</mat-icon>
               </button>
@@ -94,7 +88,10 @@
         </div>
 
         <mat-menu #menu>
-          <button mat-menu-item (click)="pinConvo()">{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</button>
+          <button mat-menu-item (click)="pinConvo()">
+            <span>{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</span>
+            <mat-icon matSuffix>keep</mat-icon>
+          </button>
           <button mat-menu-item (click)="openEditNameDialog()">
             <span>{{ 'home.menu.rename' | translate }}</span>
             <mat-icon matSuffix>edit</mat-icon>
@@ -184,9 +181,6 @@
               <div matRipple class="nav-item" (click)="openConvo(convo)">
                 <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
                 <p class="nav-item-label">{{ convo.name }}</p>
-                <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
-                  <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
-                </button>
                 <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
@@ -205,9 +199,6 @@
             <div matRipple class="nav-item" (click)="openConvo(convo)">
               <mat-icon class="nav-item-icon">chat_bubble</mat-icon>
               <p class="nav-item-label">{{ convo.name }}</p>
-              <button matIconButton class="nav-item-pin" (click)="toggleConvoPin(convo, $event)" [attr.aria-label]="(convo.pinned ? 'Unpin' : 'Pin') + ' conversation'">
-                <mat-icon>{{ convo.pinned ? 'keep_off' : 'keep' }}</mat-icon>
-              </button>
               <button matIconButton class="nav-item-menu" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation(); openMenuFor(convo)">
                 <mat-icon>more_vert</mat-icon>
               </button>
@@ -216,7 +207,10 @@
         </div>
 
         <mat-menu #menu>
-          <button mat-menu-item (click)="pinConvo()">{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</button>
+          <button mat-menu-item (click)="pinConvo()">
+            <span>{{ (menuConversation()?.pinned ? 'home.menu.unpin' : 'home.menu.pin') | translate }}</span>
+            <mat-icon matSuffix>push_pin</mat-icon>
+          </button>
           <button mat-menu-item (click)="openEditNameDialog()">
             <span>{{ 'home.menu.rename' | translate }}</span>
             <mat-icon matSuffix>edit</mat-icon>
