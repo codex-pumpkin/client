@@ -1,0 +1,95 @@
+<div class="sim-window">
+  <div class="window-toolbar">
+    <div class="toolbar-title">Simulation Result</div>
+    @if (result()) {
+      <div class="toolbar-meta">{{ analysisType() }} Analysis</div>
+    }
+  </div>
+
+  @if (!result()) {
+    <div class="sim-error">
+      <span class="error-icon">⚠</span>
+      <span>Could not parse simulation result.</span>
+    </div>
+  } @else {
+
+    <div class="sim-body">
+
+      
+      <div class="var-list">
+        <p class="var-list-title">Variables</p>
+        @for (v of result()!.variables; track v.name) {
+          <button
+            type="button"
+            class="var-item"
+            [class.active]="(activeVar() ?? result()!.variables[0].name) === v.name"
+            (click)="selectVar(v.name)">
+            <span class="var-name">{{ v.name }}</span>
+          </button>
+        }
+      </div>
+
+      
+      <div class="chart-area">
+        @if (activeVariable()) {
+          <p class="chart-title">{{ activeVariable()!.name }}</p>
+
+          <svg
+            class="chart-svg"
+            [attr.viewBox]="'0 0 ' + CHART_W + ' ' + CHART_H"
+            preserveAspectRatio="xMidYMid meet">
+
+            <g [attr.transform]="'translate(' + PAD.left + ',' + PAD.top + ')'">
+
+              
+              @for (tick of yTicks(); track tick.y) {
+                <line
+                  [attr.x1]="0" [attr.y1]="tick.y"
+                  [attr.x2]="CHART_W - PAD.left - PAD.right" [attr.y2]="tick.y"
+                  class="grid-line"/>
+                <text [attr.x]="-8" [attr.y]="tick.y + 4" class="tick-label" text-anchor="end">
+                  {{ tick.label }}
+                </text>
+              }
+
+              
+              @for (tick of xTicks(); track tick.x) {
+                <text
+                  [attr.x]="tick.x"
+                  [attr.y]="CHART_H - PAD.top - PAD.bottom + 18"
+                  class="tick-label" text-anchor="middle">
+                  {{ tick.label }}
+                </text>
+              }
+
+              
+              <text
+                [attr.x]="(CHART_W - PAD.left - PAD.right) / 2"
+                [attr.y]="CHART_H - PAD.top - PAD.bottom + 36"
+                class="axis-label" text-anchor="middle">
+                {{ xAxisLabel() }}
+              </text>
+
+              
+              <line
+                x1="0" [attr.y1]="CHART_H - PAD.top - PAD.bottom"
+                [attr.x2]="CHART_W - PAD.left - PAD.right" [attr.y2]="CHART_H - PAD.top - PAD.bottom"
+                class="axis-line"/>
+              <line
+                x1="0" y1="0"
+                x2="0" [attr.y2]="CHART_H - PAD.top - PAD.bottom"
+                class="axis-line"/>
+
+              
+              @if (chartPath()) {
+                <path [attr.d]="chartPath()" class="data-path" fill="none"/>
+              }
+
+            </g>
+          </svg>
+        }
+      </div>
+
+    </div>
+  }
+</div>

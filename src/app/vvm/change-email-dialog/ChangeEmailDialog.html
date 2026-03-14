@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>{{ 'dialog.change_email.title' | translate }}</h2>
 <mat-dialog-content>
   <p id="description">{{ 'dialog.change_email.description' | translate }}</p>
-  <mat-form-field appearance="outline">
+  <mat-form-field id="new-email-input" appearance="outline">
     <mat-label>{{ 'dialog.change_email.name.label' | translate }}</mat-label>
     <input [formControl]="email.control" matInput />
 

@@ -22,5 +22,9 @@ export class PromptInputViewModel {
    * The handler for when the prompt is sent.
    */
   @Output()
-  public onSend = new EventEmitter<void>();
+  public sendCallback = new EventEmitter<void>();
+
+  public click() {
+    this.sendCallback.emit()
+  }
 }

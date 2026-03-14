@@ -51,16 +51,16 @@ export class LoginViewModel extends GoogleAuthViewModel {
    */
   private readonly auth = inject(AuthenticationService_T)
 
-  protected readonly identifier = new CodexFormControl("", [])
-  protected readonly password = new CodexFormControl("", [])
-  protected readonly passwordVisible = signal(false)
-  protected readonly genericError = signal<string | null>(null)
+  public readonly identifier = new CodexFormControl("", [])
+  public readonly password = new CodexFormControl("", [])
+  public readonly passwordVisible = signal(false)
+  public readonly genericError = signal<string | null>(null)
 
-  protected togglePassword() {
+  public togglePassword() {
     this.passwordVisible.set(!this.passwordVisible())
   }
 
-  protected login() {
+  public login() {
     this.genericError.set(null)
 
     const isEmail = this.identifier.getOrBlank().includes('@')
@@ -84,17 +84,16 @@ export class LoginViewModel extends GoogleAuthViewModel {
       isEmail ? null : this.identifier.getOrBlank(),
       this.password.getOrBlank()
     ).subscribe(maybe => {
-      console.log(`Got maybe ${JSON.stringify(maybe)}`)
       if(maybe.isYes) reactYes()
       else reactNo(maybe.no())
     })
   }
 
-  protected signup() {
+  public signup() {
     this.router.navigate(["signup"])
   }
 
-  protected handleGoogleResponse(response: any): void {
+  public handleGoogleResponse(response: any): void {
     this.genericError.set(null)
     const code = response.code
 

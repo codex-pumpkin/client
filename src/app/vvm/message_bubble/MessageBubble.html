@@ -1,23 +1,28 @@
 <div class="message-bubble">
   <div class="header">
     <p class="generation-label">{{ 'message_bubble.time_label' | translate : { time: generationMillis() } }}</p>
-    @if (canBeVisualized()) {
-      <mat-slide-toggle [formControl]="isVisualized">{{ 'message_bubble.visualization_label' | translate }}</mat-slide-toggle>
-    } @else {
-      <div></div>
-    }
+    <div class="header-toggles">
+      @if (canBeVisualized()) {
+        <mat-slide-toggle [formControl]="isVisualized">{{ 'message_bubble.visualization_label' | translate }}</mat-slide-toggle>
+      }
+      @if (hasSimulationResult()) {
+        <mat-slide-toggle [formControl]="isSimulationShown">{{ 'message_bubble.simulation_label' | translate }}</mat-slide-toggle>
+      }
+    </div>
   </div>
 
   <div class="content-container">
     @if (canBeVisualized() && isVisualized.value && message().secondaryResponse != null) {
       <circuit-graph [json]="message().secondaryResponse!"></circuit-graph>
+    } @else if (hasSimulationResult() && isSimulationShown.value) {
+      <simulation-result [json]="message().simulationResult!"></simulation-result>
     } @else {
       <div class="code-container">
         <code>
           {{ message().response }}
         </code>
 
-        <button matIconButton (click)="downloadCode()">
+        <button id="circuit-download" matIconButton (click)="downloadCode()">
           <mat-icon>download</mat-icon>
         </button>
       </div>

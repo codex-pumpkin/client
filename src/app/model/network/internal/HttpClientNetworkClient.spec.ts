@@ -255,7 +255,6 @@ describe('HttpClientNetworkClient', () => {
 
   it("getAnalytics$ should return correct type", () => {
     const ret = subject.getAnalytics$({period_of_days: 1, time_interval_minutes: 1} ,"<token>")
-    console.log(`I AM HEREREEEEE ${JSON.stringify(ret)}`)
     ret.subscribe(bod => {
       expectTypeOf(bod).toEqualTypeOf<AnalyticsResponse>()
     })

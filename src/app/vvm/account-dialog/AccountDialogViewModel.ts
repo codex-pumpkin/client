@@ -76,7 +76,7 @@ export class AccountDialogViewModel {
    */
   private readonly dialogRef = inject(MatDialogRef<AccountDialogViewModel>);
 
-  protected changeUsername() {
+  changeUsername() {
     this.dialog.open(ChangeUsernameDialogViewModel, {data: this.account()})
       .afterClosed()
       .subscribe((newUsername: string) => {
@@ -89,15 +89,13 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected changeEmail() {
+  changeEmail() {
     this.dialog.open(ChangeEmailDialogViewModel, {data: this.account()})
       .afterClosed()
       .subscribe((newEmail: string) => {
-        console.log("Email dialog closed")
         if (newEmail) {
           this.accountService.updateEmail$(newEmail)
             .subscribe(() => {
-              console.log("Email change finished")
               // The email of the account was changed.
               // Now we need to trigger an authentication, so that an email-verification is sent.
               from(this.auth.refreshAccount())
@@ -115,7 +113,7 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected resetPassword() {
+  resetPassword() {
     this.dialog.open(ResetPasswordDialogViewModel)
       .afterClosed()
       .subscribe(doReset => {
@@ -125,14 +123,14 @@ export class AccountDialogViewModel {
       })
   }
 
-  protected logout() {
+  logout() {
     this.auth.logout$()
       .subscribe(() => {
         this.close(true)
       })
   }
 
-  protected onFileSelected(event: Event) {
+  onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement
     if(!input.files?.length) return
 

@@ -71,6 +71,7 @@ export const createMessage = (response: MessageResponse): Message => ({
   prompt: response.message,
   response: response.response,
   secondaryResponse: response.graph ?? null,
+  simulationResult: response.simulation_result ?? null,
   generationMillis: response.generation_millis
 })
 

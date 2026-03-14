@@ -6,6 +6,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {CircuitGraphViewModel} from '../circuit-graph/CircuitGraphViewModel';
+import {SimulationResultViewModel} from '../simulation-result/SimulationResultViewModel';
 
 @Component({
   templateUrl: 'MessageBubble.html',
@@ -15,7 +16,8 @@ import {CircuitGraphViewModel} from '../circuit-graph/CircuitGraphViewModel';
     ReactiveFormsModule,
     MatIconButton,
     MatIcon,
-    CircuitGraphViewModel
+    CircuitGraphViewModel,
+    SimulationResultViewModel
   ],
   styleUrl: 'MessageBubble.css',
   selector: 'message-bubble'
@@ -30,7 +32,7 @@ export class MessageBubbleViewModel {
   /**
    * The generation time, in seconds, rounded to one decimal
    */
-  protected readonly generationMillis = () => Number((this.message().generationMillis / 1000).toFixed(1));
+  readonly generationMillis = () => Number((this.message().generationMillis / 1000).toFixed(1));
 
   /**
    * The parent conversation
@@ -38,16 +40,26 @@ export class MessageBubbleViewModel {
   public conversation = input.required<Conversation>()
 
   /**
-   * Whether the visualization is switched on
+   * Whether the circuit visualization is switched on
    */
-  protected readonly isVisualized = new FormControl<boolean>(false)
+  readonly isVisualized = new FormControl<boolean>(false)
 
   /**
-   * Whether the message can be visualized
+   * Whether the simulation result is switched on
    */
-  protected readonly canBeVisualized = () => [TargetLanguage.SPICE].includes(this.conversation()?.targetLanguage)
+  protected readonly isSimulationShown = new FormControl<boolean>(false)
+
+  /**
+   * Whether the message can be visualized (circuit graph)
+   */
+  readonly canBeVisualized = () => [TargetLanguage.SPICE].includes(this.conversation()?.targetLanguage)
+  /**
+   * Whether a simulation result is available for this message
+   */
+  protected readonly hasSimulationResult = () => this.message().simulationResult != null
 
   protected downloadCode() {
+
     const blob = new Blob([this.message().response], { type: 'text/plain;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 

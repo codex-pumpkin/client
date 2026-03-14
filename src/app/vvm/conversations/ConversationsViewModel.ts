@@ -4,7 +4,6 @@ import {ConversationService_T} from '../../model/service/ConversationService';
 import {Conversation, Errors, LLMConfig, TargetLanguage} from '../../model/domain/domain_models';
 import {map, take, timer} from 'rxjs';
 import {InformationService_T} from '../../model/service/InformationService';
-import {toSignal} from '@angular/core/rxjs-interop';
 import {CodexFormControl} from '../_common/CodexFormControl';
 import {CodexValidators} from '../_common/CodexValidators';
 import {MatProgressBar} from '@angular/material/progress-bar';
@@ -77,22 +76,22 @@ export class ConversationsViewModel implements OnInit {
   /**
    * Whether the initial state of the screen is loaded.
    */
-  protected readonly hasLoaded = signal(false)
+  readonly hasLoaded = signal(false)
 
   /**
    * Whether the screen is in the initial state for creating a request.
    */
-  protected readonly isInitial = signal(false)
+  readonly isInitial = signal(false)
 
   /**
    * Whether the screen is in the initial state for creating a request.
    */
-  protected readonly isProcessing = signal(false)
+  readonly isProcessing = signal(false)
 
   /**
    * The currently stored conversation.
    */
-  protected readonly conversation = signal<Conversation | null>(null)
+  readonly conversation = signal<Conversation | null>(null)
 
   /**
    * A generic error key that may have appeared.
@@ -102,13 +101,7 @@ export class ConversationsViewModel implements OnInit {
   /**
    * The llm-configurations.
    */
-  protected readonly llmConfigs = toSignal(
-    this.infoService.llmConfigurations$
-      .pipe(
-        map(configs => configs ?? [])
-      ),
-    { initialValue: [] as LLMConfig[] }
-  )
+  readonly llmConfigs = signal<LLMConfig[]>([])
 
   /**
    * All available target languages.
@@ -122,19 +115,26 @@ export class ConversationsViewModel implements OnInit {
   /**
    * The selected llm-config.
    */
-  protected llmConfig = new CodexFormControl<LLMConfig | null>(null, [CodexValidators.nonnull])
+  llmConfig = new CodexFormControl<LLMConfig | null>(null, [CodexValidators.nonnull])
 
   /**
    * The target language.
    */
-  protected targetLanguage = new CodexFormControl<TargetLanguage>(TargetLanguage.SPICE, [CodexValidators.nonnull])
+  targetLanguage = new CodexFormControl<TargetLanguage>(TargetLanguage.SPICE, [CodexValidators.nonnull])
 
   /**
    * Form control for the prompt input.
    */
-  protected prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
+  prompt = new CodexFormControl<string>("", [CodexValidators.nonempty])
 
   ngOnInit(): void {
+    this.infoService.llmConfigurations$
+      .pipe(
+        map(configs => configs ?? [])
+      ).subscribe(configs => {
+        this.llmConfigs.set(configs)
+    })
+
     this.route.params.subscribe(params => {
       // Contains the ID, or if no ID is given, an empty string, which counts as an invalid id.
       const id = params["id"] as (string | undefined)
@@ -187,7 +187,7 @@ export class ConversationsViewModel implements OnInit {
     })
   }
 
-  protected start() {
+  start() {
     if(this.prompt.control.invalid) {
       return
     }
@@ -225,9 +225,7 @@ export class ConversationsViewModel implements OnInit {
   private createMessage(prompt: string) {
     const convo = this.conversation()!
 
-    this.conversationService.sendMessage(convo.id, prompt).subscribe(id => {
-
-    })
+    this.conversationService.sendMessage(convo.id, prompt).subscribe(() => {})
   }
 
   private getDateFormatLanguage() {

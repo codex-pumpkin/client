@@ -36,22 +36,22 @@ export class AdminPanelViewModel implements OnInit {
   /**
    * Whether an admin quota is active.
    */
-  protected readonly adminQuotaActive = new CodexFormControl<boolean>(false, [])
+  readonly adminQuotaActive = new CodexFormControl<boolean>(false, [])
 
   /**
    * Whether a normal quota is active.
    */
-  protected readonly normalQuotaActive = new CodexFormControl<boolean>(false, [])
+  readonly normalQuotaActive = new CodexFormControl<boolean>(false, [])
 
   /**
    * The admin quota number
    */
-  protected readonly adminQuota = new CodexFormControl<number | null>(null, [CodexValidators.integer, CodexValidators.positive])
+  readonly adminQuota = new CodexFormControl<number | null>(null, [CodexValidators.integer, CodexValidators.positive])
 
   /**
    * The normal quota
    */
-  protected readonly normalQuota = new CodexFormControl<number | null>(null, [CodexValidators.integer, CodexValidators.positive])
+  readonly normalQuota = new CodexFormControl<number | null>(null, [CodexValidators.integer, CodexValidators.positive])
 
   ngOnInit(): void {
     const quota = this.infoService.quotaInfo$.value
@@ -120,7 +120,7 @@ export class AdminPanelViewModel implements OnInit {
   /**
    * The analytics.
    */
-  protected readonly analytics = toSignal(
+  readonly analytics = toSignal(
     this.infoService.analytics$
       .pipe(
         filter(ana => !!ana)

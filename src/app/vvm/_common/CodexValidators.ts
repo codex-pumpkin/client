@@ -65,8 +65,12 @@ export class CodexValidators {
    * Creates a validator for checking the format of a url.
    */
   public static url: ValidatorFn = (elem) => {
+    const value = elem.value as string;
+    
+    if (!value || value.trim() === "") return null;
+    
     try {
-      new URL(elem.value as string);
+      new URL(value);
       return null;
     } catch (_) {
       return this.errorRes("errors.validation.format.url");

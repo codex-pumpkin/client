@@ -17,7 +17,7 @@ export enum TargetLanguage {
    * Python code
    */
   PYTHON,
-
+  
   /**
    * English text
    */
@@ -27,6 +27,7 @@ export enum TargetLanguage {
    * German text
    */
   GERMAN
+
 }
 
 /**
@@ -127,7 +128,6 @@ export class Maybe<Y, N> {
 
   private constructor(valueYes?: Y, valueNo?: N) {
     if((valueYes == undefined && valueNo == undefined) || (valueYes && valueNo)) {
-      console.log(`Will create maybe with values yes: ${JSON.stringify(valueYes)} and no: ${JSON.stringify(valueNo)}`)
       throw new Error("Maybe needs to be either no or yes")
     }
 
@@ -299,6 +299,11 @@ export type Message = {
    * The optional secondary response
    */
   secondaryResponse: string | null,
+
+  /**
+   * The optional simulation result
+   */
+  simulationResult: string | null,
 
   /**
    * The time the message took to create
