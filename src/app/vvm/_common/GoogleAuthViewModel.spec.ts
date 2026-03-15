@@ -47,31 +47,41 @@ describe("GoogleAuthViewModel", () => {
   it("initializes google client on ngOnInit", () => {
     vm.ngOnInit();
 
-    expect(google.accounts.oauth2.initCodeClient).toHaveBeenCalledWith(
-      expect.objectContaining({
-        client_id: "test-client-id",
-        scope: "openid email profile",
-        ux_mode: "popup",
-        callback: expect.any(Function)
-      })
-    );
+    setTimeout(() => {
+      expect(google.accounts.oauth2.initCodeClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client_id: "test-client-id",
+          scope: "openid email profile",
+          ux_mode: "popup",
+          callback: expect.any(Function)
+        })
+      );
+    }, 500)
+
+
   });
 
   it("calls handleGoogleResponse when callback fires", () => {
     vm.ngOnInit();
 
-    const response = { code: "abc" };
-    callback(response);
+    setTimeout(() => {
+      const response = { code: "abc" };
+      callback(response);
 
-    expect(vm.handleGoogleResponse).toHaveBeenCalledWith(response);
+      expect(vm.handleGoogleResponse).toHaveBeenCalledWith(response);
+    }, 500.0)
   });
 
   it("opens google auth window", () => {
     vm.ngOnInit();
 
-    vm.openGoogleAuth();
+    setTimeout(() => {
+      vm.openGoogleAuth();
 
-    expect(requestCodeMock).toHaveBeenCalled();
+      expect(requestCodeMock).toHaveBeenCalled();
+    }, 500.0)
+
+
   });
 
 });

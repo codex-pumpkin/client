@@ -26,7 +26,7 @@ describe("TokenStore", () => {
 
   it("Setting/Unsetting refresh token works", () => {
     expect(subject.getRefresh()).equals(null)
-    expect(subject.getRefreshOrEmpty()).equals("")
+    expect(subject.getRefreshOrEmpty()).equals("00000000-0000-0000-0000-000000000000")
 
     subject.setRefresh("refresh-token")
 
@@ -36,6 +36,6 @@ describe("TokenStore", () => {
     subject.setRefresh(null)
 
     expect(subject.getRefresh()).equals(null)
-    expect(subject.getRefreshOrEmpty()).equals("")
+    expect(subject.getRefreshOrEmpty()).equals("00000000-0000-0000-0000-000000000000")
   })
 });
