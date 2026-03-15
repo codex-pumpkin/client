@@ -53,6 +53,7 @@ For a given file `file.ts`, the test file is named `file.spec.ts` and contains e
 
 To run all unit tests, use
 ```bash
+npm install
 npm test
 ```
 
