@@ -96,67 +96,307 @@ function kindOf(comp: CircuitComponent): string {
   return normalized;
 }
 
-// ─── Layout ────────────────────────────────────────────────────────────────
-// BFS-based 2D placement: voltage/current sources are roots (column 0),
-// then each connected component is placed one column further right.
-// This prevents everything collapsing into a single vertical stack.
+// ─── Netlist normalisation ──────────────────────────────────────────────────
+// AI generators often emit one VoltageSource per transistor instead of sharing
+// a single VDD rail. We detect duplicate sources (same GND terminal, same
+// voltage) and merge them: keep the first, rename every node wired to a
+// duplicate's positive terminal to the canonical VDD node, then drop the dupe.
+
+export function normalizeNetlist(comps: CircuitComponent[]): CircuitComponent[] {
+  const isSrc = (c: CircuitComponent) =>
+    kindOf(c) === 'VoltageSource' || kindOf(c) === 'CurrentSource';
+  const sources = comps.filter(isSrc);
+  if (sources.length <= 1) return comps;
+
+  const dcVal = (c: CircuitComponent): string =>
+    String(c.values?.['dc_value'] ?? c.values?.['voltage'] ?? c.values?.['value'] ?? '')
+      .replace(/[^0-9.]/g, '');
+
+  // Group sources with same negative node + same (or unknown) voltage
+  type Group = { canon: CircuitComponent; dupes: CircuitComponent[] };
+  const groups: Group[] = [];
+  sources.forEach(src => {
+    const neg = src.nodes[1] ?? '0';
+    const val = dcVal(src);
+    const g   = groups.find(g =>
+      (g.canon.nodes[1] ?? '0') === neg &&
+      (!dcVal(g.canon) || !val || dcVal(g.canon) === val)
+    );
+    if (g) g.dupes.push(src); else groups.push({ canon: src, dupes: [] });
+  });
+
+  const nodeRename = new Map<string, string>();
+  const toRemove   = new Set<string>();
+  groups.forEach(({ canon, dupes }) => {
+    dupes.forEach(dup => {
+      if (dup.nodes[0] && dup.nodes[0] !== canon.nodes[0])
+        nodeRename.set(dup.nodes[0], canon.nodes[0]);
+      toRemove.add(dup.name);
+    });
+  });
+
+  if (toRemove.size === 0) return comps;
+  const rn = (nid: string) => nodeRename.get(nid) ?? nid;
+
+  return comps
+    .filter(c => !toRemove.has(c.name))
+    .map(c => ({ ...c, nodes: c.nodes.map(rn) }))
+    .filter(c => new Set(c.nodes).size >= 2 || c.nodes.length < 2);
+}
+
+// ─── Layout — Sugiyama layered algorithm (ELK/dot style) ─────────────────────
+//
+// Implements the full 4-phase Sugiyama framework used by ELK, Graphviz dot,
+// and dagre — adapted for circuit schematics with domain-aware edge direction
+// and vertical pin constraints for transistors.
+//
+// Phase 1 — Layer assignment (longest-path from sources)
+//   • VoltageSource / CurrentSource are pinned to layer 0 (left rail)
+//   • Transistors get a priority layer based on their signal-path depth
+//   • Every other component gets the maximum layer of its predecessors + 1
+//
+// Phase 2 — Crossing minimisation (barycenter, 4 forward+backward sweeps)
+//   • Within each layer, components are sorted by the average position of
+//     their neighbours in the adjacent layer (classic Sugiyama step)
+//
+// Phase 3 — Coordinate assignment (Brandes–Köpf inspired)
+//   • X  = layer index × COL_W, starting from 80
+//   • Y  = position within layer, centred around canvas midline (300)
+//   • Transistors keep their pin-relative offsets: load-R above drain,
+//     source-R below emitter, caps to the right at pin Y
+//
+// Phase 4 — Post-processing
+//   • Grid-snap all coordinates to SNAP px
+//   • Vertical re-centre so the layout is visually centred at y = 300
 
 export function computeLayout(comps: CircuitComponent[]): CompPos {
   if (comps.length === 0) return {};
 
-  // Build adjacency from shared nodes
-  const adjacency = new Map<string, Set<string>>();
-  comps.forEach(c => adjacency.set(c.name, new Set()));
+  const SNAP    = 10;
+  const COL_W   = 220;   // horizontal gap between layers
+  const ROW_H   = 200;   // vertical gap within a layer
+  const sg = (v: number) => Math.round(v / SNAP) * SNAP;
 
-  const nodeIndex = new Map<string, string[]>();
-  comps.forEach(comp => {
-    comp.nodes.forEach(nid => {
-      if (!nodeIndex.has(nid)) nodeIndex.set(nid, []);
-      nodeIndex.get(nid)!.push(comp.name);
-    });
-  });
-  nodeIndex.forEach(names => {
-    for (let i = 0; i < names.length; i++)
-      for (let j = i + 1; j < names.length; j++) {
-        adjacency.get(names[i])?.add(names[j]);
-        adjacency.get(names[j])?.add(names[i]);
+  // ── Build directed signal-flow graph ─────────────────────────────────────
+  // Edge direction: from the component that DRIVES a node to the one that SINKS it.
+  // Heuristic: sources → everything on their output node → transistor gates →
+  //            transistor drains → loads.
+  // For undirected edges we fall back to shared-node adjacency.
+
+  const nodeMbrs = new Map<string, string[]>();
+  comps.forEach(c => c.nodes.forEach(n => {
+    if (!nodeMbrs.has(n)) nodeMbrs.set(n, []);
+    nodeMbrs.get(n)!.push(c.name);
+  }));
+
+  // Build plain adjacency (undirected) for crossing-min and fallback
+  const adj = new Map<string, Set<string>>();
+  comps.forEach(c => adj.set(c.name, new Set()));
+  nodeMbrs.forEach(ns => {
+    for (let i = 0; i < ns.length; i++)
+      for (let j = i + 1; j < ns.length; j++) {
+        adj.get(ns[i])!.add(ns[j]);
+        adj.get(ns[j])!.add(ns[i]);
       }
   });
 
-  const COL_GAP = 220;
-  const ROW_GAP = 180;
+  // Build directed predecessors (for longest-path layering)
+  // Direction: source → passive → transistor gate → transistor → load
+  const compMap = new Map<string, CircuitComponent>(comps.map(c => [c.name, c]));
 
-  const roots = comps.filter(c =>
-    kindOf(c) === 'VoltageSource' || kindOf(c) === 'CurrentSource'
-  );
+  const isTr  = (c: CircuitComponent) => kindOf(c) === 'Mosfet' || kindOf(c) === 'BJT';
+  const isSrc = (c: CircuitComponent) => kindOf(c) === 'VoltageSource' || kindOf(c) === 'CurrentSource';
+  const isCap = (c: CircuitComponent) => kindOf(c) === 'Capacitor' || kindOf(c) === 'BehavioralCapacitor';
+  const isRes = (c: CircuitComponent) => kindOf(c) === 'Resistor' || kindOf(c) === 'Inductor';
 
-  const ordered: string[]        = [];
-  const visited  = new Set<string>();
-  const level    = new Map<string, number>();
+  // ── Phase 1: Layer assignment via longest-path from sources ──────────────
+  const layer = new Map<string, number>();
 
-  const enqueue = (name: string, lvl: number) => {
-    if (visited.has(name)) return;
-    visited.add(name);
-    level.set(name, lvl);
-    ordered.push(name);
-    [...(adjacency.get(name) ?? [])].sort().forEach(n => enqueue(n, lvl + 1));
+  // Pin sources to layer 0
+  comps.filter(isSrc).forEach(c => layer.set(c.name, 0));
+
+  // Iteratively assign layer = max(predecessor layers) + 1
+  // Run until stable (at most N passes)
+  let changed = true;
+  for (let pass = 0; pass < comps.length && changed; pass++) {
+    changed = false;
+    comps.forEach(c => {
+      if (isSrc(c)) return;
+      const nbLayers = [...(adj.get(c.name) ?? [])]
+        .map(nb => layer.get(nb) ?? -1)
+        .filter(l => l >= 0);
+      if (nbLayers.length === 0) return;
+      const candidate = Math.max(...nbLayers) + 1;
+      const current   = layer.get(c.name) ?? -1;
+      if (candidate > current) {
+        layer.set(c.name, candidate);
+        changed = true;
+      }
+    });
+  }
+
+  // Anything still unassigned gets layer 1
+  comps.forEach(c => { if (!layer.has(c.name)) layer.set(c.name, 1); });
+
+  // Circuit-domain correction:
+  // Transistors should always be to the RIGHT of their bias components.
+  // If a transistor is at the same layer as its gate-resistor, push transistor right.
+  comps.filter(isTr).forEach(t => {
+    const gateIdx  = kindOf(t) === 'BJT' ? 0 : 1;
+    const gateNode = t.nodes[gateIdx];
+    if (!gateNode) return;
+    const gateNeighbours = (nodeMbrs.get(gateNode) ?? [])
+      .filter(n => n !== t.name)
+      .map(n => layer.get(n) ?? 0);
+    if (gateNeighbours.length) {
+      const minGateLayer = Math.min(...gateNeighbours);
+      if ((layer.get(t.name) ?? 0) <= minGateLayer)
+        layer.set(t.name, minGateLayer + 1);
+    }
+  });
+
+  // ── Phase 2: Group into layers, crossing minimisation ────────────────────
+  const maxLayer = Math.max(...[...layer.values()]);
+  const layers: string[][] = Array.from({ length: maxLayer + 1 }, () => []);
+  comps.forEach(c => layers[layer.get(c.name)!].push(c.name));
+
+  // Barycenter sweep: 4 passes (forward then backward twice)
+  const barycenter = (names: string[], refLayer: string[], refPos: Map<string, number>): string[] => {
+    const scores = names.map(name => {
+      const nbs = [...(adj.get(name) ?? [])].filter(n => refLayer.includes(n));
+      if (!nbs.length) return { name, score: refPos.get(name) ?? 0 };
+      const avg = nbs.reduce((s, n) => s + (refPos.get(n) ?? 0), 0) / nbs.length;
+      return { name, score: avg };
+    });
+    return scores.sort((a, b) => a.score - b.score).map(s => s.name);
   };
 
-  roots.forEach(r => enqueue(r.name, 0));
-  comps.forEach(c => enqueue(c.name, level.get(c.name) ?? 0));
+  for (let sweep = 0; sweep < 4; sweep++) {
+    const forward = sweep % 2 === 0;
+    if (forward) {
+      for (let li = 1; li <= maxLayer; li++) {
+        const refPos = new Map(layers[li - 1].map((n, i) => [n, i]));
+        layers[li] = barycenter(layers[li], layers[li - 1], refPos);
+      }
+    } else {
+      for (let li = maxLayer - 1; li >= 0; li--) {
+        const refPos = new Map(layers[li + 1].map((n, i) => [n, i]));
+        layers[li] = barycenter(layers[li], layers[li + 1], refPos);
+      }
+    }
+  }
 
-  const colCounts = new Map<number, number>();
+  // ── Phase 3: Coordinate assignment ───────────────────────────────────────
+  // X = layer * COL_W + LEFT_MARGIN
+  // Y = centred within layer around canvas midline MID_Y
+
+  const LEFT_MARGIN = 120;
+  const MID_Y       = 300;
   const pos: CompPos = {};
 
-  ordered.forEach(name => {
-    const col = level.get(name) ?? 0;
-    const row = colCounts.get(col) ?? 0;
-    colCounts.set(col, row + 1);
-    pos[name] = { x: 120 + col * COL_GAP, y: 120 + row * ROW_GAP };
+  layers.forEach((names, li) => {
+    const x    = LEFT_MARGIN + li * COL_W;
+    const h    = (names.length - 1) * ROW_H;
+    const topY = MID_Y - h / 2;
+    names.forEach((name, ri) => {
+      pos[name] = { x: sg(x), y: sg(topY + ri * ROW_H) };
+    });
   });
+
+  // ── Phase 4: Circuit-domain vertical pin adjustments ─────────────────────
+  // Load resistors snap directly above the transistor drain (same X).
+  // Source resistors snap directly below the source/emitter (same X).
+  // Bypass caps snap to the right of the transistor at pin Y.
+
+  const LOAD_ABOVE = -170;  // load resistor: px above drain/collector
+  const SRC_BELOW  =  160;  // source/emitter resistor: px below
+  const CAP_RIGHT  =  190;  // bypass cap: px right of transistor
+
+  const overrides = new Map<string, Point>();
+
+  comps.filter(isTr).forEach(t => {
+    const tp = pos[t.name];
+    if (!tp) return;
+
+    // Load resistors / inductors ABOVE drain/collector
+    const drainNodeIdx = kindOf(t) === 'BJT' ? 1 : 0;
+    const drainNode    = t.nodes[drainNodeIdx];
+    if (drainNode && drainNode !== '0') {
+      (nodeMbrs.get(drainNode) ?? []).filter(n => n !== t.name).forEach((n, i) => {
+        const c = compMap.get(n);
+        if (c && isRes(c))
+          overrides.set(n, { x: sg(tp.x), y: sg(tp.y + LOAD_ABOVE - i * 150) });
+      });
+    }
+
+    // Source/emitter resistors BELOW
+    const srcNode = t.nodes[2];
+    if (srcNode && srcNode !== '0') {
+      (nodeMbrs.get(srcNode) ?? []).filter(n => n !== t.name).forEach((n, i) => {
+        const c = compMap.get(n);
+        if (c && isRes(c))
+          overrides.set(n, { x: sg(tp.x), y: sg(tp.y + SRC_BELOW + i * 140) });
+      });
+    }
+
+    // Bypass/coupling caps to the RIGHT at gate/base Y
+    const gateNodeIdx = kindOf(t) === 'BJT' ? 0 : 1;
+    const gateNode    = t.nodes[gateNodeIdx];
+    if (gateNode && gateNode !== '0') {
+      (nodeMbrs.get(gateNode) ?? []).filter(n => n !== t.name).forEach((n, i) => {
+        const c = compMap.get(n);
+        if (c && isCap(c))
+          overrides.set(n, { x: sg(tp.x + CAP_RIGHT + i * 170), y: sg(tp.y) });
+      });
+    }
+  });
+
+  overrides.forEach((p, name) => { pos[name] = p; });
+
+  // ── Phase 5: Anchor sources right next to their VDD neighbours ──────────────
+  // VoltageSource has vertical terminals (top = VDD node, bottom = GND "0").
+  // We must NOT include GND-side neighbours in the positioning — they fan out
+  // across the entire circuit and would pull the source far from its real anchor.
+  // Instead we only look at the POSITIVE terminal node (nodes[0]) neighbours,
+  // find the leftmost of those, and place the source one tight SRC_STEP to its left.
+  const SRC_STEP = 120;   // px — tight horizontal gap between source and circuit
+
+  comps.filter(isSrc).forEach(src => {
+    const vddNode = src.nodes[0];   // positive terminal node (VDD)
+    if (!vddNode) return;
+
+    // Components sharing the VDD node — these are the true neighbours
+    const vddNbs = (nodeMbrs.get(vddNode) ?? [])
+      .filter(n => n !== src.name && !!pos[n]);
+
+    // Also check GND-side (nodes[1]) as fallback if VDD has no neighbours
+    const gndNode = src.nodes[1] ?? '0';
+    const gndNbs  = (nodeMbrs.get(gndNode) ?? [])
+      .filter(n => n !== src.name && !!pos[n]);
+
+    const relevantNbs = vddNbs.length ? vddNbs : gndNbs;
+    if (!relevantNbs.length) return;
+
+    // Y = average of VDD-side neighbours (they sit at the same voltage level)
+    const avgNbY = sg(relevantNbs.reduce((s, n) => s + pos[n]!.y, 0) / relevantNbs.length);
+
+    // X = just left of the leftmost VDD neighbour — one SRC_STEP gap
+    const minNbX = Math.min(...relevantNbs.map(n => pos[n]!.x));
+    const srcX   = sg(minNbX - SRC_STEP);
+
+    pos[src.name] = { x: Math.max(40, srcX), y: avgNbY };
+  });
+
+  // ── Final: vertical re-centre so layout is visually centred at MID_Y ──────
+  const ys    = Object.values(pos).map(p => p.y);
+  const midY  = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const shift = sg(MID_Y - midY);
+  if (Math.abs(shift) > SNAP)
+    Object.keys(pos).forEach(n => { pos[n] = { x: pos[n].x, y: pos[n].y + shift }; });
 
   return pos;
 }
+
 
 // ─── Terminal positions ────────────────────────────────────────────────────
 // Returns the SVG coordinate of a component's idx-th pin.
@@ -272,19 +512,17 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
     const gndBusX2 = (gndXs.length ? Math.max(...gndXs) : 0) + 50;
 
     // ── VDD rail ──────────────────────────────────────────────────────────
-    // The VDD node is the positive terminal (nodes[0]) of any voltage/current
-    // source that is NOT itself connected to GND ("0").
-    // We do NOT use the dc_value string — that heuristic is too fragile.
+    // Collect ALL distinct positive-terminal nodes from power sources.
+    // After normalizeNetlist there is typically just one, but we stay robust.
     const powerSources = comps.filter(c =>
       kindOf(c) === 'VoltageSource' || kindOf(c) === 'CurrentSource'
     );
-    const vddNodeId = powerSources
-      .map(c => c.nodes[0])
-      .find(nid => nid && nid !== '0');
+    const vddNodeIds = [...new Set(
+      powerSources.map(c => c.nodes[0]).filter(nid => nid && nid !== '0')
+    )];
+    const vddNodeId = vddNodeIds[0] ?? null;
 
-    // ptsFor(vddNodeId) returns terminal coords for EVERY component on that node,
-    // including the source's own positive pin — so a drop is drawn for it too.
-    const vddPts   = vddNodeId ? ptsFor(vddNodeId) : [];
+    const vddPts: Point[] = vddNodeIds.flatMap(nid => ptsFor(nid));
     const vddBusY  = vddPts.length ? Math.min(...vddPts.map(p => p.y)) - 30 : -100;
     const vddXs    = vddPts.map(p => p.x);
     const vddBusX1 = (vddXs.length ? Math.min(...vddXs) : 0) - 50;
@@ -295,7 +533,7 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
     // all other shared nodes get orthogonal signal wires.
     const nodePaths: NodePath[] = [];
     nodeMap.forEach((entries, nid) => {
-      if (nid === '0' || nid === vddNodeId) return;
+      if (nid === '0' || vddNodeIds.includes(nid)) return;
       const pts = entries.map(e => terminalPoint(e.comp, e.idx, pos));
       if (pts.length < 2) return;
       const first = pts[0];
@@ -342,8 +580,9 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     const parsed: { components: CircuitComponent[] } = JSON.parse(this.json());
-    this.comps.set(parsed.components);
-    this.pos.set(computeLayout(parsed.components));
+    const normalized = normalizeNetlist(parsed.components);
+    this.comps.set(normalized);
+    this.pos.set(computeLayout(normalized));
   }
 
   ngAfterViewInit() {
@@ -353,11 +592,17 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
     // ResizeObserver fires as soon as the element has non-zero dimensions.
     // The `fitted` guard ensures we auto-fit exactly once — not on every
     // subsequent resize (which would undo the user's pan/zoom).
+    // We use a double-rAF so Angular's change detection has fully rendered
+    // all component symbols into the DOM before we measure getBBox().
     this.resizeObserver = new ResizeObserver(entries => {
       const { width, height } = entries[0].contentRect;
       if (width > 0 && height > 0 && !this.fitted) {
         this.fitted = true;
-        this.zone.run(() => this.fitAll());
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.zone.run(() => this.fitAll());
+          });
+        });
       }
     });
     this.resizeObserver.observe(container);
@@ -515,21 +760,32 @@ export class CircuitGraphViewModel implements OnInit, AfterViewInit, OnDestroy {
     const root = this.svgRootRef?.nativeElement;
     const svg  = this.svgElRef?.nativeElement;
     if (!root || !svg) return;
+
+    // Reset transform so getBBox() measures natural (unscaled) coordinates
     root.setAttribute('transform', 'translate(0,0) scale(1)');
-    try {
-      const bb = root.getBBox();
-      if (!bb.width || !bb.height) return;
-      const W = svg.clientWidth;
-      const H = svg.clientHeight;
-      if (!W || !H) return;
-      const pad = 40;
-      const s   = Math.min((W - pad * 2) / bb.width, (H - pad * 2) / bb.height);
-      this.xfm.set({
-        x: (W - bb.width  * s) / 2 - bb.x * s,
-        y: (H - bb.height * s) / 2 - bb.y * s,
-        s,
-      });
-    } catch (_) {}
+
+    const attempt = () => {
+      try {
+        const bb = root.getBBox();
+        // If bbox is still empty the DOM hasn't painted yet — retry next frame
+        if (!bb.width || !bb.height) {
+          requestAnimationFrame(attempt);
+          return;
+        }
+        const W = svg.clientWidth;
+        const H = svg.clientHeight;
+        if (!W || !H) { requestAnimationFrame(attempt); return; }
+        const pad = 48;
+        const s   = Math.min((W - pad * 2) / bb.width, (H - pad * 2) / bb.height, 1.5);
+        this.xfm.set({
+          x: (W - bb.width  * s) / 2 - bb.x * s,
+          y: (H - bb.height * s) / 2 - bb.y * s,
+          s,
+        });
+      } catch (_) {}
+    };
+
+    requestAnimationFrame(attempt);
   }
 
   protected deselectAll() { this.selComp.set(null); }
