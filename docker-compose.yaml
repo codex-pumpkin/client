@@ -4,5 +4,5 @@ services:
     ports:
       - "8080:80"
     environment:
-      SERVER_BASE_URL: "http://localhost:8000"
-      GOOGLE_CLIENT_ID: "1058438557934-nu1fvr71olv1ueb3ton9p05ad5cffvdo.apps.googleusercontent.com"
+      SERVER_BASE_URL: <server-base-url>
+      GOOGLE_CLIENT_ID: <google-client-id>
